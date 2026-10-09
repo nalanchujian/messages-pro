@@ -269,6 +269,10 @@ function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRul
     + item.unread * rule.unreadBonus
 }
 
+function isHighValue(item: Conversation) {
+  return Number(item.spend.replace(/[^\d.]/g, '')) >= 1000
+}
+
 function draftOptions(active: Conversation) {
   return fanIntelligence[active.id].strategy.drafts
 }
@@ -323,26 +327,28 @@ function App() {
   const draft = drafts[active.id] ?? ''
   const activeMemories = savedMemories[active.id] ?? []
   const activeAssignment = assignments[active.id] ?? { owner: '我', handoffPending: false, event: '会话已分配' }
+  const needsEvidence = tenant.dimensions.data === 'sparse' && evidenceReviewedId !== active.id
   const handoffCount = items.filter((item) => assignments[item.id]?.handoffPending).length
   const pendingCount = items.filter((item) => actionStatus(item.id, actionStatuses) === 'pending').length
-  const tenantInsight = tenantId === 'aster' ? active.summary
-    : tenantId === 'north' ? `${pendingCount} 项待处理 · 当前时限：${activeActionStatus === 'pending' ? action.due : '等待新消息'}`
-      : tenantId === 'pulse' ? `累计消费 ${active.spend} · ${intelligence.signal}`
-        : tenantId === 'seed' ? `${fanFacts[active.id].filter((fact) => fact.kind === 'recorded').length} 条平台记录 · AI 推断需人工核对`
-          : `${pendingCount} 项待处理 · 以${dimensionLabel('tasks', customDimensions.tasks)}为主`
+  const tenantInsight = tenant.dimensions.data === 'sparse'
+    ? `${fanFacts[active.id].filter((fact) => fact.kind === 'recorded').length} 条平台记录 · 先核对建议所引资料`
+    : tenant.dimensions.tasks === 'fulfillment' && action.kind === 'fulfillment'
+      ? `${action.reason} · ${activeActionStatus === 'done' ? '已确认交付' : '等待履约确认'}`
+      : tenant.dimensions.tasks === 'purchase'
+        ? `先回应购买反馈 · ${intelligence.signal}`
+        : tenant.dimensions.fans === 'high' ? active.summary
+          : `${pendingCount} 项待处理 · ${intelligence.signal}`
   const visibleFilters = visibleFilterIds.map((id) => inboxFilters.find((option) => option.id === id)).filter((option): option is { id: InboxFilter; label: string } => Boolean(option))
   const currentSettingsOptions = manualTab === 'list' ? listOptions : chatOptions
   const visibleProfileSections = profilePreferenceKeys.filter((key) => preferences[key]).length
   const queueCount = (id: InboxFilter) => items.filter((item) => matchesQuery(item, query) && matchesFilter(item, id, actionStatuses)).length
-  const insightMetrics = tenantId === 'aster'
-    ? [{ label: '高价值占比', value: `${Math.round(tenant.signals.highValueShare * 100)}%` }, { label: '当前消费', value: active.spend }]
-    : tenantId === 'north'
-      ? [{ label: '待履约', value: String(queueCount('fulfillment')) }, { label: '需回复', value: String(queueCount('reply')) }, { label: '等待中', value: String(queueCount('waiting')) }]
-      : tenantId === 'pulse'
-        ? [{ label: '购买跟进', value: String(queueCount('purchase-follow-up')) }, { label: '待履约', value: String(queueCount('fulfillment')) }]
-        : tenantId === 'seed'
-          ? [{ label: '资料覆盖', value: `${Math.round(tenant.signals.dataCoverage * 100)}%` }, { label: '待核对推断', value: String(fanFacts[active.id].filter((fact) => fact.kind === 'inferred').length) }]
-          : [{ label: '日均会话', value: String(tenant.signals.conversationsPerDay) }, { label: '高价值占比', value: `${Math.round(tenant.signals.highValueShare * 100)}%` }, { label: '资料覆盖', value: `${Math.round(tenant.signals.dataCoverage * 100)}%` }]
+  const insightMetrics = tenant.dimensions.data === 'sparse'
+    ? [{ label: '资料覆盖', value: `${Math.round(tenant.signals.dataCoverage * 100)}%` }, { label: '待核对推断', value: String(fanFacts[active.id].filter((fact) => fact.kind === 'inferred').length) }]
+    : tenant.dimensions.tasks === 'fulfillment'
+      ? [{ label: '待履约', value: String(queueCount('fulfillment')) }, { label: '需回复', value: String(queueCount('reply')) }, { label: '交接中', value: String(handoffCount) }]
+      : tenant.dimensions.tasks === 'purchase'
+        ? [{ label: '购买跟进', value: String(queueCount('purchase-follow-up')) }, { label: '当前消费', value: active.spend }]
+        : [{ label: '高价值占比', value: `${Math.round(tenant.signals.highValueShare * 100)}%` }, { label: '当前消费', value: active.spend }]
   const smartProposal = useMemo(() => inferSmartMode(items, activity, filter, tenant, actionStatuses), [items, activity, filter, tenant, actionStatuses])
   const proposedQueues = smartProposal.queues.filter((id) => inboxFilters.some((option) => option.id === id)).slice(0, 6)
   const addedQueues = proposedQueues.filter((id) => !visibleFilterIds.includes(id))
@@ -487,6 +493,8 @@ function App() {
     localStorage.setItem(tenantKey(actionSettingsKey, tenantId), JSON.stringify(actionStatuses))
     localStorage.setItem(tenantKey(conversationSettingsKey, tenantId), JSON.stringify(items))
     localStorage.setItem(tenantKey(memorySettingsKey, tenantId), JSON.stringify(savedMemories))
+    localStorage.setItem(tenantKey(assignmentSettingsKey, tenantId), JSON.stringify(assignments))
+    localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
     if (ignoredMode) localStorage.setItem(tenantKey(ignoredModeKey, tenantId), JSON.stringify(ignoredMode))
     else localStorage.removeItem(tenantKey(ignoredModeKey, tenantId))
     const nextWorkspace = loadWorkspaceConfig(nextId, customDimensions)
@@ -498,7 +506,12 @@ function App() {
     setIgnoredMode(loadIgnoredMode(nextId))
     setDrafts(loadDrafts(nextId))
     setActionStatuses(loadActionStatuses(nextId))
-    setItems(loadConversationItems(nextId, customDimensions))
+    const nextItems = loadConversationItems(nextId, customDimensions)
+    setItems(nextItems)
+    setAssignments(loadAssignments(nextId, nextItems, getTenantProfile(nextId, customDimensions).dimensions.collaboration))
+    setHandoffOnly(false)
+    setTriageLocked(localStorage.getItem(tenantKey(triageLockKey, nextId)) === 'true')
+    setEvidenceReviewedId(null)
     const landingId = getTenantWorkspaceRule(getTenantProfile(nextId, customDimensions)).landingConversationId
     setActiveId(landingId)
     setOpenFanIds([landingId])
@@ -515,7 +528,26 @@ function App() {
     const next = { ...customDimensions, [key]: value }
     setCustomDimensions(next)
     if (tenantId === 'custom') {
-      const proposal = inferSmartMode(items, activity, filter, getTenantProfile('custom', next), actionStatuses)
+      const nextItems = key === 'scale'
+        ? initialConversations(next.scale).map((base) => items.find((item) => item.id === base.id) ?? base)
+        : items
+      if (key === 'scale') {
+        setItems(nextItems)
+        if (!nextItems.some((item) => item.id === activeId)) {
+          const landingId = getTenantWorkspaceRule(getTenantProfile('custom', next)).landingConversationId
+          setActiveId(landingId)
+          setOpenFanIds([landingId])
+        }
+      }
+      if (key === 'collaboration') {
+        setAssignments(defaultAssignments(nextItems, next.collaboration))
+        setHandoffOnly(false)
+      } else if (key === 'scale') {
+        setAssignments((current) => ({ ...defaultAssignments(nextItems, next.collaboration), ...current }))
+      }
+      if (key === 'ai') setTriageLocked(false)
+      if (key === 'data') setEvidenceReviewedId(null)
+      const proposal = inferSmartMode(nextItems, activity, filter, getTenantProfile('custom', next), actionStatuses)
       setConfigurationMode('smart')
       setVisibleFilterIds(proposal.queues)
       setPreferences({ ...defaultPreferences, ...proposal.preferences })
@@ -612,6 +644,9 @@ function App() {
 
   function resetDemoConversations() {
     setItems(initialConversations(tenant.dimensions.scale))
+    setAssignments(defaultAssignments(initialConversations(tenant.dimensions.scale), tenant.dimensions.collaboration))
+    setHandoffOnly(false)
+    setEvidenceReviewedId(null)
     setActionStatuses({})
     setDrafts({})
     setActiveId(workspaceRule.landingConversationId)
@@ -623,6 +658,7 @@ function App() {
   }
 
   function showRecommendationEvidence() {
+    setEvidenceReviewedId(active.id)
     if (preferences.profileRecommendation && scoreDetailsRef.current) {
       scoreDetailsRef.current.open = true
       scoreDetailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -636,10 +672,10 @@ function App() {
     if (!draft.trim()) return
     const message: Message = { id: crypto.randomUUID(), text: draft.trim(), sentAt: '现在', direction: 'outbound', status: 'sent' }
     setItems((current) => current.map((item) => item.id === active.id ? { ...item, messages: [...item.messages, message], preview: message.text, updatedAt: '刚刚' } : item))
-    setActionStatuses((current) => ({ ...current, [active.id]: 'waiting' }))
+    if (action.kind !== 'fulfillment') setActionStatuses((current) => ({ ...current, [active.id]: 'waiting' }))
     recordActivity('sent', conversationFocus(active.id))
     updateDraft('')
-    notify(`消息已发送 · ${action.afterSend}`)
+    notify(action.kind === 'fulfillment' ? '消息已发送 · 付款请求仍待确认交付' : `消息已发送 · ${action.afterSend}`)
   }
 
   function rewriteDraft() {
@@ -654,13 +690,24 @@ function App() {
 
   function createSmartTask() {
     if (!intelligence.strategy.taskAction || activeActionStatus === 'scheduled') return
-    setActionStatuses((current) => ({ ...current, [active.id]: 'scheduled' }))
-    notify(`已安排：${intelligence.strategy.taskAction}`)
+    setActionStatuses((current) => ({ ...current, [active.id]: action.kind === 'fulfillment' ? 'waiting' : 'scheduled' }))
+    notify(action.kind === 'fulfillment' ? '已请求团队核对 · 交付前仍需确认' : `已安排：${intelligence.strategy.taskAction}`)
   }
 
   function completeAction() {
     setActionStatuses((current) => ({ ...current, [active.id]: 'done' }))
-    notify('已完成当前行动')
+    notify(action.kind === 'fulfillment' ? '已确认交付完成' : '已完成当前行动')
+  }
+
+  function updateAssignment(owner: string, handoffPending: boolean, event: string) {
+    setAssignments((current) => ({ ...current, [active.id]: { owner, handoffPending, event } }))
+    notify(event)
+  }
+
+  function openNextPending() {
+    const next = visibleConversations.find((item) => item.id !== active.id && (actionStatus(item.id, actionStatuses) === 'pending' || assignments[item.id]?.handoffPending))
+    if (next) selectConversation(next.id)
+    else notify('当前筛选中没有下一条待处理会话')
   }
 
   function reopenAction() {
