@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrainCircuit, Check, ChevronDown, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
+import { BookOpen, BrainCircuit, Building2, Check, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
 import { conversationActions, conversations, fanFacts, fanIntelligence } from './data'
 import { conversationFocus, defaultPreferences, defaultVisibleFilters, inferSmartMode } from './smartConfig'
 import type { ActivityEvent, DisplayPreferences, InboxFilter, SmartModeId } from './smartConfig'
@@ -8,6 +8,7 @@ import { defaultCustomDimensions, defaultTenantId, dimensionLabel, getTenantProf
 import type { TenantDimensions, TenantId } from './tenantProfiles'
 import { getTenantWorkspaceRule } from './tenantWorkspaceRules'
 import type { TenantWorkspaceRule } from './tenantWorkspaceRules'
+import { getTenantLevelRule, tenantGradingRules } from './tenantGradingRules'
 import type { ActionStatus, Conversation, Message } from './types'
 import './styles.css'
 
@@ -255,17 +256,17 @@ function matchesQuery(item: Conversation, query: string) {
   return !term || [item.name, item.handle, item.preview, conversationActions[item.id]?.title ?? ''].some((value) => value.toLowerCase().includes(term))
 }
 
-function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRule, statuses: Record<string, ActionStatus>, assignments: Record<string, Assignment>, collaboration: TenantDimensions['collaboration']) {
+function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRule, statuses: Record<string, ActionStatus>, assignments: Record<string, Assignment>, collaboration: TenantDimensions['collaboration'], data: TenantDimensions['data']) {
   const status = actionStatus(item.id, statuses)
   const kind = conversationActions[item.id].kind
   // A paid request or explicit fulfillment promise always outranks value and sales signals.
-  if (status === 'pending' && kind === 'fulfillment') return 1000 + fanIntelligence[item.id].priorityScore
+  if (status === 'pending' && kind === 'fulfillment') return 1000 + (data === 'sparse' ? item.unread : fanIntelligence[item.id].priorityScore)
   if (collaboration === 'shifts' && assignments[item.id]?.handoffPending) return 550 + (status === 'pending' ? 20 : 0)
   if (status !== 'pending') return status === 'scheduled' ? -10 : status === 'waiting' ? -20 : -30
   const spend = Number(item.spend.replace(/[^\d.]/g, ''))
   return rule.priorityWeights[kind]
-    + fanIntelligence[item.id].priorityScore * 0.1
-    + (spend >= 1000 ? rule.highValueBonus : 0)
+    + (data === 'sparse' ? 0 : fanIntelligence[item.id].priorityScore * 0.1)
+    + (data !== 'sparse' && spend >= 1000 ? rule.highValueBonus : 0)
     + item.unread * rule.unreadBonus
 }
 
@@ -284,8 +285,10 @@ function memoryCandidates(active: Conversation) {
 function App() {
   const messageAreaRef = useRef<HTMLDivElement>(null)
   const scoreDetailsRef = useRef<HTMLDetailsElement>(null)
+  const factsSectionRef = useRef<HTMLElement>(null)
   const settingsDialogRef = useRef<HTMLDialogElement>(null)
   const tenantDialogRef = useRef<HTMLDialogElement>(null)
+  const gradingDialogRef = useRef<HTMLDialogElement>(null)
   const demoDataDialogRef = useRef<HTMLDialogElement>(null)
   const [tenantId, setTenantId] = useState<TenantId>(loadSelectedTenant)
   const [customDimensions, setCustomDimensions] = useState<TenantDimensions>(loadCustomDimensions)
@@ -293,11 +296,13 @@ function App() {
   const workspaceRule = useMemo(() => getTenantWorkspaceRule(tenant), [tenant])
   const [initialWorkspace] = useState(() => loadWorkspaceConfig(tenantId, customDimensions))
   const [showTenantDialog, setShowTenantDialog] = useState(false)
+  const [showGradingDialog, setShowGradingDialog] = useState(false)
   const [showDemoDataDialog, setShowDemoDataDialog] = useState(false)
   const [demoDataResult, setDemoDataResult] = useState('')
   const [items, setItems] = useState<Conversation[]>(() => loadConversationItems(tenantId, customDimensions))
   const [assignments, setAssignments] = useState<Record<string, Assignment>>(() => loadAssignments(tenantId, items, tenant.dimensions.collaboration))
   const [handoffOnly, setHandoffOnly] = useState(false)
+  const [showCompactInsights, setShowCompactInsights] = useState(false)
   const [triageLocked, setTriageLocked] = useState(() => localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true')
   const [evidenceReviewedId, setEvidenceReviewedId] = useState<string | null>(null)
   const [activeId, setActiveId] = useState(() => workspaceRule.landingConversationId)
@@ -371,7 +376,7 @@ function App() {
   const recommendationIgnored = ignoredMode?.id === smartProposal.id && ignoredMode.until > Date.now()
   const visibleConversations = useMemo(() => [...items]
     .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query) && (!handoffOnly || assignments[item.id]?.handoffPending))
-    .sort((a, b) => tenantConversationPriority(b, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration) - tenantConversationPriority(a, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration)), [filter, items, query, actionStatuses, workspaceRule, assignments, tenant.dimensions.collaboration, handoffOnly])
+    .sort((a, b) => tenantConversationPriority(b, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration, tenant.dimensions.data) - tenantConversationPriority(a, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration, tenant.dimensions.data)), [filter, items, query, actionStatuses, workspaceRule, assignments, tenant.dimensions.collaboration, tenant.dimensions.data, handoffOnly])
 
   useEffect(() => {
     if (configurationMode !== 'smart') return
@@ -443,6 +448,13 @@ function App() {
   }, [showTenantDialog])
 
   useEffect(() => {
+    const dialog = gradingDialogRef.current
+    if (!dialog) return
+    if (showGradingDialog && !dialog.open) dialog.showModal()
+    if (!showGradingDialog && dialog.open) dialog.close()
+  }, [showGradingDialog])
+
+  useEffect(() => {
     const dialog = demoDataDialogRef.current
     if (!dialog) return
     if (showDemoDataDialog && !dialog.open) dialog.showModal()
@@ -510,6 +522,7 @@ function App() {
     setItems(nextItems)
     setAssignments(loadAssignments(nextId, nextItems, getTenantProfile(nextId, customDimensions).dimensions.collaboration))
     setHandoffOnly(false)
+    setShowCompactInsights(false)
     setTriageLocked(localStorage.getItem(tenantKey(triageLockKey, nextId)) === 'true')
     setEvidenceReviewedId(null)
     const landingId = getTenantWorkspaceRule(getTenantProfile(nextId, customDimensions)).landingConversationId
@@ -538,6 +551,13 @@ function App() {
           setActiveId(landingId)
           setOpenFanIds([landingId])
         }
+      }
+      if (key === 'tasks') {
+        const landingId = getTenantWorkspaceRule(getTenantProfile('custom', next)).landingConversationId
+        setActiveId(landingId)
+        setOpenFanIds((current) => current.includes(landingId) ? current : [...current, landingId])
+        setNote(conversations.find((item) => item.id === landingId)?.note ?? conversations[0].note)
+        setShowAi(false)
       }
       if (key === 'collaboration') {
         setAssignments(defaultAssignments(nextItems, next.collaboration))
@@ -658,10 +678,11 @@ function App() {
   }
 
   function showRecommendationEvidence() {
-    setEvidenceReviewedId(active.id)
     if (preferences.profileRecommendation && scoreDetailsRef.current) {
       scoreDetailsRef.current.open = true
       scoreDetailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    } else if (factsSectionRef.current) {
+      factsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     } else if (preferences.chatCopilot) {
       setAiMode('strategy')
       setShowAi(true)
@@ -717,17 +738,17 @@ function App() {
 
   const profilePanels = {
     recommendation: preferences.profileRecommendation ? <section className="detail-section priority-section">
-      <div className="section-title"><h3><Sparkles size={17} />当前行动</h3><span className={`task-status ${activeActionStatus}`}>{activeActionStatus === 'pending' ? '待处理' : activeActionStatus === 'waiting' ? '等待回复' : activeActionStatus === 'scheduled' ? '已安排' : '已完成'}</span></div>
+      <div className="section-title"><h3><Sparkles size={17} />当前行动</h3><span className={`task-status ${activeActionStatus}`}>{activeActionStatus === 'pending' ? '待处理' : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '团队核对中' : '等待回复' : activeActionStatus === 'scheduled' ? '已安排' : '已完成'}</span></div>
       <p className="priority-context">{action.reason}</p>
-      <h4>{activeActionStatus === 'pending' ? action.title : activeActionStatus === 'waiting' ? action.afterSend : activeActionStatus === 'scheduled' ? '按计划跟进' : '当前无需主动处理'}</h4>
-      <p className="priority-next">{activeActionStatus === 'pending' ? intelligence.strategy.nextAction : activeActionStatus === 'waiting' ? '新消息到来后可恢复处理；也可以手动恢复待办。' : activeActionStatus === 'scheduled' ? '跟进已记录，届时核对最新对话再处理。' : '等待下一次消息或新的业务事件。'}</p>
-      <div className="action-meta"><span>处理时间</span><strong>{activeActionStatus === 'pending' ? action.due : activeActionStatus === 'waiting' ? '等待粉丝' : activeActionStatus === 'scheduled' ? '已安排' : '暂无'}</strong></div>
-      <div className="task-controls">{activeActionStatus === 'pending' && intelligence.strategy.taskAction && <button className="priority-action" onClick={createSmartTask}>{intelligence.strategy.taskAction}</button>}{activeActionStatus === 'pending' ? <button className="task-secondary" onClick={completeAction}>标记完成</button> : <><button className="task-secondary" onClick={reopenAction}>恢复待办</button>{activeActionStatus !== 'done' && <button className="task-secondary" onClick={completeAction}>标记完成</button>}</>}</div>
+      <h4>{activeActionStatus === 'pending' ? action.title : activeActionStatus === 'waiting' ? action.afterSend : activeActionStatus === 'scheduled' ? '按计划跟进' : action.kind === 'fulfillment' ? '交付已确认' : '当前无需主动处理'}</h4>
+      <p className="priority-next">{activeActionStatus === 'pending' ? intelligence.strategy.nextAction : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '收到团队确认后，再向粉丝给出准确交付时间；完成交付后手动确认。' : '新消息到来后可恢复处理；也可以手动恢复待办。' : activeActionStatus === 'scheduled' ? '跟进已记录，届时核对最新对话再处理。' : '等待下一次消息或新的业务事件。'}</p>
+      <div className="action-meta"><span>处理时间</span><strong>{activeActionStatus === 'pending' ? action.due : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '等待团队确认' : '等待粉丝' : activeActionStatus === 'scheduled' ? '已安排' : '暂无'}</strong></div>
+      <div className="task-controls">{activeActionStatus === 'pending' && intelligence.strategy.taskAction && <button className="priority-action" onClick={createSmartTask}>{action.kind === 'fulfillment' ? '请求团队核对' : intelligence.strategy.taskAction}</button>}{activeActionStatus === 'pending' ? <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button> : <><button className="task-secondary" onClick={reopenAction}>恢复待办</button>{activeActionStatus !== 'done' && <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button>}</>}</div>
       <p className="strategy-boundary">沟通边界：{intelligence.strategy.guardrail}</p>
-      <details className="score-details" ref={scoreDetailsRef}><summary>查看建议依据与来源 <span>样例数据</span></summary><p className="score-explanation">{intelligence.reason}</p>{intelligence.scoreBreakdown.map((factor) => <div className="score-factor" key={factor.label}><div className="factor-line"><span>{factor.label}</span></div><small>{factor.source} · {factor.updatedAt}</small></div>)}<p className="data-updated">更新：{intelligence.updatedAt}</p></details>
+      <details className="score-details" ref={scoreDetailsRef} onToggle={(event) => { if (event.currentTarget.open) setEvidenceReviewedId(active.id) }}><summary>查看建议依据与来源 <span>样例数据</span></summary><p className="score-explanation">{intelligence.reason}</p>{intelligence.scoreBreakdown.map((factor) => <div className="score-factor" key={factor.label}><div className="factor-line"><span>{factor.label}</span></div><small>{factor.source} · {factor.updatedAt}</small></div>)}<p className="data-updated">更新：{intelligence.updatedAt}</p></details>
     </section> : null,
     metrics: preferences.profileMetrics ? <div className="fan-summary"><span>{active.name} · {active.handle} <small>演示资料</small></span><strong>累计消费 {active.spend}</strong></div> : null,
-    facts: preferences.profileKnown ? <section className="detail-section facts-section"><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3></div>{fanFacts[active.id].map((fact) => <div className="fact-row" key={fact.label}><div><strong>{fact.label}</strong><span className={`fact-kind ${fact.kind}`}>{fact.kind === 'recorded' ? '平台记录' : fact.kind === 'team' ? '团队记录' : 'AI 推断'}</span></div><p>{fact.value}</p><small>{fact.source} · {fact.updatedAt}</small></div>)}</section> : null,
+    facts: preferences.profileKnown ? <section className="detail-section facts-section" ref={factsSectionRef}><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3>{tenant.dimensions.data === 'sparse' && <button className="source-confirm" onClick={() => { setEvidenceReviewedId(active.id); notify('已核对当前会话来源') }}>{needsEvidence ? '确认已核对' : '已核对'}</button>}</div>{tenant.dimensions.data === 'sparse' && <p className="source-caution">仅将平台与团队记录视为已知事实；AI 推断仍待确认。</p>}{fanFacts[active.id].map((fact) => <div className="fact-row" key={fact.label}><div><strong>{fact.label}</strong><span className={`fact-kind ${fact.kind}`}>{fact.kind === 'recorded' ? '平台记录' : fact.kind === 'team' ? '团队记录' : 'AI 推断'}</span></div><p>{fact.value}</p><small>{fact.source} · {fact.updatedAt}</small></div>)}</section> : null,
     memory: preferences.profileMemory ? <section className="detail-section"><div className="section-title"><h3><BrainCircuit size={17} />团队记录</h3><span className="memory-count">新增确认 {activeMemories.length}</span></div><p className="record-label">团队备注</p><p className="profile-note">{note}</p>{activeMemories.map((memory) => <p className="confirmed-memory" key={memory}><Check size={13} />{memory}<small>已由操作员确认</small></p>)}</section> : null,
   }
 
@@ -737,19 +758,33 @@ function App() {
       <div className="inbox-controls">
         <div className="queue-heading"><strong>行动队列</strong><span>{configurationMode === 'smart' ? workspaceRule.queueHint : '本租户手动配置'}</span></div>
         <div className="queue-grid" role="group" aria-label="行动队列">{visibleFilters.map((option) => <button key={option.id} className={`queue-button ${filter === option.id ? 'active' : ''}`} aria-pressed={filter === option.id} onClick={() => setInboxFilter(option.id)}><span>{option.label}</span><b>{queueCount(option.id)}</b></button>)}</div>
-        <div className="list-toolbar"><strong>会话列表</strong><span>{visibleConversations.length} 位 · 按{workspaceRule.sortLabel}排序</span></div></div>
+        <div className="list-toolbar"><strong>会话列表</strong><span>{visibleConversations.length} 位 · 按{workspaceRule.sortLabel}排序</span></div>
+        {((tenant.dimensions.ai === 'triage' && configurationMode === 'smart') || tenant.dimensions.collaboration === 'shifts' || tenant.dimensions.scale === 'surge') && <div className="list-workflow-tools">
+          {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <button className={triageLocked ? 'active' : ''} onClick={() => setTriageLocked((value) => !value)} title="只冻结次要行动队列的顺序，不影响会话优先级">{triageLocked ? '队列已固定' : '队列自适应'}</button>}
+          {tenant.dimensions.collaboration === 'shifts' && <button className={handoffOnly ? 'active' : ''} onClick={() => setHandoffOnly((value) => !value)}>待交接 {handoffCount}</button>}
+          {tenant.dimensions.scale === 'surge' && <button onClick={openNextPending}>下一条待办 →</button>}
+        </div>}
+        {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <p className="triage-reason">{triageLocked ? '已固定当前队列顺序，可随时恢复自适应。' : '次要队列根据近期操作排序；已付款履约始终优先。'}</p>}</div>
       {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all') }}>显示会话</button></div>}
       <div className="conversation-list">{visibleConversations.length ? visibleConversations.map((item) => {
         const itemAction = conversationActions[item.id]
         const itemStatus = actionStatus(item.id, actionStatuses)
         return <button className={`conversation ${item.id === active.id ? 'selected' : ''}`} onClick={() => selectConversation(item.id)} key={item.id}>
-          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><time>{item.updatedAt}</time></div>{preferences.listPreview && <p>{item.preview}</p>}{preferences.listPriority && <div className="conversation-meta"><span title={itemAction.reason}>{itemStatus === 'pending' ? itemAction.title : itemStatus === 'waiting' ? itemAction.afterSend : itemStatus === 'scheduled' ? '已安排跟进' : '暂无待办'}</span><em className={`action-state ${itemStatus}`}>{itemStatus === 'pending' ? '待办' : itemStatus === 'waiting' ? '等待' : itemStatus === 'scheduled' ? '已安排' : '完成'}</em></div>}{preferences.listSla && itemStatus === 'pending' && <small className="sla-hint">{itemAction.due}</small>}</div>{item.unread > 0 && <b className="unread-count">{item.unread}</b>}
+          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><time>{item.updatedAt}</time></div>{preferences.listPreview && <p>{item.preview}</p>}{preferences.listPriority && <div className="conversation-meta"><span title={itemAction.reason}>{itemStatus === 'pending' ? itemAction.title : itemStatus === 'waiting' ? itemAction.afterSend : itemStatus === 'scheduled' ? '已安排跟进' : '暂无待办'}</span><em className={`action-state ${itemStatus}`}>{itemStatus === 'pending' ? '待办' : itemStatus === 'waiting' ? '等待' : itemStatus === 'scheduled' ? '已安排' : '完成'}</em></div>}{(tenant.dimensions.collaboration !== 'solo' || tenant.dimensions.fans === 'high') && <div className="conversation-signals">{tenant.dimensions.collaboration !== 'solo' && <span>{assignments[item.id]?.handoffPending ? '待交接' : `负责人 ${assignments[item.id]?.owner ?? '我'}`}</span>}{tenant.dimensions.fans === 'high' && isHighValue(item) && <span>高价值关系</span>}</div>}{preferences.listSla && itemStatus === 'pending' && <small className="sla-hint">{itemAction.due}</small>}</div>{item.unread > 0 && <b className="unread-count">{item.unread}</b>}
         </button>
       }) : <div className="empty-list"><Search size={18} /><strong>没有匹配的用户</strong><span>尝试调整搜索或筛选条件</span></div>}</div>
-      <div className="inbox-settings"><button className={`settings-trigger ${showSettings ? 'active' : ''}`} onClick={() => { setSettingsView('smart'); setShowSettings(true) }} aria-haspopup="dialog" aria-expanded={showSettings} aria-controls="workspace-settings-dialog"><Settings2 size={17} /><span>设置</span>{hasSmartChanges && !recommendationIgnored && <small>智能建议</small>}</button></div>
+      <div className="inbox-settings">
+        <div className="demo-workspace-entry">
+          <div className="demo-workspace-context"><span>演示环境</span><strong title={tenant.name}>{tenant.name}</strong></div>
+          <button className={showTenantDialog ? 'active' : ''} onClick={() => setShowTenantDialog(true)} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={15} /><span>切换租户</span></button>
+        </div>
+        <div className="user-settings-entry">
+          <button className={`${showSettings ? 'active' : ''} ${hasSmartChanges && !recommendationIgnored ? 'has-suggestion' : ''}`} onClick={() => { setSettingsView('smart'); setShowSettings(true) }} aria-label={hasSmartChanges && !recommendationIgnored ? '工作台设置，有智能建议' : '工作台设置'} aria-haspopup="dialog" aria-expanded={showSettings} aria-controls="workspace-settings-dialog" title="配置当前租户的工作台"><Settings2 size={16} /><span><strong>工作台设置</strong><small>调整当前租户的显示方式</small></span></button>
+        </div>
+      </div>
     </aside>
     <section className="chat-panel" aria-label="聊天模块">
-      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}</p></div></div><div className="chat-header-meta"><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
       {openFanIds.length > 1 && <div className="fan-tabs" role="tablist" aria-label="已打开的粉丝会话">{openFanIds.map((fanId) => {
         const fan = items.find((item) => item.id === fanId)
         if (!fan) return null
@@ -762,26 +797,30 @@ function App() {
         {preferences.chatCopilot && showAi && <section className="ai-workbench">
           <div className="ai-workbench-header"><div><span className="ai-orb"><Sparkles size={15} /></span><div><strong>AI Copilot</strong><p>所有建议都可编辑，确认后才会发送或写入资料。</p></div></div><button onClick={() => setShowAi(false)} aria-label="关闭 AI Copilot"><X size={16} /></button></div>
           <div className="ai-tabs"><button className={aiMode === 'reply' ? 'active' : ''} onClick={() => setAiMode('reply')}>回复</button><button className={aiMode === 'strategy' ? 'active' : ''} onClick={() => setAiMode('strategy')}>策略</button><button className={aiMode === 'rewrite' ? 'active' : ''} onClick={() => setAiMode('rewrite')}>改写</button><button className={aiMode === 'memory' ? 'active' : ''} onClick={() => setAiMode('memory')}>记忆</button></div>
-          {aiMode === 'reply' && <div className="ai-content"><div className="ai-assessment"><div><span>回复目标</span><strong>{intelligence.strategy.goal}</strong></div><div><span>安全等级</span><strong className={`risk-${intelligence.risk}`}><ShieldCheck size={13} />{intelligence.risk}风险</strong></div></div><p className="ai-strategy"><Lightbulb size={14} />{intelligence.strategy.nextAction}</p><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p><div className="ai-drafts">{draftOptions(active).map((option) => <article key={option.tone}><div><strong>{option.tone}</strong><p>{option.text}</p></div><button onClick={() => updateDraft(option.text)}>插入</button></article>)}</div></div>}
-          {aiMode === 'strategy' && <div className="ai-content strategy-card"><p className="strategy-title">{intelligence.strategy.goal}</p><div><span>下一步</span><strong>{intelligence.strategy.nextAction}</strong></div><div><span>关键意图</span><strong>{intelligence.signal}</strong></div><div><span>最佳触达</span><strong>{intelligence.bestTime}</strong></div><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p><p className="ai-warning">置信度 {intelligence.confidence}% · {intelligence.reason}</p></div>}
-          {aiMode === 'rewrite' && <div className="ai-content rewrite-card"><p>当前为演示版，可插入一条符合此粉丝阶段的示例回复，再自行编辑。</p><button className="primary-ai-action" onClick={rewriteDraft}><WandSparkles size={15} />插入阶段示例</button></div>}
+          {aiMode === 'reply' && <div className="ai-content"><div className="ai-assessment"><div><span>回复目标</span><strong>{intelligence.strategy.goal}</strong></div><div><span>安全等级</span><strong className={`risk-${intelligence.risk}`}><ShieldCheck size={13} />{intelligence.risk}风险</strong></div></div><p className="ai-strategy"><Lightbulb size={14} />{intelligence.strategy.nextAction}</p><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p>{needsEvidence && <div className="ai-evidence-gate"><span>资料不足，先核对右侧事实和建议来源，再插入 AI 草稿。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}<div className="ai-drafts">{draftOptions(active).map((option) => <article key={option.tone}><div><strong>{option.tone}</strong><p>{option.text}</p></div><button disabled={needsEvidence} onClick={() => updateDraft(option.text)}>插入</button></article>)}</div></div>}
+          {aiMode === 'strategy' && <div className="ai-content strategy-card"><p className="strategy-title">{intelligence.strategy.goal}</p><div><span>下一步</span><strong>{intelligence.strategy.nextAction}</strong></div><div><span>关键意图</span><strong>{intelligence.signal}</strong></div><div><span>最佳触达</span><strong>{intelligence.bestTime}</strong></div><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p><p className="ai-warning">{tenant.dimensions.data === 'sparse' ? '资料不足，请核对事实与来源后再采用建议。' : `置信度 ${intelligence.confidence}% · ${intelligence.reason}`}</p></div>}
+          {aiMode === 'rewrite' && <div className="ai-content rewrite-card"><p>当前为演示版，可插入一条符合此粉丝阶段的示例回复，再自行编辑。</p>{needsEvidence && <p className="ai-guardrail">资料不足，请先核对右侧建议来源。</p>}<button className="primary-ai-action" disabled={needsEvidence} onClick={rewriteDraft}><WandSparkles size={15} />插入阶段示例</button></div>}
           {aiMode === 'memory' && <div className="ai-content memory-card"><p>仅从已记录的信息提取候选记忆，确认后写入粉丝画像。</p>{memoryCandidates(active).map((memory) => <div className="memory-item" key={memory.text}><span>{memory.text}<small>来源：{memory.source}</small></span><button className={activeMemories.includes(memory.text) ? 'confirmed' : ''} onClick={() => confirmMemory(memory.text)}>{activeMemories.includes(memory.text) ? <><Check size={13} />已确认</> : '确认保存'}</button></div>)}</div>}
         </section>}
         <div className="composer-box"><textarea value={draft} onChange={(event) => updateDraft(event.target.value)} onKeyDown={(event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); sendMessage() } }} placeholder={`回复 ${active.name}…`} rows={1} aria-label={`回复 ${active.name}`} /><button onClick={sendMessage} className="send-button" aria-label="发送" disabled={!draft.trim()}><Send size={18} /></button></div>{preferences.chatHelp && <p className="composer-help"><span>⌘ / Ctrl + Enter 发送</span><span>草稿自动保存 · AI 内容发送前请确认</span></p>}
       </footer>
     </section>
-    <aside className="detail-panel" aria-label="会话洞察">
-      <header><h2>会话洞察</h2><button className="tenant-switch-trigger" aria-label={`当前演示租户：${tenant.name}，点击切换`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" onClick={() => setShowTenantDialog((current) => !current)}><span>{tenant.name}</span><ChevronDown size={13} /></button></header>
+    {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
+    <aside className={`detail-panel ${showCompactInsights ? 'mobile-open' : ''}`} aria-label="会话洞察">
+      <header><h2>会话洞察</h2><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></header>
       <div className="tenant-insight-brief"><span>{workspaceRule.insightTitle}</span><strong>{tenantInsight}</strong><div className="tenant-insight-metrics">{insightMetrics.map((metric) => <div key={metric.label}><small>{metric.label}</small><b>{metric.value}</b></div>)}</div>{tenantId === 'custom' && <div className="tenant-custom-signals"><span>{dimensionLabel('collaboration', customDimensions.collaboration)}</span><span>AI：{dimensionLabel('ai', customDimensions.ai)}</span></div>}</div>
-      {tenant.signals.dataCoverage < 0.55 && <div className="coverage-warning"><ShieldCheck size={14} /><span>该租户资料覆盖率较低，请核对会话建议所引用的信息。</span></div>}
-      {workspaceRule.detailOrder.map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}
+      {tenant.dimensions.data === 'sparse' && <div className="coverage-warning"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；AI 推断请先核对来源。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}
+      {tenant.dimensions.data === 'partial' && <div className="data-quality-note"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；购买与偏好线索请留意来源和更新时间。</span></div>}
+      {tenant.dimensions.data === 'complete' && tenant.dimensions.scale !== 'surge' && <div className="data-quality-note complete"><ShieldCheck size={14} /><span>资料较充分，可参考已记录偏好；新推断仍需确认。</span></div>}
+      {tenant.dimensions.collaboration !== 'solo' && <section className="collaboration-panel"><div><strong>{tenant.dimensions.collaboration === 'shifts' ? '轮班交接' : '小组协作'}</strong><span>{activeAssignment.handoffPending ? '待确认交接' : `负责人：${activeAssignment.owner}`}</span></div><p>{activeAssignment.event} · {action.kind === 'fulfillment' ? '付款与交付状态需一起移交。' : `最近消息：${active.preview}`}</p><div className="collaboration-actions">{activeAssignment.owner !== '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已认领当前会话')}>认领会话</button>}{tenant.dimensions.collaboration === 'shifts' && activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已确认本班次接手')}>确认交接</button>}{activeAssignment.owner === '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('Alex', tenant.dimensions.collaboration === 'shifts', tenant.dimensions.collaboration === 'shifts' ? '已发起交接，待下一班次确认' : '已转交 Alex')}>{tenant.dimensions.collaboration === 'shifts' ? '发起交接' : '转交 Alex'}</button>}</div></section>}
+      {tenant.dimensions.scale === 'surge' ? <><div className="high-volume-priority">优先展示当前行动与阻塞信息</div>{workspaceRule.detailOrder.slice(0, 2).map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}<details className="secondary-insights"><summary>展开消费与关系信息</summary>{workspaceRule.detailOrder.slice(2).map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}</details></> : workspaceRule.detailOrder.map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}
     </aside>
     <dialog className="tenant-dialog" id="tenant-switch-dialog" ref={tenantDialogRef} aria-labelledby="tenant-dialog-title" onClose={() => setShowTenantDialog(false)} onClick={(event) => {
       if (event.target !== tenantDialogRef.current) return
       const bounds = tenantDialogRef.current.getBoundingClientRect()
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setShowTenantDialog(false)
     }}>
-      <header className="settings-dialog-header"><div><p className="eyebrow">DEMO TENANTS</p><h2 id="tenant-dialog-title">切换演示租户</h2><span>四个预设展示默认特征；自定义租户可自由组合六个维度。</span></div><button onClick={() => setShowTenantDialog(false)} aria-label="关闭租户切换弹窗"><X size={18} /></button></header>
+      <header className="settings-dialog-header"><div><p className="eyebrow">TENANT MODES</p><h2 id="tenant-dialog-title">选择租户模式</h2><span>切换机构特征，即时对比行动队列、聊天辅助与会话洞察。自定义租户可组合六个维度。</span></div><button onClick={() => setShowTenantDialog(false)} aria-label="关闭租户切换弹窗"><X size={18} /></button></header>
       <div className="tenant-dialog-body">
         <div className="tenant-picker">
           <div className="tenant-preset-list" role="group" aria-label="演示租户">
@@ -797,7 +836,27 @@ function App() {
           </div>
         </div>
       </div>
-      <footer className="tenant-dialog-footer"><span role="status">当前：{tenant.name} · {configurationMode === 'smart' ? '智能模式' : '手动配置'}</span><button className="demo-data-entry" aria-haspopup="dialog" aria-controls="demo-data-dialog" onClick={() => { setDemoDataResult(''); setShowDemoDataDialog(true) }}>演示数据管理</button></footer>
+      <footer className="tenant-dialog-footer"><span role="status">当前：{tenant.name} · {configurationMode === 'smart' ? '智能模式' : '手动配置'}</span><div className="tenant-dialog-actions"><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showGradingDialog} aria-controls="tenant-grading-dialog" onClick={() => setShowGradingDialog(true)}><BookOpen size={14} />分级规则</button><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showDemoDataDialog} aria-controls="demo-data-dialog" onClick={() => { setDemoDataResult(''); setShowDemoDataDialog(true) }}>演示数据管理</button></div></footer>
+    </dialog>
+    <dialog className="grading-dialog" id="tenant-grading-dialog" ref={gradingDialogRef} aria-labelledby="tenant-grading-title" onClose={() => setShowGradingDialog(false)} onClick={(event) => {
+      if (event.target !== gradingDialogRef.current) return
+      const bounds = gradingDialogRef.current.getBoundingClientRect()
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setShowGradingDialog(false)
+    }}>
+      <header className="settings-dialog-header"><div><p className="eyebrow">PRODUCT LOGIC</p><h2 id="tenant-grading-title">六维分级规则</h2><span>当前演示租户：{tenant.name}。高亮等级是它的当前特征；这些规则驱动三栏的展示与操作。</span></div><button onClick={() => setShowGradingDialog(false)} aria-label="关闭分级规则"><X size={18} /></button></header>
+      <div className="grading-dialog-body">
+        <div className="grading-flow"><span>识别租户特征</span><b>→</b><span>组合工作策略</span><b>→</b><span>调整用户列表、聊天、洞察</span></div>
+        {tenantDimensionDefinitions.map((dimension, index) => <section className="grading-dimension" key={dimension.key} aria-label={`${dimension.label}分级规则`}>
+          <div className="grading-dimension-heading"><span className="grading-number">{String(index + 1).padStart(2, '0')}</span><div><h3>{dimension.label}</h3><p>{tenantGradingRules[dimension.key].purpose}</p></div></div>
+          <div className="grading-level-grid">{dimension.options.map((option) => {
+            const rule = getTenantLevelRule(dimension.key, option.value)
+            const selected = tenant.dimensions[dimension.key] === option.value
+            return <article className={`grading-level ${selected ? 'current' : ''}`} key={option.value}><div className="grading-level-heading"><strong>{option.label}</strong>{selected && <span>当前租户</span>}</div><small>{rule.criterion}</small><p>{rule.behavior}</p></article>
+          })}</div>
+        </section>)}
+        <div className="grading-priority"><ShieldCheck size={18} /><div><strong>跨维度优先规则</strong><p>已付款待履约优先处理；资料不足先核对来源；AI 可以建议和排序，但消息始终由人工确认发送。</p></div></div>
+      </div>
+      <footer className="grading-dialog-footer"><span>演示分级阈值，可随产品验证继续校准</span><button onClick={() => setShowGradingDialog(false)}>返回租户切换</button></footer>
     </dialog>
     <dialog className="demo-data-dialog" id="demo-data-dialog" ref={demoDataDialogRef} aria-labelledby="demo-data-dialog-title" onClose={() => setShowDemoDataDialog(false)} onClick={(event) => {
       if (event.target !== demoDataDialogRef.current) return

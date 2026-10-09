@@ -108,9 +108,10 @@ export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRu
     renewal: 55 + (fans === 'high' ? 30 : 0),
     manual: 12 + (sparseData ? 48 : 0),
   }
-  const detailOrder: DetailSection[] = sparseData
-    ? ['facts', 'recommendation', 'metrics', 'memory']
-    : buyerFocus ? ['metrics', 'recommendation', 'facts', 'memory']
+  const detailOrder: DetailSection[] = highVolume
+    ? sparseData ? ['facts', 'recommendation', 'metrics', 'memory'] : ['recommendation', 'facts', 'metrics', 'memory']
+    : sparseData ? ['facts', 'recommendation', 'metrics', 'memory']
+      : buyerFocus ? ['metrics', 'recommendation', 'facts', 'memory']
       : fans === 'high' ? ['memory', 'recommendation', 'facts', 'metrics']
         : ['recommendation', 'facts', 'metrics', 'memory']
   const focusLabel = primary === 'fulfillment' ? '履约处理' : primary === 'purchase-follow-up' ? '购买跟进' : '消息回复'
@@ -137,9 +138,9 @@ export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRu
     preferences: {
       compactList: highVolume, listPreview: !highVolume, listPriority: true, listSla: scale !== 'low' || tasks === 'fulfillment',
       chatNextStep: ai !== 'advisory', chatCopilot: true, chatTimestamps: !highVolume, chatHelp: sparseData || ai === 'advisory',
-      profileMetrics: data === 'complete' || buyerFocus || fans !== 'low', profileRecommendation: true,
+      profileMetrics: data === 'complete' || buyerFocus || fans !== 'low', profileRecommendation: ai !== 'advisory',
       profileKnown: true,
-      profileMemory: fans === 'high' || collaboration === 'shifts',
+      profileMemory: data === 'complete' || fans === 'high' || collaboration === 'shifts',
     },
     detailOrder, priorityWeights,
     highValueBonus: fans === 'high' ? 38 : fans === 'balanced' ? 18 : 0,
