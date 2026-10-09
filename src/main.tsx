@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BookOpen, BrainCircuit, Building2, Check, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
+import { BookOpen, BrainCircuit, Building2, Check, ChevronDown, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
 import { conversationActions, conversations, fanFacts, fanIntelligence } from './data'
 import { conversationFocus, defaultPreferences, defaultVisibleFilters, inferSmartMode } from './smartConfig'
 import type { ActivityEvent, DisplayPreferences, InboxFilter, SmartModeId } from './smartConfig'
@@ -645,7 +645,7 @@ function App() {
     setPreferences((current) => ({ ...current, ...smartProposal.preferences }))
     if (!proposedQueues.includes(filter)) setFilter('all')
     setIgnoredMode(null)
-    notify(`已应用${smartProposal.title}`)
+    notify(`已应用${tenant.portrait.archetype}推荐配置`)
   }
 
   function undoSmartProposal() {
@@ -774,17 +774,13 @@ function App() {
         </button>
       }) : <div className="empty-list"><Search size={18} /><strong>没有匹配的用户</strong><span>尝试调整搜索或筛选条件</span></div>}</div>
       <div className="inbox-settings">
-        <div className="demo-workspace-entry">
-          <div className="demo-workspace-context"><span>演示环境</span><strong title={tenant.name}>{tenant.name}</strong></div>
-          <button className={showTenantDialog ? 'active' : ''} onClick={() => setShowTenantDialog(true)} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={15} /><span>切换租户</span></button>
-        </div>
         <div className="user-settings-entry">
           <button className={`${showSettings ? 'active' : ''} ${hasSmartChanges && !recommendationIgnored ? 'has-suggestion' : ''}`} onClick={() => { setSettingsView('smart'); setShowSettings(true) }} aria-label={hasSmartChanges && !recommendationIgnored ? '工作台设置，有智能建议' : '工作台设置'} aria-haspopup="dialog" aria-expanded={showSettings} aria-controls="workspace-settings-dialog" title="配置当前租户的工作台"><Settings2 size={16} /><span><strong>工作台设置</strong><small>调整当前租户的显示方式</small></span></button>
         </div>
       </div>
     </aside>
     <section className="chat-panel" aria-label="聊天模块">
-      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
       {openFanIds.length > 1 && <div className="fan-tabs" role="tablist" aria-label="已打开的粉丝会话">{openFanIds.map((fanId) => {
         const fan = items.find((item) => item.id === fanId)
         if (!fan) return null
@@ -807,7 +803,7 @@ function App() {
     </section>
     {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
     <aside className={`detail-panel ${showCompactInsights ? 'mobile-open' : ''}`} aria-label="会话洞察">
-      <header><h2>会话洞察</h2><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></header>
+      <header><h2>会话洞察</h2><div className="detail-header-actions"><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
       <div className="tenant-insight-brief"><span>{workspaceRule.insightTitle}</span><strong>{tenantInsight}</strong><div className="tenant-insight-metrics">{insightMetrics.map((metric) => <div key={metric.label}><small>{metric.label}</small><b>{metric.value}</b></div>)}</div>{tenantId === 'custom' && <div className="tenant-custom-signals"><span>{dimensionLabel('collaboration', customDimensions.collaboration)}</span><span>AI：{dimensionLabel('ai', customDimensions.ai)}</span></div>}</div>
       {tenant.dimensions.data === 'sparse' && <div className="coverage-warning"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；AI 推断请先核对来源。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}
       {tenant.dimensions.data === 'partial' && <div className="data-quality-note"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；购买与偏好线索请留意来源和更新时间。</span></div>}
@@ -836,7 +832,7 @@ function App() {
           </div>
         </div>
       </div>
-      <footer className="tenant-dialog-footer"><span role="status">当前：{tenant.name} · {configurationMode === 'smart' ? '智能模式' : '手动配置'}</span><div className="tenant-dialog-actions"><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showGradingDialog} aria-controls="tenant-grading-dialog" onClick={() => setShowGradingDialog(true)}><BookOpen size={14} />分级规则</button><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showDemoDataDialog} aria-controls="demo-data-dialog" onClick={() => { setDemoDataResult(''); setShowDemoDataDialog(true) }}>演示数据管理</button></div></footer>
+      <footer className="tenant-dialog-footer"><span role="status">当前：{tenant.name} · {configurationMode === 'smart' ? '智能配置' : '手动配置'}</span><div className="tenant-dialog-actions"><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showGradingDialog} aria-controls="tenant-grading-dialog" onClick={() => setShowGradingDialog(true)}><BookOpen size={14} />分级规则</button><button className="demo-data-entry" aria-haspopup="dialog" aria-expanded={showDemoDataDialog} aria-controls="demo-data-dialog" onClick={() => { setDemoDataResult(''); setShowDemoDataDialog(true) }}>演示数据管理</button></div></footer>
     </dialog>
     <dialog className="grading-dialog" id="tenant-grading-dialog" ref={gradingDialogRef} aria-labelledby="tenant-grading-title" onClose={() => setShowGradingDialog(false)} onClick={(event) => {
       if (event.target !== gradingDialogRef.current) return
@@ -876,13 +872,13 @@ function App() {
       const bounds = settingsDialogRef.current.getBoundingClientRect()
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setShowSettings(false)
     }}>
-      <header className="settings-dialog-header"><div><p className="eyebrow">WORKSPACE SETTINGS</p><h2 id="workspace-settings-title">工作台配置</h2><span>根据近期工作情况推荐显示方式，也可按习惯手动调整。</span></div><button onClick={() => setShowSettings(false)} aria-label="关闭设置"><X size={18} /></button></header>
+      <header className="settings-dialog-header"><div><p className="eyebrow">WORKSPACE SETTINGS</p><h2 id="workspace-settings-title">工作台配置</h2><span>根据当前租户类型和近期操作推荐显示方式，也可按习惯手动调整。</span></div><button onClick={() => setShowSettings(false)} aria-label="关闭设置"><X size={18} /></button></header>
       <div className="settings-tabs" role="tablist" aria-label="配置方式">{([
-        { id: 'smart', label: '智能模式' }, { id: 'manual', label: '手动微调' },
+        { id: 'smart', label: '智能配置' }, { id: 'manual', label: '手动微调' },
       ] as const).map((view) => <button key={view.id} id={`settings-view-${view.id}`} role="tab" aria-selected={settingsView === view.id} aria-controls="settings-view-panel" className={settingsView === view.id ? 'active' : ''} onClick={() => setSettingsView(view.id)}>{view.label}</button>)}</div>
       <div className="settings-dialog-body" id="settings-view-panel" role="tabpanel" aria-labelledby={`settings-view-${settingsView}`}>
         {settingsView === 'smart' && <div className="smart-config">
-          <div className="smart-mode-card"><div className="smart-mode-icon"><Sparkles size={21} /></div><div><span>推荐工作策略 · {smartProposal.activityCount ? '结合近期操作' : '根据当前工作重点'}</span><h3>{smartProposal.title}</h3><p>{smartProposal.description}</p></div></div>
+          <div className="smart-mode-card"><div className="smart-mode-icon"><Sparkles size={21} /></div><div><span>当前租户 · {tenant.name}</span><h3>{tenant.portrait.archetype}</h3><p className="smart-strategy-name">对应策略：{smartProposal.title}</p><p>{smartProposal.description}</p><small>{smartProposal.activityCount ? '已结合近 7 天操作调整队列' : '按当前租户特征生成推荐'}</small></div></div>
           <p className="smart-policy-note"><ShieldCheck size={15} />AI 只辅助整理与建议，消息发送仍需人工确认。</p>
           <section className="smart-config-section"><h3>判断依据</h3><ul>{smartProposal.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></section>
           <section className="smart-config-section"><div className="smart-section-title"><h3>三栏将如何变化</h3><span>{(configurationMode === 'manual' ? 1 : 0) + (queuesChanged ? 1 : 0) + proposedPreferenceChanges.length} 项变化</span></div>
