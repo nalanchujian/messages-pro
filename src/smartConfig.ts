@@ -47,7 +47,7 @@ export function inferSmartMode(items: Conversation[], activity: ActivityEvent[],
   const recent = activity.filter((event) => event.at >= Date.now() - 7 * 24 * 60 * 60 * 1000)
   const count = (queue: InboxFilter) => items.filter((item) => queue === 'waiting'
     ? ['waiting', 'scheduled'].includes(actionStatuses[item.id] ?? '')
-    : conversationActions[item.id]?.kind === queue && (actionStatuses[item.id] ?? (item.id === 'chris' ? 'done' : 'pending')) === 'pending').length
+    : conversationActions[item.id]?.kind === queue && (actionStatuses[item.id] ?? (conversationActions[item.id]?.kind === 'manual' ? 'done' : 'pending')) === 'pending').length
   const primary = rule.queues[1]
   const secondary = rule.queues.slice(2).map((queue, index) => ({ queue, index, usage: recent.filter((event) => event.focus === queue).length }))
   if (tenant.dimensions.ai === 'triage') secondary.sort((a, b) => b.usage - a.usage || a.index - b.index)

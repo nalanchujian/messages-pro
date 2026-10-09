@@ -18,7 +18,7 @@ type ConfigurationMode = 'smart' | 'manual'
 type PreferenceOption = { key: keyof DisplayPreferences; label: string; description: string }
 
 function actionStatus(id: string, statuses: Record<string, ActionStatus>): ActionStatus {
-  return statuses[id] ?? (id === 'chris' ? 'done' : 'pending')
+  return statuses[id] ?? (conversationActions[id]?.kind === 'manual' ? 'done' : 'pending')
 }
 
 function matchesFilter(item: Conversation, filter: InboxFilter, statuses: Record<string, ActionStatus>) {
@@ -44,7 +44,35 @@ const conversationSettingsKey = 'messages-pro-demo-conversations'
 const memorySettingsKey = 'messages-pro-confirmed-memories'
 const configurationModeKey = 'messages-pro-configuration-mode'
 const customDimensionsKey = 'messages-pro-custom-tenant-dimensions'
+const assignmentSettingsKey = 'messages-pro-assignments'
+const triageLockKey = 'messages-pro-triage-lock'
 const tenantKey = (key: string, tenantId: TenantId) => `${key}:${tenantId}`
+
+type Assignment = { owner: string; handoffPending: boolean; event: string }
+
+function defaultAssignments(items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
+  return Object.fromEntries(items.map((item, index) => [item.id, {
+    owner: collaboration === 'solo' ? '我' : index % 3 === 0 ? 'Alex' : '我',
+    handoffPending: collaboration === 'shifts' && (item.id === 'riley' || index % 5 === 0),
+    event: collaboration === 'shifts' ? '上一班次已留下交接记录' : '会话已分配',
+  }]))
+}
+
+function loadAssignments(tenantId: TenantId, items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
+  const baseline = defaultAssignments(items, collaboration)
+  try {
+    const saved: unknown = JSON.parse(localStorage.getItem(tenantKey(assignmentSettingsKey, tenantId)) ?? 'null')
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return baseline
+    for (const item of items) {
+      const record = (saved as Record<string, unknown>)[item.id]
+      if (record && typeof record === 'object' && !Array.isArray(record)) {
+        const value = record as Record<string, unknown>
+        if (typeof value.owner === 'string' && typeof value.handoffPending === 'boolean' && typeof value.event === 'string') baseline[item.id] = { owner: value.owner, handoffPending: value.handoffPending, event: value.event }
+      }
+    }
+  } catch { /* Ignore invalid demo ownership. */ }
+  return baseline
+}
 
 function loadSelectedTenant(): TenantId {
   const saved = localStorage.getItem(tenantSettingsKey)
@@ -176,15 +204,17 @@ function loadDrafts(tenantId: TenantId): Record<string, string> {
   } catch { return {} }
 }
 
-function initialConversations() {
-  return conversations.map((item) => item.id === 'mason' ? { ...item, unread: 0 } : item)
+function initialConversations(scale: TenantDimensions['scale']) {
+  const count = scale === 'surge' ? conversations.length : scale === 'steady' ? 9 : 5
+  return conversations.slice(0, count).map((item) => item.id === 'mason' ? { ...item, unread: 0 } : item)
 }
 
-function loadConversationItems(tenantId: TenantId): Conversation[] {
+function loadConversationItems(tenantId: TenantId, customDimensions: TenantDimensions): Conversation[] {
+  const baseline = initialConversations(getTenantProfile(tenantId, customDimensions).dimensions.scale)
   try {
     const saved: unknown = JSON.parse(tenantStorageValue(conversationSettingsKey, tenantId) ?? 'null')
-    if (!Array.isArray(saved)) return initialConversations()
-    return initialConversations().map((base) => {
+    if (!Array.isArray(saved)) return baseline
+    return baseline.map((base) => {
       const previous = saved.find((item): item is Partial<Conversation> => item && typeof item === 'object' && item.id === base.id)
       if (!previous) return base
       const messages = Array.isArray(previous.messages) && previous.messages.length >= base.messages.length
@@ -198,7 +228,7 @@ function loadConversationItems(tenantId: TenantId): Conversation[] {
         updatedAt: typeof previous.updatedAt === 'string' ? previous.updatedAt : base.updatedAt,
       }
     })
-  } catch { return initialConversations() }
+  } catch { return baseline }
 }
 
 function loadMemories(tenantId: TenantId): Record<string, string[]> {
@@ -214,8 +244,10 @@ function loadMemories(tenantId: TenantId): Record<string, string[]> {
 function loadWorkspaceConfig(tenantId: TenantId, customDimensions: TenantDimensions) {
   const mode = loadConfigurationMode(tenantId)
   if (mode === 'manual') return { mode, queues: loadVisibleFilters(tenantId), preferences: loadPreferences(tenantId) }
-  const proposal = inferSmartMode(loadConversationItems(tenantId), loadActivity(tenantId), 'all', getTenantProfile(tenantId, customDimensions), loadActionStatuses(tenantId))
-  return { mode, queues: proposal.queues, preferences: { ...defaultPreferences, ...proposal.preferences } }
+  const tenant = getTenantProfile(tenantId, customDimensions)
+  const proposal = inferSmartMode(loadConversationItems(tenantId, customDimensions), loadActivity(tenantId), 'all', tenant, loadActionStatuses(tenantId))
+  const locked = tenant.dimensions.ai === 'triage' && localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true'
+  return { mode, queues: locked ? loadVisibleFilters(tenantId) : proposal.queues, preferences: { ...defaultPreferences, ...proposal.preferences } }
 }
 
 function matchesQuery(item: Conversation, query: string) {
@@ -223,11 +255,15 @@ function matchesQuery(item: Conversation, query: string) {
   return !term || [item.name, item.handle, item.preview, conversationActions[item.id]?.title ?? ''].some((value) => value.toLowerCase().includes(term))
 }
 
-function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRule, statuses: Record<string, ActionStatus>) {
+function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRule, statuses: Record<string, ActionStatus>, assignments: Record<string, Assignment>, collaboration: TenantDimensions['collaboration']) {
   const status = actionStatus(item.id, statuses)
+  const kind = conversationActions[item.id].kind
+  // A paid request or explicit fulfillment promise always outranks value and sales signals.
+  if (status === 'pending' && kind === 'fulfillment') return 1000 + fanIntelligence[item.id].priorityScore
+  if (collaboration === 'shifts' && assignments[item.id]?.handoffPending) return 550 + (status === 'pending' ? 20 : 0)
   if (status !== 'pending') return status === 'scheduled' ? -10 : status === 'waiting' ? -20 : -30
   const spend = Number(item.spend.replace(/[^\d.]/g, ''))
-  return rule.priorityWeights[conversationActions[item.id].kind]
+  return rule.priorityWeights[kind]
     + fanIntelligence[item.id].priorityScore * 0.1
     + (spend >= 1000 ? rule.highValueBonus : 0)
     + item.unread * rule.unreadBonus
@@ -255,7 +291,11 @@ function App() {
   const [showTenantDialog, setShowTenantDialog] = useState(false)
   const [showDemoDataDialog, setShowDemoDataDialog] = useState(false)
   const [demoDataResult, setDemoDataResult] = useState('')
-  const [items, setItems] = useState<Conversation[]>(() => loadConversationItems(tenantId))
+  const [items, setItems] = useState<Conversation[]>(() => loadConversationItems(tenantId, customDimensions))
+  const [assignments, setAssignments] = useState<Record<string, Assignment>>(() => loadAssignments(tenantId, items, tenant.dimensions.collaboration))
+  const [handoffOnly, setHandoffOnly] = useState(false)
+  const [triageLocked, setTriageLocked] = useState(() => localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true')
+  const [evidenceReviewedId, setEvidenceReviewedId] = useState<string | null>(null)
   const [activeId, setActiveId] = useState(() => workspaceRule.landingConversationId)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<InboxFilter>('all')
@@ -282,6 +322,8 @@ function App() {
   const activeActionStatus = actionStatus(active.id, actionStatuses)
   const draft = drafts[active.id] ?? ''
   const activeMemories = savedMemories[active.id] ?? []
+  const activeAssignment = assignments[active.id] ?? { owner: '我', handoffPending: false, event: '会话已分配' }
+  const handoffCount = items.filter((item) => assignments[item.id]?.handoffPending).length
   const pendingCount = items.filter((item) => actionStatus(item.id, actionStatuses) === 'pending').length
   const tenantInsight = tenantId === 'aster' ? active.summary
     : tenantId === 'north' ? `${pendingCount} 项待处理 · 当前时限：${activeActionStatus === 'pending' ? action.due : '等待新消息'}`
@@ -322,17 +364,25 @@ function App() {
   const hasSmartChanges = configurationMode === 'manual' || queuesChanged || proposedPreferenceChanges.length > 0
   const recommendationIgnored = ignoredMode?.id === smartProposal.id && ignoredMode.until > Date.now()
   const visibleConversations = useMemo(() => [...items]
-    .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query))
-    .sort((a, b) => tenantConversationPriority(b, workspaceRule, actionStatuses) - tenantConversationPriority(a, workspaceRule, actionStatuses)), [filter, items, query, actionStatuses, workspaceRule])
+    .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query) && (!handoffOnly || assignments[item.id]?.handoffPending))
+    .sort((a, b) => tenantConversationPriority(b, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration) - tenantConversationPriority(a, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration)), [filter, items, query, actionStatuses, workspaceRule, assignments, tenant.dimensions.collaboration, handoffOnly])
 
   useEffect(() => {
     if (configurationMode !== 'smart') return
-    setVisibleFilterIds((current) => current.join(',') === smartProposal.queues.join(',') ? current : smartProposal.queues)
+    if (!(tenant.dimensions.ai === 'triage' && triageLocked)) setVisibleFilterIds((current) => current.join(',') === smartProposal.queues.join(',') ? current : smartProposal.queues)
     setPreferences((current) => {
       const next = { ...defaultPreferences, ...smartProposal.preferences }
       return (Object.keys(next) as Array<keyof DisplayPreferences>).every((key) => current[key] === next[key]) ? current : next
     })
-  }, [configurationMode, smartProposal])
+  }, [configurationMode, smartProposal, tenant.dimensions.ai, triageLocked])
+
+  useEffect(() => {
+    localStorage.setItem(tenantKey(assignmentSettingsKey, tenantId), JSON.stringify(assignments))
+  }, [assignments, tenantId])
+
+  useEffect(() => {
+    localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
+  }, [triageLocked, tenantId])
 
   useEffect(() => {
     localStorage.setItem(tenantKey(draftSettingsKey, tenantId), JSON.stringify(drafts))
@@ -448,7 +498,7 @@ function App() {
     setIgnoredMode(loadIgnoredMode(nextId))
     setDrafts(loadDrafts(nextId))
     setActionStatuses(loadActionStatuses(nextId))
-    setItems(loadConversationItems(nextId))
+    setItems(loadConversationItems(nextId, customDimensions))
     const landingId = getTenantWorkspaceRule(getTenantProfile(nextId, customDimensions)).landingConversationId
     setActiveId(landingId)
     setOpenFanIds([landingId])
@@ -561,7 +611,7 @@ function App() {
   }
 
   function resetDemoConversations() {
-    setItems(initialConversations())
+    setItems(initialConversations(tenant.dimensions.scale))
     setActionStatuses({})
     setDrafts({})
     setActiveId(workspaceRule.landingConversationId)

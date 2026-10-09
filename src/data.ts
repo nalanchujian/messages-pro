@@ -170,3 +170,25 @@ export const fanIntelligence: Record<string, FanIntelligence> = {
     scoreBreakdown: [{ label: '已付款待履约', points: 60, source: '付款记录', updatedAt: '6 分钟前' }, { label: '粉丝主动询问', points: 36, source: '最近消息', updatedAt: '6 分钟前' }],
   },
 }
+
+// Extra independent demo threads make the medium/high-load layouts observable.
+// They reuse the same verified sample scenarios with different fan identities.
+const workloadSamples = [
+  { id: 'aria', from: 'mason', name: 'Aria Stone', handle: '@aria_s', spend: '$1,260', updatedAt: '4m', unread: 1 },
+  { id: 'oliver', from: 'riley', name: 'Oliver Reed', handle: '@oliver_r', spend: '$510', updatedAt: '8m', unread: 2 },
+  { id: 'jules', from: 'leo', name: 'Jules Park', handle: '@jules_p', spend: '$94', updatedAt: '11m', unread: 1 },
+  { id: 'sam', from: 'nate', name: 'Sam Rivera', handle: '@sam_r', spend: '$180', updatedAt: '16m', unread: 0 },
+  { id: 'devon', from: 'riley', name: 'Devon Brooks', handle: '@devon_b', spend: '$290', updatedAt: '21m', unread: 1 },
+  { id: 'blake', from: 'mason', name: 'Blake Morgan', handle: '@blake_m', spend: '$1,530', updatedAt: '25m', unread: 0 },
+  { id: 'harper', from: 'leo', name: 'Harper Lee', handle: '@harper_l', spend: '$67', updatedAt: '37m', unread: 1 },
+  { id: 'casey', from: 'chris', name: 'Casey Quinn', handle: '@casey_q', spend: '$340', updatedAt: '42m', unread: 0 },
+  { id: 'micah', from: 'riley', name: 'Micah Gray', handle: '@micah_g', spend: '$430', updatedAt: '51m', unread: 1 },
+] as const
+
+for (const sample of workloadSamples) {
+  const original = conversations.find((item) => item.id === sample.from)!
+  conversations.push({ ...original, id: sample.id, name: sample.name, handle: sample.handle, avatar: sample.name[0], spend: sample.spend, updatedAt: sample.updatedAt, unread: sample.unread, messages: original.messages.map((message) => ({ ...message })) })
+  conversationActions[sample.id] = { ...conversationActions[sample.from] }
+  fanFacts[sample.id] = fanFacts[sample.from].map((fact) => ({ ...fact }))
+  fanIntelligence[sample.id] = { ...fanIntelligence[sample.from], priorityScore: fanIntelligence[sample.from].priorityScore - 4 }
+}
