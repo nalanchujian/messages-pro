@@ -1,0 +1,228 @@
+{
+  "infloww_chat": {
+    "path": "assets/screenshots/infloww_chat.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.eu/i/o/d8t9w3a9/134478648/aa0d64a7f4ab1e9aa855b915d2fe/Chat+link+%281%29.jpg?expires=1791603000&signature=5c1a28e7a6641d19cb85321c06d4237724fc78aaf611f8c74f4a5a4386af9056&req=0dZrwV%2FyqjMglxv889osp0UUMN%2BMiU6qG%2B%2By71akARkhylFp49AE4ZTWWZSA%0AyTMPYfcedEY9LhQbEQ%3D%3D%0A",
+    "width": 1920,
+    "height": 1122
+  },
+  "infloww_insights": {
+    "path": "assets/screenshots/infloww_insights.jpg",
+    "type": "provided-screenshot",
+    "source_asset": "user-provided",
+    "width": 1718,
+    "height": 1410
+  },
+  "infloww_management": {
+    "path": "assets/screenshots/infloww_management.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.eu/i/o/d8t9w3a9/44440360/e21885f20086bec51898c84ad95f/Smart+Lists.jpg?expires=1791603000&signature=12059a19cca68623d021e06ec6e6b9d6a05217e853719e54addc527cd8bd55e1&req=1NFrwVj5qjdk2hL085ZhobxmoCfX5owzkJfARshvoTmaXw1Hq%2FTQ1PMbULjr%0Absm4trOI6ACxRfrA%0A",
+    "width": 1920,
+    "height": 1080
+  },
+  "infloww_sales": {
+    "path": "assets/screenshots/infloww_sales.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.eu/i/o/d8t9w3a9/170561530/fe3f82add5cf69baf434737b4cb3/image.png?expires=1791603000&signature=5860f65704bc7c7605484f86d70072c29f1f0375ecf8938d18a03f11a3162a51&req=0dJvwF77qTQolxv889osp43X6ph5DKRydswo%2FVtTd0yRXzS1IGIk3REw0NW6%0A9JL6O9TrdQ%2BZTXeW3A%3D%3D%0A",
+    "width": 1280,
+    "height": 890
+  },
+  "infloww_vault": {
+    "path": "assets/screenshots/infloww_vault.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.eu/i/o/d8t9w3a9/55301664/6c829df768a84e74874706da5e96/Screen+Recording+-+Jun+26%2C+2025-VEED.gif?expires=1791603000&signature=8649a43226d70cce8016014b3d74c38959bafa372b3845ded2b25e670d211ccf&req=1dBsxVn8qjNk2hL085ZhoRtgr%2FEnNB8CBLxOapk%2Bd8BUcYE3MEz73NgLAz3h%0AlIyrT%2B8rXMC00Xyt%0A",
+    "width": 640,
+    "height": 360
+  },
+  "infloww_scripts": {
+    "path": "assets/screenshots/infloww_scripts.jpg",
+    "type": "official-video-frame",
+    "source_asset": "reports/four-platform-module-comparison/assets/candidates/infloww_scripts_video_4.jpg",
+    "width": 1280,
+    "height": 720
+  },
+  "infloww_ai": {
+    "path": "assets/screenshots/infloww_ai.jpg",
+    "type": "official-image",
+    "source_asset": "reports/four-platform-module-comparison/assets/candidates/infloww_ai_alt_1.png",
+    "width": 656,
+    "height": 827
+  },
+  "infloww_team": {
+    "path": "assets/screenshots/infloww_team.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.eu/i/o/d8t9w3a9/170588636/675d50f7f175969c7a057bdf9072/image.png?expires=1791603000&signature=868fd0c4e280d259b655b43f5eb80797230dad8b66d6d967548f1b25b26cdd2f&req=0dJvwFDyqjQulxv889ospye%2ByAGNlMiC2GmLfgeIPByyv0itDGwEgFIFlWe1%0AZi7J73EgSNtuvjBXoQ%3D%3D%0A",
+    "width": 1280,
+    "height": 890
+  },
+  "supercreator_chat": {
+    "path": "assets/screenshots/supercreator_chat.jpg",
+    "type": "provided-screenshot",
+    "source_asset": "user-provided",
+    "width": 1722,
+    "height": 1410
+  },
+  "supercreator_insights": {
+    "path": "assets/screenshots/supercreator_insights.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/1051813531/7cfb29cabbb537045ac1d63c/CRM.png?expires=1791603000&signature=33448c99102592a40b0b74392bf6912f2f12b84a3f94f1e7478b876bbe1c375f&req=dSAiF8F%2FnoRcWPMW1HO4zYz2SYvbiZwneezD8rlmZDa6RTsNkIQJ%2BWOVH9b5%0AcrWjRhUHkYyZfbZpbFY%3D%0A",
+    "width": 2872,
+    "height": 1580
+  },
+  "supercreator_management": {
+    "path": "assets/screenshots/supercreator_management.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/yinssi34/2638203385/c7f7a3bba668811d4dcf51e1c845/Screenshot%2B2026-08-28%2Bat%2B14_54_23.png?expires=1791603000&signature=ccd879efabf3db98bbac1c154b6be002b31a72aa07506fa19fb3c59555409e21&req=diYkHst%2BnoJXXPMW1HO4za6CLpR5fXAXBHLXic1oJ18cCWIgryYDKVzcxyqm%0AbtJ%2B%0A",
+    "width": 998,
+    "height": 563
+  },
+  "supercreator_sales": {
+    "path": "assets/screenshots/supercreator_sales.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/yinssi34/1371289428/05cead8eb3f660c79da13a969a25/image.png?expires=1791603000&signature=2b0bee3878e3f224214af346261027a2b328f27e848220ca11ad2a2de1a6940b&req=dSMgF8t2lIVdUfMW1HO4zXU9J3krfSB1X1uHqHpccbPzRjeGJO%2Bz%2BBRs%2FwnH%0A%2BBkh7DMVF6GZ7ssLJWo%3D%0A",
+    "width": 1508,
+    "height": 854
+  },
+  "supercreator_vault": {
+    "path": "assets/screenshots/supercreator_vault_demo.png",
+    "type": "official-demo-frame",
+    "source_asset": "https://app.arcade.software/share/De4HXa0yWvccdZl4eHQE",
+    "width": 820,
+    "height": 386,
+    "captured_at": "2026-10-10",
+    "note": "Supercreator 官方 Vault Copilot 交互教程的浏览器截屏；原帮助中心配图文件名含 ChatGPT Image，未作为实界面证据使用。"
+  },
+  "supercreator_scripts": {
+    "path": "assets/screenshots/supercreator_scripts.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/yinssi34/1364655800/f564e71790e4e620c9fcab3038c2/image.png?expires=1791603000&signature=01015df0977346ee9166cd15508c8ddcc9f5c3677598aa390926aa3f26d764e6&req=dSMhEs97mIlfWfMW1HO4zW2JfqmbLmzXyrTpRkP7VHR47vwKpxKy2KMiw%2F2p%0AFyVFzPKQtQvTq8qraCY%3D%0A",
+    "width": 1028,
+    "height": 312
+  },
+  "supercreator_ai": {
+    "path": "assets/screenshots/supercreator_ai.jpg",
+    "type": "official-image",
+    "source_asset": "reports/four-platform-module-comparison/assets/candidates/supercreator_ai_alt_3.png",
+    "width": 1428,
+    "height": 522
+  },
+  "supercreator_team": {
+    "path": "assets/screenshots/supercreator_team.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/yinssi34/2573905533/5eb6bf0928d0177ae6db4bc012a8/Image+3.png?expires=1791603000&signature=760076fb2d7379c2061219b12b2e09c1d3f270ff5a903c163de9c63599532700&req=diUgFcB%2BmIRcWvMW1HO4zSCirpd3pCSBaDtonw3KeUyGGay376PJ8C0PBeRJ%0Ac0DRn4dBUcx65QUhAfI%3D%0A",
+    "width": 1221,
+    "height": 494
+  },
+  "onlymonster_chat": {
+    "path": "assets/screenshots/onlymonster_chat.jpg",
+    "type": "provided-screenshot",
+    "source_asset": "user-provided",
+    "width": 1712,
+    "height": 1410
+  },
+  "onlymonster_insights": {
+    "path": "assets/screenshots/onlymonster_insights.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252F7utVnn1SphMO49rNpYiv%252Ftg_image_1556826630.png%3Falt%3Dmedia%26token%3D702a63f6-1c0c-4982-8d4b-7dd6d6dd7e69&width=768&dpr=3&quality=100&sign=b93047404126b8e1cae20c7ad0eaa8f3&sv=3",
+    "width": 580,
+    "height": 896
+  },
+  "onlymonster_management": {
+    "path": "assets/screenshots/onlymonster_management.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252Fc850q0iwOl5Dm4VuLSkS%252F2%25D0%25B43%25D1%2580%25D0%25BA%25D0%25B0%25D0%25BE%25D0%25B4%25D0%25BB%25D1%2586%25D1%2583%25D0%25B0.png%3Falt%3Dmedia%26token%3Dfa154bf7-c546-4f52-a804-1fd383b94f6d&width=768&dpr=3&quality=100&sign=77bdb7f47b46b3fa15e074b526a258f3&sv=3",
+    "width": 2000,
+    "height": 1075
+  },
+  "onlymonster_sales": {
+    "path": "assets/screenshots/onlymonster_sales.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252FXJsJGKEdNowFWqT214WP%252FIMG_1995-2.jpg%3Falt%3Dmedia%26token%3Dff80cf4e-0df9-4765-9a14-74e8a721fbbf&width=768&dpr=3&quality=100&sign=279cc0fc5642e167219cbf0983dc7e27&sv=3",
+    "width": 2000,
+    "height": 1045
+  },
+  "onlymonster_vault": {
+    "path": "assets/screenshots/onlymonster_vault.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252FgLYPOmNsLRmlJO9uHZBQ%252Fimage%2520%2839%29.png%3Falt%3Dmedia%26token%3Dc0eeaffd-2e9c-4ea3-a89d-9787f7ddf9bd&width=768&dpr=3&quality=100&sign=f40f9d3a825dea96ce753904b94cd1e5&sv=3",
+    "width": 1230,
+    "height": 1333
+  },
+  "onlymonster_scripts": {
+    "path": "assets/screenshots/onlymonster_scripts.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252FREOqPSdpP6SvOMl3lK5J%252FScreenshot%25202025-11-28%2520at%252018.30.27.png%3Falt%3Dmedia%26token%3D9057eaa5-c4d3-4a46-b2b4-0cf1744bec15&width=768&dpr=3&quality=100&sign=184384098b3431138cc105ad23009461&sv=3",
+    "width": 2304,
+    "height": 676
+  },
+  "onlymonster_ai": {
+    "path": "assets/screenshots/onlymonster_ai.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252FgJRqqx1TlfFVdH88EfFe%252FScreenshot%25202026-07-02%2520at%252014.42.39.png%3Falt%3Dmedia%26token%3Ddcec4164-52b0-40d3-8b75-89b7cce6635d&width=768&dpr=3&quality=100&sign=b6dbba343ad298bb0bbb5745783c0db0&sv=3",
+    "width": 862,
+    "height": 356
+  },
+  "onlymonster_team": {
+    "path": "assets/screenshots/onlymonster_team.jpg",
+    "type": "official-image",
+    "source_asset": "https://docs.onlymonster.ai/~gitbook/image?url=https%3A%2F%2F3576754298-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJ3tUjWV0i06zjZEIvwPN%252Fuploads%252FyjFkZ6VYm4V8snLz5HkA%252FScreenshot%25202025-10-16%2520at%252012.27.23.png%3Falt%3Dmedia%26token%3D15d517d6-02d0-4fe3-9e2e-96782f8796ac&width=768&dpr=3&quality=100&sign=42484bea3a1f9c58a9a7fe4dfb4fd309&sv=3",
+    "width": 2304,
+    "height": 1325
+  },
+  "creatorhero_chat": {
+    "path": "assets/screenshots/creatorhero_chat.jpg",
+    "type": "provided-screenshot",
+    "source_asset": "user-provided",
+    "width": 1716,
+    "height": 1410
+  },
+  "creatorhero_insights": {
+    "path": "assets/screenshots/creatorhero_insights.jpg",
+    "type": "provided-screenshot",
+    "source_asset": "user-provided",
+    "width": 1716,
+    "height": 1410
+  },
+  "creatorhero_management": {
+    "path": "assets/screenshots/creatorhero_management.jpg",
+    "type": "official-video-frame",
+    "source_asset": ".playwright-cli/page-2026-10-10T03-21-06-952Z.png",
+    "width": 1280,
+    "height": 720
+  },
+  "creatorhero_sales": {
+    "path": "assets/screenshots/creatorhero_sales.jpg",
+    "type": "official-video-frame",
+    "source_asset": ".playwright-cli/page-2026-10-10T03-22-26-435Z.png",
+    "width": 1280,
+    "height": 720
+  },
+  "creatorhero_vault": {
+    "path": "assets/screenshots/creatorhero_vault.jpg",
+    "type": "official-video-frame",
+    "source_asset": ".playwright-cli/page-2026-10-10T03-24-56-619Z.png",
+    "width": 1280,
+    "height": 720
+  },
+  "creatorhero_scripts": {
+    "path": "assets/screenshots/creatorhero_scripts.jpg",
+    "type": "official-video-frame",
+    "source_asset": ".playwright-cli/page-2026-10-10T03-26-45-263Z.png",
+    "width": 1280,
+    "height": 720
+  },
+  "creatorhero_ai": {
+    "path": "assets/screenshots/creatorhero_ai.jpg",
+    "type": "official-video-frame",
+    "source_asset": ".playwright-cli/page-2026-10-10T03-27-49-076Z.png",
+    "width": 1280,
+    "height": 720
+  },
+  "creatorhero_team": {
+    "path": "assets/screenshots/creatorhero_team.jpg",
+    "type": "official-image",
+    "source_asset": "https://downloads.intercomcdn.com/i/o/itvrpzjj/1413688639/e44d4e302c5c2c25ea74ef61b1ec/Screenshot+2025-03-09+at+12_40_39%E2%80%AFPM.png?expires=1791603000&signature=5e04b46896ccf90b5d504b5dce8566d7d3346c85f0a7eadca878e291476eabe5&req=dSQmFc92lYdcUPMW1HO4zdZSRo83VyLpTPTmHfFURJG73u1MkdTnkokGbm31%0AVARXl4LvhEDtKITZI30%3D%0A",
+    "width": 3248,
+    "height": 1976
+  }
+}

@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "acceptance": "pnpm test && pnpm build && bash tests/run-browser-acceptance.sh",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
     "lucide-react": "latest",
+    "pdfjs-dist": "^6.4.299",
     "react": "latest",
     "react-dom": "latest",
     "zustand": "latest"

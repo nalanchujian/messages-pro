@@ -42,14 +42,14 @@ export const tenantWorkspaceRules: Record<PresetTenantId, TenantWorkspaceRule> =
     highValueBonus: 38, unreadBonus: 3,
   },
   north: {
-    modeId: 'reply', title: '高并发分流工作台', description: '压缩列表并突出待履约、需回复与处理时限，减少分配遗漏。',
+    modeId: 'reply', title: '高并发分流工作台', description: '汇总待处理量并提供连续处理入口，避免高峰期遗漏会话。',
     workStyle: '高效处理', queueHint: '待处理时限优先', sortLabel: '处理时限', chatHint: '快速处理，必要时查看交接依据', copilotLabel: '快速回复', copilotStart: 'reply',
     insightTitle: '处理状态', landingConversationId: 'riley',
     queues: ['all', 'fulfillment', 'reply', 'waiting', 'purchase-follow-up', 'manual'],
     preferences: {
-      compactList: true, listPreview: false, listPriority: true, listSla: true,
-      chatNextStep: true, chatCopilot: true, chatTimestamps: false, chatHelp: false,
-      profileMetrics: false, profileRecommendation: true, profileKnown: false, profileMemory: false,
+      compactList: false, listPreview: true, listPriority: true, listSla: true,
+      chatNextStep: true, chatCopilot: true, chatTimestamps: true, chatHelp: false,
+      profileMetrics: true, profileRecommendation: true, profileKnown: true, profileMemory: true,
     },
     detailOrder: ['recommendation', 'facts', 'metrics', 'memory'],
     priorityWeights: { reply: 92, fulfillment: 110, 'purchase-follow-up': 50, renewal: 35, manual: 10 },
@@ -87,36 +87,32 @@ export const tenantWorkspaceRules: Record<PresetTenantId, TenantWorkspaceRule> =
 
 // Every preset and custom tenant uses the same six-dimensional behavior model.
 export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRule {
-  const { scale, fans, tasks, data, collaboration, ai } = tenant.dimensions
+  const { fans, tasks, data, collaboration, ai } = tenant.dimensions
   const preset = tenant.id === 'custom' ? null : tenantWorkspaceRules[tenant.id]
-  const highVolume = scale === 'surge'
   const buyerFocus = tasks === 'purchase'
   const sparseData = data === 'sparse'
   const primary: InboxFilter = tasks === 'fulfillment' ? 'fulfillment' : buyerFocus ? 'purchase-follow-up' : 'reply'
   const queues = [...new Set<InboxFilter>([
     'all', primary,
-    ...(tasks === 'fulfillment' || highVolume ? ['reply', 'fulfillment'] as InboxFilter[] : []),
+    ...(tasks === 'fulfillment' ? ['reply', 'fulfillment'] as InboxFilter[] : []),
     ...(buyerFocus ? ['purchase-follow-up'] as InboxFilter[] : []),
     ...(fans === 'high' ? ['renewal'] as InboxFilter[] : []),
     ...(sparseData ? ['manual'] as InboxFilter[] : []),
     'reply', 'fulfillment', 'purchase-follow-up', 'renewal', 'manual', 'waiting',
   ])].slice(0, 6)
   const priorityWeights: Record<ActionKind, number> = {
-    reply: 70 + (highVolume ? 22 : 0) + (tasks === 'conversation' ? 15 : 0),
-    fulfillment: 85 + (highVolume ? 20 : 0) + (tasks === 'fulfillment' ? 35 : 0),
+    reply: 70 + (tasks === 'conversation' ? 15 : 0),
+    fulfillment: 85 + (tasks === 'fulfillment' ? 35 : 0),
     'purchase-follow-up': 58 + (buyerFocus ? 55 : 0),
     renewal: 55 + (fans === 'high' ? 30 : 0),
     manual: 12 + (sparseData ? 48 : 0),
   }
-  const detailOrder: DetailSection[] = highVolume
-    ? sparseData ? ['facts', 'recommendation', 'metrics', 'memory'] : ['recommendation', 'facts', 'metrics', 'memory']
-    : sparseData ? ['facts', 'recommendation', 'metrics', 'memory']
+  const detailOrder: DetailSection[] = sparseData ? ['facts', 'recommendation', 'metrics', 'memory']
       : buyerFocus ? ['metrics', 'recommendation', 'facts', 'memory']
       : fans === 'high' ? ['memory', 'recommendation', 'facts', 'metrics']
         : ['recommendation', 'facts', 'metrics', 'memory']
   const focusLabel = primary === 'fulfillment' ? '履约处理' : primary === 'purchase-follow-up' ? '购买跟进' : '消息回复'
   const hints = [
-    highVolume ? '优先处理超时消息' : '',
     buyerFocus ? '留意购买后的反馈' : '',
     sparseData ? '先核对资料与推断' : '',
     collaboration === 'shifts' ? '保留交接线索' : '',
@@ -128,22 +124,22 @@ export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRu
     description: preset?.description ?? (hints.length ? hints.join('；') : '根据六个维度调整队列、回复辅助和会话洞察。'),
     workStyle: preset?.workStyle ?? focusLabel,
     queueHint: `${focusLabel}优先`,
-    sortLabel: highVolume ? '处理时限' : buyerFocus ? '购买反馈' : fans === 'high' ? '关系与时限' : '待办优先',
+    sortLabel: tasks === 'fulfillment' ? '履约优先' : buyerFocus ? '购买反馈' : fans === 'high' ? '关系与时限' : '待办优先',
     chatHint: hints.slice(0, 3).join(' · ') || '参考对话背景与当前行动',
     copilotLabel: preset?.copilotLabel ?? (ai === 'advisory' ? '建议助手' : ai === 'triage' ? '队列助理' : 'AI 助理'),
     copilotStart: sparseData ? 'strategy' : buyerFocus ? 'strategy' : fans === 'high' ? 'memory' : 'reply',
-    insightTitle: sparseData ? '资料核对' : buyerFocus ? '购买与互动' : highVolume ? '处理状态' : '粉丝关系',
+    insightTitle: sparseData ? '资料核对' : tasks === 'fulfillment' ? '履约状态' : buyerFocus ? '购买与互动' : '粉丝关系',
     landingConversationId: preset?.landingConversationId ?? (tasks === 'fulfillment' ? 'riley' : buyerFocus ? 'leo' : fans === 'high' ? 'mason' : 'nate'),
     queues,
     preferences: {
-      compactList: highVolume, listPreview: !highVolume, listPriority: true, listSla: scale !== 'low' || tasks === 'fulfillment',
-      chatNextStep: ai !== 'advisory', chatCopilot: true, chatTimestamps: !highVolume, chatHelp: sparseData || ai === 'advisory',
+      compactList: false, listPreview: true, listPriority: true, listSla: true,
+      chatNextStep: ai !== 'advisory', chatCopilot: true, chatTimestamps: true, chatHelp: sparseData || ai === 'advisory',
       profileMetrics: data === 'complete' || buyerFocus || fans !== 'low', profileRecommendation: ai !== 'advisory',
       profileKnown: true,
       profileMemory: data === 'complete' || fans === 'high' || collaboration === 'shifts',
     },
     detailOrder, priorityWeights,
     highValueBonus: fans === 'high' ? 38 : fans === 'balanced' ? 18 : 0,
-    unreadBonus: highVolume ? 10 : 3,
+    unreadBonus: 3,
   }
 }

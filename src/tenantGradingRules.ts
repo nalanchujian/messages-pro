@@ -12,11 +12,11 @@ type GradingRules = {
 // tenantWorkspaceRules.ts and the visible interactions in main.tsx.
 export const tenantGradingRules = {
   scale: {
-    purpose: '决定列表密度与信息展开程度',
+    purpose: '决定待办总览与连续处理方式',
     levels: {
-      low: { criterion: '日均少于 100 条会话', behavior: '标准列表、完整消息预览和关系信息。' },
-      steady: { criterion: '日均 100–499 条会话', behavior: '突出待办与处理时限，保留必要上下文。' },
-      surge: { criterion: '日均 500 条及以上', behavior: '紧凑列表、下一条待办，次要洞察默认折叠。' },
+      low: { criterion: '日均少于 100 条会话', behavior: '直接浏览全部会话，按当前任务优先级逐个处理。' },
+      steady: { criterion: '日均 100–499 条会话', behavior: '显示当前待处理量，提供下一条待办入口，方便连续处理。' },
+      surge: { criterion: '日均 500 条及以上', behavior: '默认聚焦待处理会话，可随时切回全部；保留消息预览、时间与粉丝资料。' },
     },
   },
   fans: {

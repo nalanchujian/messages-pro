@@ -24,6 +24,21 @@ export type Conversation = {
 
 export type ActionKind = 'reply' | 'fulfillment' | 'purchase-follow-up' | 'renewal' | 'manual'
 export type ActionStatus = 'pending' | 'waiting' | 'scheduled' | 'done'
+export type WorkflowEventType = 'message_sent' | 'review_requested' | 'followup_scheduled' | 'action_completed' | 'delivery_confirmed' | 'action_reopened' | 'legacy_status'
+export type WorkflowEvent = {
+  id: string
+  conversationId: string
+  type: WorkflowEventType
+  at: number
+  legacyStatus?: ActionStatus
+}
+export type ConversationWorkflow = {
+  actionStatus: ActionStatus
+  lastOutboundAt: number | null
+  paymentStatus: 'none' | 'paid'
+  ppvStatus: 'none' | 'viewed' | 'purchased'
+  fulfillmentStatus: 'not-applicable' | 'awaiting-review' | 'reviewing' | 'delivered'
+}
 export type ConversationAction = {
   kind: ActionKind
   title: string

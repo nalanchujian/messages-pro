@@ -1,15 +1,20 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { SetStateAction } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BookOpen, BrainCircuit, Building2, Check, ChevronDown, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
+import { create } from 'zustand'
+import { BookOpen, BrainCircuit, Building2, Check, ChevronDown, FileText, Lightbulb, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
 import { conversationActions, conversations, fanFacts, fanIntelligence } from './data'
 import { conversationFocus, defaultPreferences, defaultVisibleFilters, inferSmartMode } from './smartConfig'
 import type { ActivityEvent, DisplayPreferences, InboxFilter, SmartModeId } from './smartConfig'
 import { defaultCustomDimensions, defaultTenantId, dimensionLabel, getTenantProfile, tenantDimensionDefinitions, tenantProfiles } from './tenantProfiles'
 import type { TenantDimensions, TenantId } from './tenantProfiles'
 import { getTenantWorkspaceRule } from './tenantWorkspaceRules'
-import type { TenantWorkspaceRule } from './tenantWorkspaceRules'
 import { getTenantLevelRule, tenantGradingRules } from './tenantGradingRules'
-import type { ActionStatus, Conversation, Message } from './types'
+import type { ActionStatus, Conversation, ConversationWorkflow, Message, WorkflowEvent, WorkflowEventType } from './types'
+import { resolveWorkflow } from './workflow'
+import { composeWorkspace } from './workspaceEngine'
+import type { Assignment } from './workspaceEngine'
+import { ActionTray } from './ActionTray'
 import './styles.css'
 
 type AiMode = 'reply' | 'strategy' | 'rewrite' | 'memory'
@@ -22,11 +27,16 @@ function actionStatus(id: string, statuses: Record<string, ActionStatus>): Actio
   return statuses[id] ?? (conversationActions[id]?.kind === 'manual' ? 'done' : 'pending')
 }
 
+function isOpenTask(id: string, statuses: Record<string, ActionStatus>): boolean {
+  const status = actionStatus(id, statuses)
+  return status === 'pending' || (conversationActions[id]?.kind === 'fulfillment' && status === 'waiting')
+}
+
 function matchesFilter(item: Conversation, filter: InboxFilter, statuses: Record<string, ActionStatus>) {
   const status = actionStatus(item.id, statuses)
   return filter === 'all' || (filter === 'waiting'
     ? status === 'waiting' || status === 'scheduled'
-    : conversationActions[item.id]?.kind === filter && status === 'pending')
+    : conversationActions[item.id]?.kind === filter && isOpenTask(item.id, statuses))
 }
 
 const inboxFilters: Array<{ id: InboxFilter; label: string }> = [
@@ -41,15 +51,16 @@ const ignoredModeKey = 'messages-pro-ignored-mode'
 const tenantSettingsKey = 'messages-pro-selected-tenant'
 const draftSettingsKey = 'messages-pro-drafts'
 const actionSettingsKey = 'messages-pro-action-statuses'
+const workflowEventsKey = 'messages-pro-workflow-events-v1'
+const sessionSnapshotKey = 'messages-pro-session-v1'
 const conversationSettingsKey = 'messages-pro-demo-conversations'
 const memorySettingsKey = 'messages-pro-confirmed-memories'
 const configurationModeKey = 'messages-pro-configuration-mode'
 const customDimensionsKey = 'messages-pro-custom-tenant-dimensions'
 const assignmentSettingsKey = 'messages-pro-assignments'
 const triageLockKey = 'messages-pro-triage-lock'
+const reportPdfUrl = `${import.meta.env.BASE_URL}reports/four-platform-eight-module-analysis.pdf`
 const tenantKey = (key: string, tenantId: TenantId) => `${key}:${tenantId}`
-
-type Assignment = { owner: string; handoffPending: boolean; event: string }
 
 function defaultAssignments(items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
   return Object.fromEntries(items.map((item, index) => [item.id, {
@@ -59,20 +70,22 @@ function defaultAssignments(items: Conversation[], collaboration: TenantDimensio
   }]))
 }
 
-function loadAssignments(tenantId: TenantId, items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
+function restoreAssignments(items: Conversation[], collaboration: TenantDimensions['collaboration'], saved: unknown): Record<string, Assignment> {
   const baseline = defaultAssignments(items, collaboration)
-  try {
-    const saved: unknown = JSON.parse(localStorage.getItem(tenantKey(assignmentSettingsKey, tenantId)) ?? 'null')
-    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return baseline
-    for (const item of items) {
-      const record = (saved as Record<string, unknown>)[item.id]
-      if (record && typeof record === 'object' && !Array.isArray(record)) {
-        const value = record as Record<string, unknown>
-        if (typeof value.owner === 'string' && typeof value.handoffPending === 'boolean' && typeof value.event === 'string') baseline[item.id] = { owner: value.owner, handoffPending: value.handoffPending, event: value.event }
-      }
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return baseline
+  for (const item of items) {
+    const record = (saved as Record<string, unknown>)[item.id]
+    if (record && typeof record === 'object' && !Array.isArray(record)) {
+      const value = record as Record<string, unknown>
+      if (typeof value.owner === 'string' && typeof value.handoffPending === 'boolean' && typeof value.event === 'string') baseline[item.id] = { owner: value.owner, handoffPending: value.handoffPending, event: value.event }
     }
-  } catch { /* Ignore invalid demo ownership. */ }
+  }
   return baseline
+}
+
+function loadAssignments(tenantId: TenantId, items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
+  try { return restoreAssignments(items, collaboration, JSON.parse(localStorage.getItem(tenantKey(assignmentSettingsKey, tenantId)) ?? 'null')) }
+  catch { return defaultAssignments(items, collaboration) }
 }
 
 function loadSelectedTenant(): TenantId {
@@ -144,6 +157,25 @@ function loadActionStatuses(tenantId: TenantId): Record<string, ActionStatus> {
   } catch { return {} }
 }
 
+function restoreWorkflowEvents(saved: unknown): WorkflowEvent[] {
+  if (!Array.isArray(saved)) return []
+  return saved.filter((event): event is WorkflowEvent => event && typeof event === 'object'
+    && typeof event.id === 'string' && event.conversationId in conversationActions
+    && ['message_sent', 'review_requested', 'followup_scheduled', 'action_completed', 'delivery_confirmed', 'action_reopened', 'legacy_status'].includes(event.type)
+    && typeof event.at === 'number' && Number.isFinite(event.at)
+    && (event.type !== 'legacy_status' || ['pending', 'waiting', 'scheduled', 'done'].includes(event.legacyStatus)))
+}
+
+function loadWorkflowEvents(tenantId: TenantId): WorkflowEvent[] {
+  try {
+    const saved = localStorage.getItem(tenantKey(workflowEventsKey, tenantId))
+    if (saved !== null) return restoreWorkflowEvents(JSON.parse(saved))
+  } catch { /* Recover with the existing demo state. */ }
+  return Object.entries(loadActionStatuses(tenantId)).map(([conversationId, legacyStatus]) => ({
+    id: `migration-${conversationId}`, conversationId, type: 'legacy_status' as const, at: 0, legacyStatus,
+  }))
+}
+
 function loadPreferences(tenantId: TenantId): DisplayPreferences {
   try {
     const saved: unknown = JSON.parse(tenantStorageValue(displaySettingsKey, tenantId) ?? 'null')
@@ -205,17 +237,17 @@ function loadDrafts(tenantId: TenantId): Record<string, string> {
   } catch { return {} }
 }
 
-function initialConversations(scale: TenantDimensions['scale']) {
-  const count = scale === 'surge' ? conversations.length : scale === 'steady' ? 9 : 5
-  return conversations.slice(0, count).map((item) => item.id === 'mason' ? { ...item, unread: 0 } : item)
+function conversationLimit(scale: TenantDimensions['scale']) {
+  return scale === 'surge' ? conversations.length : scale === 'steady' ? 9 : 5
 }
 
-function loadConversationItems(tenantId: TenantId, customDimensions: TenantDimensions): Conversation[] {
-  const baseline = initialConversations(getTenantProfile(tenantId, customDimensions).dimensions.scale)
-  try {
-    const saved: unknown = JSON.parse(tenantStorageValue(conversationSettingsKey, tenantId) ?? 'null')
-    if (!Array.isArray(saved)) return baseline
-    return baseline.map((base) => {
+function initialConversations(scale: TenantDimensions['scale']) {
+  return conversations.slice(0, conversationLimit(scale)).map((item) => item.id === 'mason' ? { ...item, unread: 0 } : item)
+}
+
+function restoreConversationItems(baseline: Conversation[], saved: unknown): Conversation[] {
+  if (!Array.isArray(saved)) return baseline
+  return baseline.map((base) => {
       const previous = saved.find((item): item is Partial<Conversation> => item && typeof item === 'object' && item.id === base.id)
       if (!previous) return base
       const messages = Array.isArray(previous.messages) && previous.messages.length >= base.messages.length
@@ -228,8 +260,13 @@ function loadConversationItems(tenantId: TenantId, customDimensions: TenantDimen
         preview: typeof previous.preview === 'string' ? previous.preview : base.preview,
         updatedAt: typeof previous.updatedAt === 'string' ? previous.updatedAt : base.updatedAt,
       }
-    })
-  } catch { return baseline }
+  })
+}
+
+function loadConversationItems(tenantId: TenantId, customDimensions: TenantDimensions): Conversation[] {
+  const baseline = initialConversations(tenantId === 'custom' ? 'surge' : getTenantProfile(tenantId, customDimensions).dimensions.scale)
+  try { return restoreConversationItems(baseline, JSON.parse(tenantStorageValue(conversationSettingsKey, tenantId) ?? 'null')) }
+  catch { return baseline }
 }
 
 function loadMemories(tenantId: TenantId): Record<string, string[]> {
@@ -242,11 +279,87 @@ function loadMemories(tenantId: TenantId): Record<string, string[]> {
   } catch { return {} }
 }
 
+type SessionData = {
+  items: Conversation[]
+  assignments: Record<string, Assignment>
+  drafts: Record<string, string>
+  workflowEvents: WorkflowEvent[]
+  savedMemories: Record<string, string[]>
+}
+type SessionStore = SessionData & {
+  tenantId: TenantId
+  setItems: (next: SetStateAction<Conversation[]>) => void
+  setAssignments: (next: SetStateAction<Record<string, Assignment>>) => void
+  setDrafts: (next: SetStateAction<Record<string, string>>) => void
+  setWorkflowEvents: (next: SetStateAction<WorkflowEvent[]>) => void
+  setSavedMemories: (next: SetStateAction<Record<string, string[]>>) => void
+  switchTenant: (nextId: TenantId, customDimensions: TenantDimensions) => void
+}
+
+function loadSession(tenantId: TenantId, customDimensions: TenantDimensions): SessionData {
+  const tenant = getTenantProfile(tenantId, customDimensions)
+  const legacyItems = loadConversationItems(tenantId, customDimensions)
+  const legacy: SessionData = {
+    items: legacyItems,
+    assignments: loadAssignments(tenantId, legacyItems, tenant.dimensions.collaboration),
+    drafts: loadDrafts(tenantId), workflowEvents: loadWorkflowEvents(tenantId), savedMemories: loadMemories(tenantId),
+  }
+  try {
+    const saved: unknown = JSON.parse(localStorage.getItem(tenantKey(sessionSnapshotKey, tenantId)) ?? 'null')
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return legacy
+    const snapshot = saved as Record<string, unknown>
+    if (snapshot.version !== 1) return legacy
+    const items = restoreConversationItems(initialConversations(tenantId === 'custom' ? 'surge' : tenant.dimensions.scale), snapshot.items)
+    return {
+      items,
+      assignments: restoreAssignments(items, tenant.dimensions.collaboration, snapshot.assignments),
+      drafts: snapshot.drafts && typeof snapshot.drafts === 'object' && !Array.isArray(snapshot.drafts)
+        ? Object.fromEntries(Object.entries(snapshot.drafts).filter(([id, value]) => id in conversationActions && typeof value === 'string')) as Record<string, string> : legacy.drafts,
+      workflowEvents: Array.isArray(snapshot.workflowEvents) ? restoreWorkflowEvents(snapshot.workflowEvents) : legacy.workflowEvents,
+      savedMemories: snapshot.savedMemories && typeof snapshot.savedMemories === 'object' && !Array.isArray(snapshot.savedMemories)
+        ? Object.fromEntries(Object.entries(snapshot.savedMemories).filter(([id, values]) => id in conversationActions && Array.isArray(values)).map(([id, values]) =>
+          [id, (values as unknown[]).filter((value): value is string => typeof value === 'string')])) : legacy.savedMemories,
+    }
+  } catch { return legacy }
+}
+
+function persistSession(state: Pick<SessionStore, 'tenantId' | keyof SessionData>) {
+  localStorage.setItem(tenantKey(sessionSnapshotKey, state.tenantId), JSON.stringify({
+    version: 1, items: state.items, assignments: state.assignments, drafts: state.drafts,
+    workflowEvents: state.workflowEvents, savedMemories: state.savedMemories,
+  }))
+}
+
+function resolveUpdate<T>(current: T, next: SetStateAction<T>): T {
+  return typeof next === 'function' ? (next as (previous: T) => T)(current) : next
+}
+
+const initialSessionTenantId = loadSelectedTenant()
+const useSessionStore = create<SessionStore>((set, get) => ({
+  tenantId: initialSessionTenantId,
+  ...loadSession(initialSessionTenantId, loadCustomDimensions()),
+  setItems: (next) => set((state) => ({ items: resolveUpdate(state.items, next) })),
+  setAssignments: (next) => set((state) => ({ assignments: resolveUpdate(state.assignments, next) })),
+  setDrafts: (next) => set((state) => ({ drafts: resolveUpdate(state.drafts, next) })),
+  setWorkflowEvents: (next) => set((state) => ({ workflowEvents: resolveUpdate(state.workflowEvents, next) })),
+  setSavedMemories: (next) => set((state) => ({ savedMemories: resolveUpdate(state.savedMemories, next) })),
+  switchTenant: (nextId, customDimensions) => {
+    persistSession(get())
+    set({ tenantId: nextId, ...loadSession(nextId, customDimensions) })
+  },
+}))
+useSessionStore.subscribe((state) => persistSession(state))
+
 function loadWorkspaceConfig(tenantId: TenantId, customDimensions: TenantDimensions) {
   const mode = loadConfigurationMode(tenantId)
   if (mode === 'manual') return { mode, queues: loadVisibleFilters(tenantId), preferences: loadPreferences(tenantId) }
   const tenant = getTenantProfile(tenantId, customDimensions)
-  const proposal = inferSmartMode(loadConversationItems(tenantId, customDimensions), loadActivity(tenantId), 'all', tenant, loadActionStatuses(tenantId))
+  const session = loadSession(tenantId, customDimensions)
+  const visibleItems = session.items.slice(0, conversationLimit(tenant.dimensions.scale))
+  const statuses = Object.fromEntries(visibleItems.map((item) => [item.id, resolveWorkflow(
+    conversationActions[item.id].kind, session.workflowEvents.filter((event) => event.conversationId === item.id),
+  ).actionStatus])) as Record<string, ActionStatus>
+  const proposal = inferSmartMode(visibleItems, loadActivity(tenantId), 'all', tenant, statuses)
   const locked = tenant.dimensions.ai === 'triage' && localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true'
   return { mode, queues: locked ? loadVisibleFilters(tenantId) : proposal.queues, preferences: { ...defaultPreferences, ...proposal.preferences } }
 }
@@ -254,20 +367,6 @@ function loadWorkspaceConfig(tenantId: TenantId, customDimensions: TenantDimensi
 function matchesQuery(item: Conversation, query: string) {
   const term = query.trim().toLowerCase()
   return !term || [item.name, item.handle, item.preview, conversationActions[item.id]?.title ?? ''].some((value) => value.toLowerCase().includes(term))
-}
-
-function tenantConversationPriority(item: Conversation, rule: TenantWorkspaceRule, statuses: Record<string, ActionStatus>, assignments: Record<string, Assignment>, collaboration: TenantDimensions['collaboration'], data: TenantDimensions['data']) {
-  const status = actionStatus(item.id, statuses)
-  const kind = conversationActions[item.id].kind
-  // A paid request or explicit fulfillment promise always outranks value and sales signals.
-  if (status === 'pending' && kind === 'fulfillment') return 1000 + (data === 'sparse' ? item.unread : fanIntelligence[item.id].priorityScore)
-  if (collaboration === 'shifts' && assignments[item.id]?.handoffPending) return 550 + (status === 'pending' ? 20 : 0)
-  if (status !== 'pending') return status === 'scheduled' ? -10 : status === 'waiting' ? -20 : -30
-  const spend = Number(item.spend.replace(/[^\d.]/g, ''))
-  return rule.priorityWeights[kind]
-    + (data === 'sparse' ? 0 : fanIntelligence[item.id].priorityScore * 0.1)
-    + (data !== 'sparse' && spend >= 1000 ? rule.highValueBonus : 0)
-    + item.unread * rule.unreadBonus
 }
 
 function isHighValue(item: Conversation) {
@@ -284,13 +383,15 @@ function memoryCandidates(active: Conversation) {
 
 function App() {
   const messageAreaRef = useRef<HTMLDivElement>(null)
+  const selectedConversationRef = useRef<HTMLButtonElement>(null)
   const scoreDetailsRef = useRef<HTMLDetailsElement>(null)
   const factsSectionRef = useRef<HTMLElement>(null)
   const settingsDialogRef = useRef<HTMLDialogElement>(null)
   const tenantDialogRef = useRef<HTMLDialogElement>(null)
   const gradingDialogRef = useRef<HTMLDialogElement>(null)
   const demoDataDialogRef = useRef<HTMLDialogElement>(null)
-  const [tenantId, setTenantId] = useState<TenantId>(loadSelectedTenant)
+  const tenantId = useSessionStore((state) => state.tenantId)
+  const switchSessionTenant = useSessionStore((state) => state.switchTenant)
   const [customDimensions, setCustomDimensions] = useState<TenantDimensions>(loadCustomDimensions)
   const tenant = useMemo(() => getTenantProfile(tenantId, customDimensions), [tenantId, customDimensions])
   const workspaceRule = useMemo(() => getTenantWorkspaceRule(tenant), [tenant])
@@ -299,9 +400,13 @@ function App() {
   const [showGradingDialog, setShowGradingDialog] = useState(false)
   const [showDemoDataDialog, setShowDemoDataDialog] = useState(false)
   const [demoDataResult, setDemoDataResult] = useState('')
-  const [items, setItems] = useState<Conversation[]>(() => loadConversationItems(tenantId, customDimensions))
-  const [assignments, setAssignments] = useState<Record<string, Assignment>>(() => loadAssignments(tenantId, items, tenant.dimensions.collaboration))
+  const storedItems = useSessionStore((state) => state.items)
+  const items = useMemo(() => storedItems.slice(0, conversationLimit(tenant.dimensions.scale)), [storedItems, tenant.dimensions.scale])
+  const setItems = useSessionStore((state) => state.setItems)
+  const assignments = useSessionStore((state) => state.assignments)
+  const setAssignments = useSessionStore((state) => state.setAssignments)
   const [handoffOnly, setHandoffOnly] = useState(false)
+  const [pendingOnly, setPendingOnly] = useState(() => tenant.dimensions.scale === 'surge')
   const [showCompactInsights, setShowCompactInsights] = useState(false)
   const [triageLocked, setTriageLocked] = useState(() => localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true')
   const [evidenceReviewedId, setEvidenceReviewedId] = useState<string | null>(null)
@@ -317,29 +422,41 @@ function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [settingsView, setSettingsView] = useState<SettingsView>('smart')
   const [manualTab, setManualTab] = useState<ManualTab>('list')
-  const [drafts, setDrafts] = useState<Record<string, string>>(() => loadDrafts(tenantId))
-  const [actionStatuses, setActionStatuses] = useState<Record<string, ActionStatus>>(() => loadActionStatuses(tenantId))
+  const drafts = useSessionStore((state) => state.drafts)
+  const setDrafts = useSessionStore((state) => state.setDrafts)
+  const workflowEvents = useSessionStore((state) => state.workflowEvents)
+  const setWorkflowEvents = useSessionStore((state) => state.setWorkflowEvents)
+  const workflows = useMemo(() => Object.fromEntries(items.map((item) => [item.id, resolveWorkflow(
+    conversationActions[item.id].kind, workflowEvents.filter((event) => event.conversationId === item.id),
+  )])) as Record<string, ConversationWorkflow>, [items, workflowEvents])
+  const actionStatuses = useMemo(() => Object.fromEntries(Object.entries(workflows).map(([id, state]) => [id, state.actionStatus])) as Record<string, ActionStatus>, [workflows])
   const [openFanIds, setOpenFanIds] = useState(() => [workspaceRule.landingConversationId])
   const [note, setNote] = useState(() => conversations.find((item) => item.id === workspaceRule.landingConversationId)?.note ?? conversations[0].note)
   const [showAi, setShowAi] = useState(false)
   const [aiMode, setAiMode] = useState<AiMode>('reply')
-  const [savedMemories, setSavedMemories] = useState<Record<string, string[]>>(() => loadMemories(tenantId))
+  const savedMemories = useSessionStore((state) => state.savedMemories)
+  const setSavedMemories = useSessionStore((state) => state.setSavedMemories)
   const [toast, setToast] = useState('')
   const active = items.find((item) => item.id === activeId) ?? items[0]
+  const composition = useMemo(() => composeWorkspace({
+    tenant, conversations: items, actions: conversationActions, workflows,
+    intelligence: fanIntelligence, facts: fanFacts, assignments, activity,
+    reviewedEvidenceId: evidenceReviewedId,
+  }), [tenant, items, workflows, assignments, activity, evidenceReviewedId])
   const intelligence = fanIntelligence[active.id]
   const action = conversationActions[active.id]
   const activeActionStatus = actionStatus(active.id, actionStatuses)
   const draft = drafts[active.id] ?? ''
   const activeMemories = savedMemories[active.id] ?? []
   const activeAssignment = assignments[active.id] ?? { owner: '我', handoffPending: false, event: '会话已分配' }
-  const needsEvidence = tenant.dimensions.data === 'sparse' && evidenceReviewedId !== active.id
+  const needsEvidence = composition.decisions[active.id].needsVerification
   const handoffCount = items.filter((item) => assignments[item.id]?.handoffPending).length
-  const pendingCount = items.filter((item) => actionStatus(item.id, actionStatuses) === 'pending').length
-  const tenantInsight = tenant.dimensions.data === 'sparse'
+  const pendingCount = items.filter((item) => isOpenTask(item.id, actionStatuses)).length
+  const tenantInsight = action.kind === 'fulfillment'
+    ? `${action.reason} · ${workflows[active.id].fulfillmentStatus === 'delivered' ? '交付已确认' : workflows[active.id].fulfillmentStatus === 'reviewing' ? '团队核对中' : '交付待核对'}`
+    : tenant.dimensions.data === 'sparse'
     ? `${fanFacts[active.id].filter((fact) => fact.kind === 'recorded').length} 条平台记录 · 先核对建议所引资料`
-    : tenant.dimensions.tasks === 'fulfillment' && action.kind === 'fulfillment'
-      ? `${action.reason} · ${activeActionStatus === 'done' ? '已确认交付' : '等待履约确认'}`
-      : tenant.dimensions.tasks === 'purchase'
+    : tenant.dimensions.tasks === 'purchase'
         ? `先回应购买反馈 · ${intelligence.signal}`
         : tenant.dimensions.fans === 'high' ? active.summary
           : `${pendingCount} 项待处理 · ${intelligence.signal}`
@@ -374,9 +491,14 @@ function App() {
   ]
   const hasSmartChanges = configurationMode === 'manual' || queuesChanged || proposedPreferenceChanges.length > 0
   const recommendationIgnored = ignoredMode?.id === smartProposal.id && ignoredMode.until > Date.now()
-  const visibleConversations = useMemo(() => [...items]
+  const scopedConversations = useMemo(() => [...items]
     .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query) && (!handoffOnly || assignments[item.id]?.handoffPending))
-    .sort((a, b) => tenantConversationPriority(b, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration, tenant.dimensions.data) - tenantConversationPriority(a, workspaceRule, actionStatuses, assignments, tenant.dimensions.collaboration, tenant.dimensions.data)), [filter, items, query, actionStatuses, workspaceRule, assignments, tenant.dimensions.collaboration, tenant.dimensions.data, handoffOnly])
+    .sort((a, b) => composition.decisions[b.id].priority - composition.decisions[a.id].priority || a.id.localeCompare(b.id)), [filter, items, query, actionStatuses, assignments, handoffOnly, composition])
+  const scopedPendingCount = scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending).length
+  const visibleConversations = tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly
+    ? scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending)
+    : scopedConversations
+  const hasNextPending = visibleConversations.some((item) => item.id !== active.id && (isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending))
 
   useEffect(() => {
     if (configurationMode !== 'smart') return
@@ -388,28 +510,8 @@ function App() {
   }, [configurationMode, smartProposal, tenant.dimensions.ai, triageLocked])
 
   useEffect(() => {
-    localStorage.setItem(tenantKey(assignmentSettingsKey, tenantId), JSON.stringify(assignments))
-  }, [assignments, tenantId])
-
-  useEffect(() => {
     localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
   }, [triageLocked, tenantId])
-
-  useEffect(() => {
-    localStorage.setItem(tenantKey(draftSettingsKey, tenantId), JSON.stringify(drafts))
-  }, [drafts, tenantId])
-
-  useEffect(() => {
-    localStorage.setItem(tenantKey(actionSettingsKey, tenantId), JSON.stringify(actionStatuses))
-  }, [actionStatuses, tenantId])
-
-  useEffect(() => {
-    localStorage.setItem(tenantKey(conversationSettingsKey, tenantId), JSON.stringify(items))
-  }, [items, tenantId])
-
-  useEffect(() => {
-    localStorage.setItem(tenantKey(memorySettingsKey, tenantId), JSON.stringify(savedMemories))
-  }, [savedMemories, tenantId])
 
   useEffect(() => {
     localStorage.setItem(tenantKey(queueSettingsKey, tenantId), JSON.stringify(visibleFilterIds))
@@ -477,6 +579,10 @@ function App() {
     if (area) area.scrollTop = area.scrollHeight
   }, [active.id, active.messages.length, showAi])
 
+  useLayoutEffect(() => {
+    selectedConversationRef.current?.scrollIntoView({ block: 'nearest' })
+  }, [active.id, tenantId, filter, pendingOnly, handoffOnly])
+
   useEffect(() => {
     const area = messageAreaRef.current
     if (!area) return
@@ -495,33 +601,30 @@ function App() {
     setActivity((current) => [...current.filter((event) => event.at >= now - 7 * 24 * 60 * 60 * 1000), { type, focus, at: now }].slice(-40))
   }
 
+  function recordWorkflowEvent(type: WorkflowEventType) {
+    setWorkflowEvents((current) => [...current, {
+      id: crypto.randomUUID(), conversationId: active.id, type, at: Date.now(),
+    }])
+  }
+
   function changeTenant(nextId: TenantId) {
     if (nextId === tenantId) return
     localStorage.setItem(tenantKey(queueSettingsKey, tenantId), JSON.stringify(visibleFilterIds))
     localStorage.setItem(tenantKey(displaySettingsKey, tenantId), JSON.stringify(preferences))
     localStorage.setItem(tenantKey(configurationModeKey, tenantId), configurationMode)
     localStorage.setItem(tenantKey(activitySettingsKey, tenantId), JSON.stringify(activity))
-    localStorage.setItem(tenantKey(draftSettingsKey, tenantId), JSON.stringify(drafts))
-    localStorage.setItem(tenantKey(actionSettingsKey, tenantId), JSON.stringify(actionStatuses))
-    localStorage.setItem(tenantKey(conversationSettingsKey, tenantId), JSON.stringify(items))
-    localStorage.setItem(tenantKey(memorySettingsKey, tenantId), JSON.stringify(savedMemories))
-    localStorage.setItem(tenantKey(assignmentSettingsKey, tenantId), JSON.stringify(assignments))
     localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
     if (ignoredMode) localStorage.setItem(tenantKey(ignoredModeKey, tenantId), JSON.stringify(ignoredMode))
     else localStorage.removeItem(tenantKey(ignoredModeKey, tenantId))
     const nextWorkspace = loadWorkspaceConfig(nextId, customDimensions)
-    setTenantId(nextId)
+    switchSessionTenant(nextId, customDimensions)
     setConfigurationMode(nextWorkspace.mode)
     setVisibleFilterIds(nextWorkspace.queues)
     setPreferences(nextWorkspace.preferences)
     setActivity(loadActivity(nextId))
     setIgnoredMode(loadIgnoredMode(nextId))
-    setDrafts(loadDrafts(nextId))
-    setActionStatuses(loadActionStatuses(nextId))
-    const nextItems = loadConversationItems(nextId, customDimensions)
-    setItems(nextItems)
-    setAssignments(loadAssignments(nextId, nextItems, getTenantProfile(nextId, customDimensions).dimensions.collaboration))
     setHandoffOnly(false)
+    setPendingOnly(getTenantProfile(nextId, customDimensions).dimensions.scale === 'surge')
     setShowCompactInsights(false)
     setTriageLocked(localStorage.getItem(tenantKey(triageLockKey, nextId)) === 'true')
     setEvidenceReviewedId(null)
@@ -529,7 +632,6 @@ function App() {
     setActiveId(landingId)
     setOpenFanIds([landingId])
     setNote(conversations.find((item) => item.id === landingId)?.note ?? conversations[0].note)
-    setSavedMemories(loadMemories(nextId))
     setFilter('all')
     setQuery('')
     setShowAi(false)
@@ -541,11 +643,9 @@ function App() {
     const next = { ...customDimensions, [key]: value }
     setCustomDimensions(next)
     if (tenantId === 'custom') {
-      const nextItems = key === 'scale'
-        ? initialConversations(next.scale).map((base) => items.find((item) => item.id === base.id) ?? base)
-        : items
+      const nextItems = storedItems.slice(0, conversationLimit(next.scale))
       if (key === 'scale') {
-        setItems(nextItems)
+        setPendingOnly(next.scale === 'surge')
         if (!nextItems.some((item) => item.id === activeId)) {
           const landingId = getTenantWorkspaceRule(getTenantProfile('custom', next)).landingConversationId
           setActiveId(landingId)
@@ -560,10 +660,8 @@ function App() {
         setShowAi(false)
       }
       if (key === 'collaboration') {
-        setAssignments(defaultAssignments(nextItems, next.collaboration))
+        setAssignments(defaultAssignments(storedItems, next.collaboration))
         setHandoffOnly(false)
-      } else if (key === 'scale') {
-        setAssignments((current) => ({ ...defaultAssignments(nextItems, next.collaboration), ...current }))
       }
       if (key === 'ai') setTriageLocked(false)
       if (key === 'data') setEvidenceReviewedId(null)
@@ -663,11 +761,12 @@ function App() {
   }
 
   function resetDemoConversations() {
-    setItems(initialConversations(tenant.dimensions.scale))
-    setAssignments(defaultAssignments(initialConversations(tenant.dimensions.scale), tenant.dimensions.collaboration))
+    const resetItems = initialConversations(tenantId === 'custom' ? 'surge' : tenant.dimensions.scale)
+    setItems(resetItems)
+    setAssignments(defaultAssignments(resetItems, tenant.dimensions.collaboration))
     setHandoffOnly(false)
     setEvidenceReviewedId(null)
-    setActionStatuses({})
+    setWorkflowEvents([])
     setDrafts({})
     setActiveId(workspaceRule.landingConversationId)
     setOpenFanIds([workspaceRule.landingConversationId])
@@ -693,7 +792,7 @@ function App() {
     if (!draft.trim()) return
     const message: Message = { id: crypto.randomUUID(), text: draft.trim(), sentAt: '现在', direction: 'outbound', status: 'sent' }
     setItems((current) => current.map((item) => item.id === active.id ? { ...item, messages: [...item.messages, message], preview: message.text, updatedAt: '刚刚' } : item))
-    if (action.kind !== 'fulfillment') setActionStatuses((current) => ({ ...current, [active.id]: 'waiting' }))
+    recordWorkflowEvent('message_sent')
     recordActivity('sent', conversationFocus(active.id))
     updateDraft('')
     notify(action.kind === 'fulfillment' ? '消息已发送 · 付款请求仍待确认交付' : `消息已发送 · ${action.afterSend}`)
@@ -711,12 +810,12 @@ function App() {
 
   function createSmartTask() {
     if (!intelligence.strategy.taskAction || activeActionStatus === 'scheduled') return
-    setActionStatuses((current) => ({ ...current, [active.id]: action.kind === 'fulfillment' ? 'waiting' : 'scheduled' }))
+    recordWorkflowEvent(action.kind === 'fulfillment' ? 'review_requested' : 'followup_scheduled')
     notify(action.kind === 'fulfillment' ? '已请求团队核对 · 交付前仍需确认' : `已安排：${intelligence.strategy.taskAction}`)
   }
 
   function completeAction() {
-    setActionStatuses((current) => ({ ...current, [active.id]: 'done' }))
+    recordWorkflowEvent(action.kind === 'fulfillment' ? 'delivery_confirmed' : 'action_completed')
     notify(action.kind === 'fulfillment' ? '已确认交付完成' : '已完成当前行动')
   }
 
@@ -726,13 +825,13 @@ function App() {
   }
 
   function openNextPending() {
-    const next = visibleConversations.find((item) => item.id !== active.id && (actionStatus(item.id, actionStatuses) === 'pending' || assignments[item.id]?.handoffPending))
+    const next = visibleConversations.find((item) => item.id !== active.id && (isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending))
     if (next) selectConversation(next.id)
     else notify('当前筛选中没有下一条待处理会话')
   }
 
   function reopenAction() {
-    setActionStatuses((current) => ({ ...current, [active.id]: 'pending' }))
+    recordWorkflowEvent('action_reopened')
     notify('已恢复待办行动')
   }
 
@@ -740,16 +839,26 @@ function App() {
     recommendation: preferences.profileRecommendation ? <section className="detail-section priority-section">
       <div className="section-title"><h3><Sparkles size={17} />当前行动</h3><span className={`task-status ${activeActionStatus}`}>{activeActionStatus === 'pending' ? '待处理' : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '团队核对中' : '等待回复' : activeActionStatus === 'scheduled' ? '已安排' : '已完成'}</span></div>
       <p className="priority-context">{action.reason}</p>
+      {(workflows[active.id].paymentStatus === 'paid' || workflows[active.id].lastOutboundAt !== null) && <div className="workflow-facts" aria-label="当前业务状态">
+        {workflows[active.id].paymentStatus === 'paid' && <span>付款：已记录</span>}
+        {workflows[active.id].ppvStatus === 'purchased' && <span>PPV：已购买</span>}
+        {workflows[active.id].lastOutboundAt !== null && <span>回复：已发送</span>}
+        {action.kind === 'fulfillment' && <span className={workflows[active.id].fulfillmentStatus === 'delivered' ? 'complete' : 'open'}>交付：{workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认' : workflows[active.id].fulfillmentStatus === 'reviewing' ? '团队核对中' : '待核对'}</span>}
+      </div>}
       <h4>{activeActionStatus === 'pending' ? action.title : activeActionStatus === 'waiting' ? action.afterSend : activeActionStatus === 'scheduled' ? '按计划跟进' : action.kind === 'fulfillment' ? '交付已确认' : '当前无需主动处理'}</h4>
       <p className="priority-next">{activeActionStatus === 'pending' ? intelligence.strategy.nextAction : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '收到团队确认后，再向粉丝给出准确交付时间；完成交付后手动确认。' : '新消息到来后可恢复处理；也可以手动恢复待办。' : activeActionStatus === 'scheduled' ? '跟进已记录，届时核对最新对话再处理。' : '等待下一次消息或新的业务事件。'}</p>
       <div className="action-meta"><span>处理时间</span><strong>{activeActionStatus === 'pending' ? action.due : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '等待团队确认' : '等待粉丝' : activeActionStatus === 'scheduled' ? '已安排' : '暂无'}</strong></div>
-      <div className="task-controls">{activeActionStatus === 'pending' && intelligence.strategy.taskAction && <button className="priority-action" onClick={createSmartTask}>{action.kind === 'fulfillment' ? '请求团队核对' : intelligence.strategy.taskAction}</button>}{activeActionStatus === 'pending' ? <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button> : <><button className="task-secondary" onClick={reopenAction}>恢复待办</button>{activeActionStatus !== 'done' && <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button>}</>}</div>
-      <p className="strategy-boundary">沟通边界：{intelligence.strategy.guardrail}</p>
+      <div className="task-controls">{activeActionStatus === 'pending' && intelligence.strategy.taskAction && <button className="priority-action" onClick={createSmartTask}>{action.kind === 'fulfillment' ? '请求团队核对' : intelligence.strategy.taskAction}</button>}{activeActionStatus === 'pending' ? action.kind !== 'fulfillment' && <button className="task-secondary" onClick={completeAction}>标记完成</button> : <>{!(action.kind === 'fulfillment' && activeActionStatus === 'done') && <button className="task-secondary" onClick={reopenAction}>恢复待办</button>}{activeActionStatus !== 'done' && <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button>}</>}</div>
+      {activeActionStatus !== 'done' && <p className="strategy-boundary">沟通边界：{intelligence.strategy.guardrail}</p>}
       <details className="score-details" ref={scoreDetailsRef} onToggle={(event) => { if (event.currentTarget.open) setEvidenceReviewedId(active.id) }}><summary>查看建议依据与来源 <span>样例数据</span></summary><p className="score-explanation">{intelligence.reason}</p>{intelligence.scoreBreakdown.map((factor) => <div className="score-factor" key={factor.label}><div className="factor-line"><span>{factor.label}</span></div><small>{factor.source} · {factor.updatedAt}</small></div>)}<p className="data-updated">更新：{intelligence.updatedAt}</p></details>
     </section> : null,
     metrics: preferences.profileMetrics ? <div className="fan-summary"><span>{active.name} · {active.handle} <small>演示资料</small></span><strong>累计消费 {active.spend}</strong></div> : null,
-    facts: preferences.profileKnown ? <section className="detail-section facts-section" ref={factsSectionRef}><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3>{tenant.dimensions.data === 'sparse' && <button className="source-confirm" onClick={() => { setEvidenceReviewedId(active.id); notify('已核对当前会话来源') }}>{needsEvidence ? '确认已核对' : '已核对'}</button>}</div>{tenant.dimensions.data === 'sparse' && <p className="source-caution">仅将平台与团队记录视为已知事实；AI 推断仍待确认。</p>}{fanFacts[active.id].map((fact) => <div className="fact-row" key={fact.label}><div><strong>{fact.label}</strong><span className={`fact-kind ${fact.kind}`}>{fact.kind === 'recorded' ? '平台记录' : fact.kind === 'team' ? '团队记录' : 'AI 推断'}</span></div><p>{fact.value}</p><small>{fact.source} · {fact.updatedAt}</small></div>)}</section> : null,
-    memory: preferences.profileMemory ? <section className="detail-section"><div className="section-title"><h3><BrainCircuit size={17} />团队记录</h3><span className="memory-count">新增确认 {activeMemories.length}</span></div><p className="record-label">团队备注</p><p className="profile-note">{note}</p>{activeMemories.map((memory) => <p className="confirmed-memory" key={memory}><Check size={13} />{memory}<small>已由操作员确认</small></p>)}</section> : null,
+    facts: preferences.profileKnown ? <section className="detail-section facts-section" ref={factsSectionRef}><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3>{tenant.dimensions.data === 'sparse' && <button className="source-confirm" onClick={() => { setEvidenceReviewedId(active.id); notify('已核对当前会话来源') }}>{needsEvidence ? '确认已核对' : '已核对'}</button>}</div>{tenant.dimensions.data === 'sparse' && <p className="source-caution">仅将平台与团队记录视为已知事实；AI 推断仍待确认。</p>}{fanFacts[active.id].map((fact) => {
+      const deliveryFact = action.kind === 'fulfillment' && fact.label === '交付安排'
+      const state = workflows[active.id].fulfillmentStatus
+      return <div className="fact-row" key={fact.label}><div><strong>{fact.label}</strong><span className={`fact-kind ${fact.kind}`}>{fact.kind === 'recorded' ? '平台记录' : fact.kind === 'team' ? '团队记录' : 'AI 推断'}</span></div><p>{deliveryFact ? state === 'delivered' ? '已由操作员确认交付' : state === 'reviewing' ? '团队核对中，交付时间未确认' : fact.value : fact.value}</p><small>{deliveryFact && state !== 'awaiting-review' ? '本次演示操作 · 刚刚' : `${fact.source} · ${fact.updatedAt}`}</small></div>
+    })}</section> : null,
+    memory: preferences.profileMemory ? <section className="detail-section"><div className="section-title"><h3><BrainCircuit size={17} />团队记录</h3><span className="memory-count">新增确认 {activeMemories.length}</span></div><p className="record-label">团队备注</p><p className="profile-note">{action.kind === 'fulfillment' && workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认交付。原备注记录的是交付前的待核对情况。' : note}</p>{activeMemories.map((memory) => <p className="confirmed-memory" key={memory}><Check size={13} />{memory}<small>已由操作员确认</small></p>)}</section> : null,
   }
 
   return <main className={`app-shell workspace-${tenantId}`}>
@@ -759,20 +868,20 @@ function App() {
         <div className="queue-heading"><strong>行动队列</strong><span>{configurationMode === 'smart' ? workspaceRule.queueHint : '本租户手动配置'}</span></div>
         <div className="queue-grid" role="group" aria-label="行动队列">{visibleFilters.map((option) => <button key={option.id} className={`queue-button ${filter === option.id ? 'active' : ''}`} aria-pressed={filter === option.id} onClick={() => setInboxFilter(option.id)}><span>{option.label}</span><b>{queueCount(option.id)}</b></button>)}</div>
         <div className="list-toolbar"><strong>会话列表</strong><span>{visibleConversations.length} 位 · 按{workspaceRule.sortLabel}排序</span></div>
-        {((tenant.dimensions.ai === 'triage' && configurationMode === 'smart') || tenant.dimensions.collaboration === 'shifts' || tenant.dimensions.scale === 'surge') && <div className="list-workflow-tools">
+        {tenant.dimensions.scale !== 'low' && <div className={`load-action-bar ${tenant.dimensions.scale}`}><div><strong>{tenant.dimensions.scale === 'surge' && pendingOnly && filter === 'all' ? '待处理会话' : '当前会话'}</strong><span>{scopedPendingCount} 项待处理 · 共 {scopedConversations.length} 位</span></div><div className="load-actions">{tenant.dimensions.scale === 'surge' && filter === 'all' && <button className="load-view-toggle" onClick={() => setPendingOnly((value) => !value)}>{pendingOnly ? '查看全部' : '只看待处理'}</button>}<button onClick={openNextPending} disabled={!hasNextPending}>下一条</button></div></div>}
+        {((tenant.dimensions.ai === 'triage' && configurationMode === 'smart') || tenant.dimensions.collaboration === 'shifts') && <div className="list-workflow-tools">
           {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <button className={triageLocked ? 'active' : ''} onClick={() => setTriageLocked((value) => !value)} title="只冻结次要行动队列的顺序，不影响会话优先级">{triageLocked ? '队列已固定' : '队列自适应'}</button>}
           {tenant.dimensions.collaboration === 'shifts' && <button className={handoffOnly ? 'active' : ''} onClick={() => setHandoffOnly((value) => !value)}>待交接 {handoffCount}</button>}
-          {tenant.dimensions.scale === 'surge' && <button onClick={openNextPending}>下一条待办 →</button>}
         </div>}
         {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <p className="triage-reason">{triageLocked ? '已固定当前队列顺序，可随时恢复自适应。' : '次要队列根据近期操作排序；已付款履约始终优先。'}</p>}</div>
-      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all') }}>显示会话</button></div>}
+      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all'); setPendingOnly(false); setHandoffOnly(false) }}>显示会话</button></div>}
       <div className="conversation-list">{visibleConversations.length ? visibleConversations.map((item) => {
         const itemAction = conversationActions[item.id]
         const itemStatus = actionStatus(item.id, actionStatuses)
-        return <button className={`conversation ${item.id === active.id ? 'selected' : ''}`} onClick={() => selectConversation(item.id)} key={item.id}>
-          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><time>{item.updatedAt}</time></div>{preferences.listPreview && <p>{item.preview}</p>}{preferences.listPriority && <div className="conversation-meta"><span title={itemAction.reason}>{itemStatus === 'pending' ? itemAction.title : itemStatus === 'waiting' ? itemAction.afterSend : itemStatus === 'scheduled' ? '已安排跟进' : '暂无待办'}</span><em className={`action-state ${itemStatus}`}>{itemStatus === 'pending' ? '待办' : itemStatus === 'waiting' ? '等待' : itemStatus === 'scheduled' ? '已安排' : '完成'}</em></div>}{(tenant.dimensions.collaboration !== 'solo' || tenant.dimensions.fans === 'high') && <div className="conversation-signals">{tenant.dimensions.collaboration !== 'solo' && <span>{assignments[item.id]?.handoffPending ? '待交接' : `负责人 ${assignments[item.id]?.owner ?? '我'}`}</span>}{tenant.dimensions.fans === 'high' && isHighValue(item) && <span>高价值关系</span>}</div>}{preferences.listSla && itemStatus === 'pending' && <small className="sla-hint">{itemAction.due}</small>}</div>{item.unread > 0 && <b className="unread-count">{item.unread}</b>}
+        return <button ref={item.id === active.id ? selectedConversationRef : undefined} className={`conversation ${item.id === active.id ? 'selected' : ''}`} onClick={() => selectConversation(item.id)} key={item.id}>
+          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><time>{item.updatedAt}</time></div>{preferences.listPreview && <p>{item.preview}</p>}{preferences.listPriority && <div className="conversation-meta"><span title={composition.decisions[item.id].reasons.join(' · ')}>{composition.decisions[item.id].primaryAction}</span><em className={`action-state ${itemStatus}`}>{composition.decisions[item.id].statusLabel}</em></div>}{(tenant.dimensions.collaboration !== 'solo' || tenant.dimensions.fans === 'high' || composition.decisions[item.id].needsVerification) && <div className="conversation-signals">{tenant.dimensions.collaboration !== 'solo' && <span>{assignments[item.id]?.handoffPending ? '待交接' : `负责人 ${assignments[item.id]?.owner ?? '我'}`}</span>}{tenant.dimensions.fans === 'high' && isHighValue(item) && <span>高价值关系</span>}{composition.decisions[item.id].needsVerification && <span>待核对来源</span>}</div>}{preferences.listSla && itemStatus === 'pending' && <small className="sla-hint">{itemAction.due}</small>}</div>{item.unread > 0 && <b className="unread-count">{item.unread}</b>}
         </button>
-      }) : <div className="empty-list"><Search size={18} /><strong>没有匹配的用户</strong><span>尝试调整搜索或筛选条件</span></div>}</div>
+      }) : <div className="empty-list"><Search size={18} /><strong>{tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly ? '当前没有待处理会话' : '没有匹配的用户'}</strong><span>{tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly ? '可点“查看全部”浏览其他会话' : '尝试调整搜索或筛选条件'}</span></div>}</div>
       <div className="inbox-settings">
         <div className="user-settings-entry">
           <button className={`${showSettings ? 'active' : ''} ${hasSmartChanges && !recommendationIgnored ? 'has-suggestion' : ''}`} onClick={() => { setSettingsView('smart'); setShowSettings(true) }} aria-label={hasSmartChanges && !recommendationIgnored ? '工作台设置，有智能建议' : '工作台设置'} aria-haspopup="dialog" aria-expanded={showSettings} aria-controls="workspace-settings-dialog" title="配置当前租户的工作台"><Settings2 size={16} /><span><strong>工作台设置</strong><small>调整当前租户的显示方式</small></span></button>
@@ -780,7 +889,7 @@ function App() {
       </div>
     </aside>
     <section className="chat-panel" aria-label="聊天模块">
-      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><a className="report-link chat-report-trigger" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
       {openFanIds.length > 1 && <div className="fan-tabs" role="tablist" aria-label="已打开的粉丝会话">{openFanIds.map((fanId) => {
         const fan = items.find((item) => item.id === fanId)
         if (!fan) return null
@@ -788,7 +897,12 @@ function App() {
       })}</div>}
       <div className="message-area" ref={messageAreaRef}><div className="message-thread"><div className="date-pill">今天</div>{active.messages.map((message) => <div className={`message-row ${message.direction}`} key={message.id}><div className="bubble">{message.text}</div>{preferences.chatTimestamps && <small>{message.sentAt}{message.status === 'read' ? ' · 已读' : ''}</small>}</div>)}</div></div>
       <footer className="composer">
-        {preferences.chatNextStep && <div className={`context-action ${activeActionStatus}`}><div className="context-action-copy"><Sparkles size={15} /><span>{activeActionStatus === 'pending' ? <><strong>{action.title}</strong> · {intelligence.strategy.nextAction}</> : activeActionStatus === 'waiting' ? action.afterSend : activeActionStatus === 'scheduled' ? '跟进已安排，等待到期处理' : '当前没有待办行动'}</span></div><div className="context-action-buttons">{activeActionStatus === 'pending' && (action.kind === 'renewal' ? <button onClick={createSmartTask}>安排跟进</button> : preferences.chatCopilot && <button onClick={() => { setAiMode('reply'); setShowAi(true) }}>生成回复</button>)}{preferences.profileRecommendation && <button onClick={showRecommendationEvidence}>查看依据</button>}</div></div>}
+        {(preferences.chatNextStep || (action.kind === 'fulfillment' && activeActionStatus !== 'done')) && <ActionTray
+          action={action} workflow={workflows[active.id]} decision={composition.decisions[active.id]}
+          aiEnabled={preferences.chatCopilot} showEvidence={preferences.profileRecommendation}
+          onOpenAi={() => { setAiMode('reply'); setShowAi(true) }} onReview={createSmartTask}
+          onComplete={completeAction} onSchedule={createSmartTask} onShowEvidence={showRecommendationEvidence}
+        />}
         {preferences.chatCopilot && <div className="quick-actions"><button onClick={() => { setShowAi((current) => !current); setAiMode(workspaceRule.copilotStart) }} className={`ai-button ${showAi ? 'active' : ''}`}><BrainCircuit size={16} />{workspaceRule.copilotLabel}</button><span>{workspaceRule.chatHint}</span></div>}
         {preferences.chatCopilot && showAi && <section className="ai-workbench">
           <div className="ai-workbench-header"><div><span className="ai-orb"><Sparkles size={15} /></span><div><strong>AI Copilot</strong><p>所有建议都可编辑，确认后才会发送或写入资料。</p></div></div><button onClick={() => setShowAi(false)} aria-label="关闭 AI Copilot"><X size={16} /></button></div>
@@ -803,13 +917,13 @@ function App() {
     </section>
     {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
     <aside className={`detail-panel ${showCompactInsights ? 'mobile-open' : ''}`} aria-label="会话洞察">
-      <header><h2>会话洞察</h2><div className="detail-header-actions"><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
+      <header><h2>会话洞察</h2><div className="detail-header-actions"><a className="report-link" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
       <div className="tenant-insight-brief"><span>{workspaceRule.insightTitle}</span><strong>{tenantInsight}</strong><div className="tenant-insight-metrics">{insightMetrics.map((metric) => <div key={metric.label}><small>{metric.label}</small><b>{metric.value}</b></div>)}</div>{tenantId === 'custom' && <div className="tenant-custom-signals"><span>{dimensionLabel('collaboration', customDimensions.collaboration)}</span><span>AI：{dimensionLabel('ai', customDimensions.ai)}</span></div>}</div>
       {tenant.dimensions.data === 'sparse' && <div className="coverage-warning"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；AI 推断请先核对来源。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}
       {tenant.dimensions.data === 'partial' && <div className="data-quality-note"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；购买与偏好线索请留意来源和更新时间。</span></div>}
-      {tenant.dimensions.data === 'complete' && tenant.dimensions.scale !== 'surge' && <div className="data-quality-note complete"><ShieldCheck size={14} /><span>资料较充分，可参考已记录偏好；新推断仍需确认。</span></div>}
+      {tenant.dimensions.data === 'complete' && <div className="data-quality-note complete"><ShieldCheck size={14} /><span>资料较充分，可参考已记录偏好；新推断仍需确认。</span></div>}
       {tenant.dimensions.collaboration !== 'solo' && <section className="collaboration-panel"><div><strong>{tenant.dimensions.collaboration === 'shifts' ? '轮班交接' : '小组协作'}</strong><span>{activeAssignment.handoffPending ? '待确认交接' : `负责人：${activeAssignment.owner}`}</span></div><p>{activeAssignment.event} · {action.kind === 'fulfillment' ? '付款与交付状态需一起移交。' : `最近消息：${active.preview}`}</p><div className="collaboration-actions">{activeAssignment.owner !== '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已认领当前会话')}>认领会话</button>}{tenant.dimensions.collaboration === 'shifts' && activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已确认本班次接手')}>确认交接</button>}{activeAssignment.owner === '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('Alex', tenant.dimensions.collaboration === 'shifts', tenant.dimensions.collaboration === 'shifts' ? '已发起交接，待下一班次确认' : '已转交 Alex')}>{tenant.dimensions.collaboration === 'shifts' ? '发起交接' : '转交 Alex'}</button>}</div></section>}
-      {tenant.dimensions.scale === 'surge' ? <><div className="high-volume-priority">优先展示当前行动与阻塞信息</div>{workspaceRule.detailOrder.slice(0, 2).map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}<details className="secondary-insights"><summary>展开消费与关系信息</summary>{workspaceRule.detailOrder.slice(2).map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}</details></> : workspaceRule.detailOrder.map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}
+      {composition.presentation.detailOrder.map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}
     </aside>
     <dialog className="tenant-dialog" id="tenant-switch-dialog" ref={tenantDialogRef} aria-labelledby="tenant-dialog-title" onClose={() => setShowTenantDialog(false)} onClick={(event) => {
       if (event.target !== tenantDialogRef.current) return

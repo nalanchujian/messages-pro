@@ -1,6 +1,7 @@
 import { conversationActions } from './data'
 import type { TenantProfile } from './tenantProfiles'
 import { getTenantWorkspaceRule } from './tenantWorkspaceRules'
+import { composeQueueOrder } from './workspaceEngine'
 import type { ActionStatus, Conversation } from './types'
 
 export type InboxFilter = 'all' | 'reply' | 'fulfillment' | 'renewal' | 'purchase-follow-up' | 'manual' | 'waiting'
@@ -47,11 +48,12 @@ export function inferSmartMode(items: Conversation[], activity: ActivityEvent[],
   const recent = activity.filter((event) => event.at >= Date.now() - 7 * 24 * 60 * 60 * 1000)
   const count = (queue: InboxFilter) => items.filter((item) => queue === 'waiting'
     ? ['waiting', 'scheduled'].includes(actionStatuses[item.id] ?? '')
-    : conversationActions[item.id]?.kind === queue && (actionStatuses[item.id] ?? (conversationActions[item.id]?.kind === 'manual' ? 'done' : 'pending')) === 'pending').length
+    : conversationActions[item.id]?.kind === queue && (
+      (actionStatuses[item.id] ?? (conversationActions[item.id]?.kind === 'manual' ? 'done' : 'pending')) === 'pending'
+      || (queue === 'fulfillment' && actionStatuses[item.id] === 'waiting')
+    )).length
   const primary = rule.queues[1]
-  const secondary = rule.queues.slice(2).map((queue, index) => ({ queue, index, usage: recent.filter((event) => event.focus === queue).length }))
-  if (tenant.dimensions.ai === 'triage') secondary.sort((a, b) => b.usage - a.usage || a.index - b.index)
-  const queues = ['all', primary, ...secondary.map((item) => item.queue)] as InboxFilter[]
+  const queues = composeQueueOrder(tenant, recent)
   const primaryLabel = ({ reply: '需回复', fulfillment: '待履约', renewal: '续订关怀', 'purchase-follow-up': '购买跟进', manual: '人工判断', waiting: '等待中', all: '全部' } as Record<InboxFilter, string>)[primary]
   const reasons = [`${rule.queueHint}，优先显示「${primaryLabel}」；当前有 ${count(primary)} 个相关会话。`]
   if (tenant.dimensions.ai === 'triage') reasons.push(recent.length
