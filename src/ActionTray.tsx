@@ -8,6 +8,7 @@ type Props = {
   decision: ConversationDecision
   aiEnabled: boolean
   showEvidence: boolean
+  highlighted?: boolean
   onOpenAi: () => void
   onReview: () => void
   onComplete: () => void
@@ -15,13 +16,13 @@ type Props = {
   onShowEvidence: () => void
 }
 
-export function ActionTray({ action, workflow, decision, aiEnabled, showEvidence, onOpenAi, onReview, onComplete, onSchedule, onShowEvidence }: Props) {
+export function ActionTray({ action, workflow, decision, aiEnabled, showEvidence, highlighted, onOpenAi, onReview, onComplete, onSchedule, onShowEvidence }: Props) {
   const isFulfillment = action.kind === 'fulfillment'
   const isDone = workflow.actionStatus === 'done'
   const stage = isFulfillment
     ? workflow.fulfillmentStatus === 'delivered' ? '已交付' : workflow.fulfillmentStatus === 'reviewing' ? '待确认交付' : '待核对订单'
     : workflow.actionStatus === 'waiting' ? '等待回复' : workflow.actionStatus === 'scheduled' ? '已安排跟进' : isDone ? '已完成' : '待处理'
-  return <section className={`action-tray ${isFulfillment ? 'is-fulfillment' : ''}`} aria-label="当前行动操作">
+  return <section className={`action-tray ${isFulfillment ? 'is-fulfillment' : ''}`} aria-label="当前行动操作" data-tour-highlight={highlighted}>
     <div className="action-tray-main">
       <span className="action-tray-icon">{isDone ? <Check size={16} /> : isFulfillment ? <ShieldCheck size={16} /> : <Sparkles size={16} />}</span>
       <div className="action-tray-copy"><div><strong>{decision.primaryAction}</strong><span>{stage}</span></div><p>{isFulfillment

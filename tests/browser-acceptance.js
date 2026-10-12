@@ -190,6 +190,80 @@ async (page) => {
   passed.push('旧版草稿迁移')
   await page.getByRole('button', { name: /^R Riley/ }).click()
   await verify('旧版行动状态迁移', insights.locator('.workflow-facts'), '交付：团队核对中')
+
+  await page.getByRole('textbox', { name: '搜索用户或对话' }).fill('Riley')
+  const workflowBeforeTour = await page.evaluate(() => JSON.stringify(['aster', 'north', 'pulse', 'seed'].map((id) =>
+    JSON.parse(localStorage.getItem(`messages-pro-session-v1:${id}`) || 'null')?.workflowEvents ?? [])))
+  await page.getByRole('button', { name: '一键演示' }).click()
+  const tour = page.getByRole('dialog', { name: '一键演示导览' })
+  await verify('当前租户优先进入对应导览', tour, 'Aster Studio')
+  if (await tour.getByRole('button', { name: 'Aster', exact: true }).getAttribute('aria-pressed') !== 'true') throw new Error('当前租户标签未选中')
+  await page.keyboard.press('Shift+Tab')
+  if (!await tour.getByRole('button', { name: '下一步' }).evaluate((button) => document.activeElement === button)) throw new Error('导览焦点跳出了弹窗')
+  await page.keyboard.press('Tab')
+  if (!await tour.getByRole('button', { name: '退出演示' }).evaluate((button) => document.activeElement === button)) throw new Error('导览焦点未循环到关闭按钮')
+  passed.push('导览键盘焦点留在弹窗内')
+  const tenantTourCases = [
+    { name: 'Aster', steps: [['把关系维护排在前面', '.queue-grid'], ['围绕已有兴趣继续聊', '.action-tray'], ['接话前看已知背景', '.detail-section']], screenshot: 'aster' },
+    { name: 'North', steps: [['先稳住高峰处理节奏', '.load-action-bar'], ['回复与交付分开处理', '.action-tray'], ['让下一班接得住', '.collaboration-panel']], screenshot: 'north' },
+    { name: 'Pulse', steps: [['购买后跟进排在前面', '.queue-grid'], ['先回应购买体验', '.action-tray'], ['用消费线索决定下一句', '.tenant-insight-brief']], screenshot: 'pulse' },
+    { name: 'Seed', steps: [['先把基础判断做对', '.queue-grid'], ['看清哪些信息还不可靠', '.coverage-warning'], ['核对来源后再用 AI 草稿', '.ai-evidence-gate']], screenshot: 'seed' },
+    { name: '自定义', steps: [['六维特征决定队列顺序', '.queue-grid'], ['AI 介入随团队能力变化', '.quick-actions'], ['洞察随资料完备度调整', '.tenant-insight-brief']], screenshot: 'custom' },
+  ]
+  for (const [tenantIndex, tenantCase] of tenantTourCases.entries()) {
+    for (const [stepIndex, [title, selector]] of tenantCase.steps.entries()) {
+      await verify(`${tenantCase.name} 导览第 ${stepIndex + 1} 步`, tour, title)
+      if (!await page.locator(`${selector}[data-tour-highlight="true"]`).isVisible()) throw new Error(`${tenantCase.name} 的 ${title} 未高亮`)
+      passed.push(`${tenantCase.name} 第 ${stepIndex + 1} 步高亮`)
+      if (tenantCase.name === 'Seed' && stepIndex === 2) {
+        await tour.getByRole('button', { name: '上一步' }).click()
+        await verify('导览支持上一步', tour, '看清哪些信息还不可靠')
+        await tour.getByRole('button', { name: '下一步' }).click()
+      }
+      if (stepIndex === tenantCase.steps.length - 1) {
+        await page.waitForTimeout(220)
+        await page.screenshot({ path: `output/playwright/guided-demo-${tenantCase.screenshot}.png` })
+      }
+      if (tenantIndex !== tenantTourCases.length - 1 || stepIndex !== tenantCase.steps.length - 1) await tour.locator('.demo-tour-next').click()
+    }
+  }
+  await tour.getByRole('button', { name: '结束并恢复' }).click()
+  if (await tour.count()) throw new Error('退出后导览仍然显示')
+  await verify('退出后恢复原租户', insights.locator('.tenant-switch-trigger'), 'Aster Studio')
+  await verify('退出后恢复原会话', chat.locator('.chat-identity'), 'Riley')
+  if (await page.getByRole('textbox', { name: '搜索用户或对话' }).inputValue() !== 'Riley') throw new Error('退出后未恢复搜索条件')
+  if (await page.getByRole('group', { name: '行动队列' }).locator('.queue-button').count() !== 5) throw new Error('演示覆盖了原手动配置')
+  const workflowAfterTour = await page.evaluate(() => JSON.stringify(['aster', 'north', 'pulse', 'seed'].map((id) =>
+    JSON.parse(localStorage.getItem(`messages-pro-session-v1:${id}`) || 'null')?.workflowEvents ?? [])))
+  if (workflowAfterTour !== workflowBeforeTour) throw new Error('导览修改了业务事件')
+  passed.push('退出恢复视图且不改业务事件')
+  await page.getByRole('button', { name: '一键演示' }).click()
+  await tour.getByRole('button', { name: 'Pulse', exact: true }).click()
+  await verify('租户标签直达 Pulse 导览', tour, '购买后跟进排在前面')
+  await tour.getByRole('button', { name: '退出演示' }).click()
+  await page.setViewportSize({ width: 800, height: 900 })
+  await page.getByRole('button', { name: '一键演示' }).click()
+  await tour.getByRole('button', { name: '下一步' }).click()
+  await tour.getByRole('button', { name: '下一步' }).click()
+  if (!await insights.locator('.detail-section[data-tour-highlight="true"]').isVisible()) throw new Error('窄屏导览未展开右侧团队记录')
+  await page.screenshot({ path: 'output/playwright/guided-demo-800.png' })
+  await page.keyboard.press('Escape')
+  if (await page.getByRole('dialog', { name: '一键演示导览' }).count()) throw new Error('Esc 未退出窄屏导览')
+  passed.push('窄屏导览自动展开右侧重点')
+  passed.push('Esc 退出导览')
+  await page.setViewportSize({ width: 1440, height: 900 })
+  for (const [tenantName, startingTitle] of [['North Agency 规模效率型', '先稳住高峰处理节奏'], ['Pulse House 增长转化型', '购买后跟进排在前面'], ['Seed Club 冷启动带教型', '先把基础判断做对'], ['自定义租户 自由组合六个维度', '六维特征决定队列顺序']]) {
+    await switchTenant(tenantName)
+    await page.getByRole('button', { name: '一键演示' }).click()
+    await verify(`${tenantName} 从本租户开始`, tour, startingTitle)
+    await tour.getByRole('button', { name: '退出演示' }).click()
+  }
+  await insights.getByRole('button', { name: /^切换演示租户/ }).click()
+  await page.getByRole('button', { name: 'Aster Studio 精品关系型' }).click()
+  await page.getByRole('button', { name: '导览当前租户' }).click()
+  await page.waitForFunction(() => !document.querySelector('#tenant-switch-dialog')?.open)
+  await verify('租户弹窗直达对应导览', tour, '把关系维护排在前面')
+  await tour.getByRole('button', { name: '退出演示' }).click()
   if (errors.length) throw new Error(`浏览器脚本错误：${errors.join('; ')}`)
-  return { result: 'PASS', checks: passed.length, passed, screenshots: ['output/playwright/stage1-reviewing.png', 'output/playwright/stage1-delivered.png', 'output/playwright/tenant-north.png', 'output/playwright/tenant-pulse.png', 'output/playwright/tenant-seed.png', ...[1920, 1440, 1280, 800].map((width) => `output/playwright/responsive-${width}.png`)] }
+  return { result: 'PASS', checks: passed.length, passed, screenshots: ['output/playwright/stage1-reviewing.png', 'output/playwright/stage1-delivered.png', 'output/playwright/tenant-north.png', 'output/playwright/tenant-pulse.png', 'output/playwright/tenant-seed.png', ...['aster', 'north', 'pulse', 'seed', 'custom', '800'].map((name) => `output/playwright/guided-demo-${name}.png`), ...[1920, 1440, 1280, 800].map((width) => `output/playwright/responsive-${width}.png`)] }
 }
