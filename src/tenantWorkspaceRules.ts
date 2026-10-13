@@ -47,7 +47,7 @@ export const tenantWorkspaceRules: Record<PresetTenantId, TenantWorkspaceRule> =
     insightTitle: '处理状态', landingConversationId: 'riley',
     queues: ['all', 'fulfillment', 'reply', 'waiting', 'purchase-follow-up', 'manual'],
     preferences: {
-      compactList: false, listPreview: true, listPriority: true, listSla: true,
+      compactList: true, listPreview: true, listPriority: true, listSla: true,
       chatNextStep: true, chatCopilot: true, chatTimestamps: true, chatHelp: false,
       profileMetrics: true, profileRecommendation: true, profileKnown: true, profileMemory: true,
     },
@@ -76,8 +76,8 @@ export const tenantWorkspaceRules: Record<PresetTenantId, TenantWorkspaceRule> =
     queues: ['all', 'reply', 'renewal', 'fulfillment', 'manual', 'waiting'],
     preferences: {
       compactList: false, listPreview: true, listPriority: true, listSla: true,
-      chatNextStep: false, chatCopilot: true, chatTimestamps: true, chatHelp: true,
-      profileMetrics: false, profileRecommendation: true, profileKnown: true, profileMemory: true,
+      chatNextStep: true, chatCopilot: true, chatTimestamps: true, chatHelp: true,
+      profileMetrics: true, profileRecommendation: true, profileKnown: true, profileMemory: true,
     },
     detailOrder: ['facts', 'recommendation', 'memory', 'metrics'],
     priorityWeights: { reply: 67, fulfillment: 108, 'purchase-follow-up': 60, renewal: 70, manual: 42 },
@@ -87,7 +87,7 @@ export const tenantWorkspaceRules: Record<PresetTenantId, TenantWorkspaceRule> =
 
 // Every preset and custom tenant uses the same six-dimensional behavior model.
 export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRule {
-  const { fans, tasks, data, collaboration, ai } = tenant.dimensions
+  const { scale, fans, tasks, data, collaboration, ai } = tenant.dimensions
   const preset = tenant.id === 'custom' ? null : tenantWorkspaceRules[tenant.id]
   const buyerFocus = tasks === 'purchase'
   const sparseData = data === 'sparse'
@@ -116,7 +116,7 @@ export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRu
     buyerFocus ? '留意购买后的反馈' : '',
     sparseData ? '先核对资料与推断' : '',
     collaboration === 'shifts' ? '保留交接线索' : '',
-    ai === 'advisory' ? 'AI 按需提供建议' : ai === 'triage' ? '队列根据近期操作自适应排序' : '',
+    ai === 'advisory' ? 'AI 按需提供建议' : ai === 'triage' ? '推荐下一条并解释原因' : '',
   ].filter(Boolean)
   return {
     modeId: preset?.modeId ?? (sparseData ? 'guidance' : buyerFocus ? 'purchase' : fans === 'high' ? 'relationship' : 'reply'),
@@ -132,9 +132,9 @@ export function getTenantWorkspaceRule(tenant: TenantProfile): TenantWorkspaceRu
     landingConversationId: preset?.landingConversationId ?? (tasks === 'fulfillment' ? 'riley' : buyerFocus ? 'leo' : fans === 'high' ? 'mason' : 'nate'),
     queues,
     preferences: {
-      compactList: false, listPreview: true, listPriority: true, listSla: true,
-      chatNextStep: ai !== 'advisory', chatCopilot: true, chatTimestamps: true, chatHelp: sparseData || ai === 'advisory',
-      profileMetrics: data === 'complete' || buyerFocus || fans !== 'low', profileRecommendation: ai !== 'advisory',
+      compactList: scale === 'surge', listPreview: true, listPriority: true, listSla: true,
+      chatNextStep: true, chatCopilot: true, chatTimestamps: true, chatHelp: sparseData || ai === 'advisory',
+      profileMetrics: true, profileRecommendation: true,
       profileKnown: true,
       profileMemory: data === 'complete' || fans === 'high' || collaboration === 'shifts',
     },

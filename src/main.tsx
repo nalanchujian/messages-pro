@@ -15,11 +15,14 @@ import { resolveWorkflow } from './workflow'
 import { composeWorkspace } from './workspaceEngine'
 import type { Assignment } from './workspaceEngine'
 import { ActionTray } from './ActionTray'
+import { buildWorkPlan } from './workPlan'
+import { presentConversation } from './conversationPresentation'
 import { DemoTour, getDemoTourSteps } from './DemoTour'
 import type { DemoTourStep } from './DemoTour'
 import './styles.css'
 
 type AiMode = 'reply' | 'strategy' | 'rewrite' | 'memory'
+type InsightView = 'work' | 'fan'
 type SettingsView = 'smart' | 'manual'
 type ManualTab = 'list' | 'chat' | 'sidebar'
 type ConfigurationMode = 'smart' | 'manual'
@@ -34,8 +37,10 @@ type TourRestoreState = {
   showAi: boolean
   aiMode: AiMode
   showCompactInsights: boolean
+  insightView: InsightView
   pendingOnly: boolean
   handoffOnly: boolean
+  valueOnly: boolean
   evidenceReviewedId: string | null
 }
 
@@ -74,7 +79,6 @@ const memorySettingsKey = 'messages-pro-confirmed-memories'
 const configurationModeKey = 'messages-pro-configuration-mode'
 const customDimensionsKey = 'messages-pro-custom-tenant-dimensions'
 const assignmentSettingsKey = 'messages-pro-assignments'
-const triageLockKey = 'messages-pro-triage-lock'
 const reportPdfUrl = `${import.meta.env.BASE_URL}reports/four-platform-eight-module-analysis.pdf`
 const tenantKey = (key: string, tenantId: TenantId) => `${key}:${tenantId}`
 
@@ -371,13 +375,12 @@ function loadWorkspaceConfig(tenantId: TenantId, customDimensions: TenantDimensi
   if (mode === 'manual') return { mode, queues: loadVisibleFilters(tenantId), preferences: loadPreferences(tenantId) }
   const tenant = getTenantProfile(tenantId, customDimensions)
   const session = loadSession(tenantId, customDimensions)
-  const visibleItems = session.items.slice(0, conversationLimit(tenant.dimensions.scale))
+  const visibleItems = session.items
   const statuses = Object.fromEntries(visibleItems.map((item) => [item.id, resolveWorkflow(
     conversationActions[item.id].kind, session.workflowEvents.filter((event) => event.conversationId === item.id),
   ).actionStatus])) as Record<string, ActionStatus>
   const proposal = inferSmartMode(visibleItems, loadActivity(tenantId), 'all', tenant, statuses)
-  const locked = tenant.dimensions.ai === 'triage' && localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true'
-  return { mode, queues: locked ? loadVisibleFilters(tenantId) : proposal.queues, preferences: { ...defaultPreferences, ...proposal.preferences } }
+  return { mode, queues: proposal.queues, preferences: { ...defaultPreferences, ...proposal.preferences } }
 }
 
 function matchesQuery(item: Conversation, query: string) {
@@ -423,14 +426,15 @@ function App() {
   const currentTourStep = tourStep === null ? null : tourSteps[tourStep]
   const [demoDataResult, setDemoDataResult] = useState('')
   const storedItems = useSessionStore((state) => state.items)
-  const items = useMemo(() => storedItems.slice(0, conversationLimit(tenant.dimensions.scale)), [storedItems, tenant.dimensions.scale])
+  const items = storedItems
   const setItems = useSessionStore((state) => state.setItems)
   const assignments = useSessionStore((state) => state.assignments)
   const setAssignments = useSessionStore((state) => state.setAssignments)
   const [handoffOnly, setHandoffOnly] = useState(false)
+  const [valueOnly, setValueOnly] = useState(false)
   const [pendingOnly, setPendingOnly] = useState(() => tenant.dimensions.scale === 'surge')
   const [showCompactInsights, setShowCompactInsights] = useState(false)
-  const [triageLocked, setTriageLocked] = useState(() => localStorage.getItem(tenantKey(triageLockKey, tenantId)) === 'true')
+  const [insightView, setInsightView] = useState<InsightView>('work')
   const [evidenceReviewedId, setEvidenceReviewedId] = useState<string | null>(null)
   const [activeId, setActiveId] = useState(() => workspaceRule.landingConversationId)
   const [query, setQuery] = useState('')
@@ -489,12 +493,12 @@ function App() {
   const visibleProfileSections = profilePreferenceKeys.filter((key) => preferences[key]).length
   const queueCount = (id: InboxFilter) => items.filter((item) => matchesQuery(item, query) && matchesFilter(item, id, actionStatuses)).length
   const insightMetrics = tenant.dimensions.data === 'sparse'
-    ? [{ label: '资料覆盖', value: `${Math.round(tenant.signals.dataCoverage * 100)}%` }, { label: '待核对推断', value: String(fanFacts[active.id].filter((fact) => fact.kind === 'inferred').length) }]
+    ? [{ label: '资料覆盖', value: `${Math.round(tenant.signals.dataCoverage * 100)}%` }, { label: '待核对线索', value: String(fanFacts[active.id].filter((fact) => fact.kind === 'inferred').length) }]
     : tenant.dimensions.tasks === 'fulfillment'
-      ? [{ label: '待履约', value: String(queueCount('fulfillment')) }, { label: '需回复', value: String(queueCount('reply')) }, { label: '交接中', value: String(handoffCount) }]
+      ? [{ label: '当前付款', value: workflows[active.id].paymentStatus === 'paid' ? '已记录' : '未记录' }, { label: '交付状态', value: workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认' : workflows[active.id].fulfillmentStatus === 'reviewing' ? '核对中' : '待核对' }]
       : tenant.dimensions.tasks === 'purchase'
-        ? [{ label: '购买跟进', value: String(queueCount('purchase-follow-up')) }, { label: '当前消费', value: active.spend }]
-        : [{ label: '高价值占比', value: `${Math.round(tenant.signals.highValueShare * 100)}%` }, { label: '当前消费', value: active.spend }]
+        ? [{ label: 'PPV 状态', value: workflows[active.id].ppvStatus === 'purchased' ? '已购买' : '未购买' }, { label: '当前消费', value: active.spend }]
+        : [{ label: '当前消费', value: active.spend }, { label: '已确认记忆', value: String(activeMemories.length) }]
   const smartProposal = useMemo(() => inferSmartMode(items, activity, filter, tenant, actionStatuses), [items, activity, filter, tenant, actionStatuses])
   const proposedQueues = smartProposal.queues.filter((id) => inboxFilters.some((option) => option.id === id)).slice(0, 6)
   const addedQueues = proposedQueues.filter((id) => !visibleFilterIds.includes(id))
@@ -516,26 +520,26 @@ function App() {
   const hasSmartChanges = configurationMode === 'manual' || queuesChanged || proposedPreferenceChanges.length > 0
   const recommendationIgnored = ignoredMode?.id === smartProposal.id && ignoredMode.until > Date.now()
   const scopedConversations = useMemo(() => [...items]
-    .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query) && (!handoffOnly || assignments[item.id]?.handoffPending))
-    .sort((a, b) => composition.decisions[b.id].priority - composition.decisions[a.id].priority || a.id.localeCompare(b.id)), [filter, items, query, actionStatuses, assignments, handoffOnly, composition])
+    .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query)
+      && (!handoffOnly || assignments[item.id]?.handoffPending) && (!valueOnly || isHighValue(item)))
+    .sort((a, b) => composition.decisions[b.id].priority - composition.decisions[a.id].priority || a.id.localeCompare(b.id)), [filter, items, query, actionStatuses, assignments, handoffOnly, valueOnly, composition])
   const scopedPendingCount = scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending).length
-  const visibleConversations = tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly
+  const visibleConversations = tenant.dimensions.scale !== 'low' && filter === 'all' && pendingOnly
     ? scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending)
     : scopedConversations
   const hasNextPending = visibleConversations.some((item) => item.id !== active.id && (isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending))
+  const recommendedNext = tenant.dimensions.ai === 'triage'
+    ? visibleConversations.find((item) => item.id !== active.id && (isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending))
+    : undefined
 
   useEffect(() => {
     if (configurationMode !== 'smart') return
-    if (!(tenant.dimensions.ai === 'triage' && triageLocked)) setVisibleFilterIds((current) => current.join(',') === smartProposal.queues.join(',') ? current : smartProposal.queues)
+    setVisibleFilterIds((current) => current.join(',') === smartProposal.queues.join(',') ? current : smartProposal.queues)
     setPreferences((current) => {
       const next = { ...defaultPreferences, ...smartProposal.preferences }
       return (Object.keys(next) as Array<keyof DisplayPreferences>).every((key) => current[key] === next[key]) ? current : next
     })
-  }, [configurationMode, smartProposal, tenant.dimensions.ai, triageLocked])
-
-  useEffect(() => {
-    localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
-  }, [triageLocked, tenantId])
+  }, [configurationMode, smartProposal])
 
   useEffect(() => {
     localStorage.setItem(tenantKey(queueSettingsKey, tenantId), JSON.stringify(visibleFilterIds))
@@ -652,7 +656,6 @@ function App() {
     localStorage.setItem(tenantKey(displaySettingsKey, tenantId), JSON.stringify(preferences))
     localStorage.setItem(tenantKey(configurationModeKey, tenantId), configurationMode)
     localStorage.setItem(tenantKey(activitySettingsKey, tenantId), JSON.stringify(activity))
-    localStorage.setItem(tenantKey(triageLockKey, tenantId), String(triageLocked))
     if (ignoredMode) localStorage.setItem(tenantKey(ignoredModeKey, tenantId), JSON.stringify(ignoredMode))
     else localStorage.removeItem(tenantKey(ignoredModeKey, tenantId))
     const nextWorkspace = loadWorkspaceConfig(nextId, customDimensions)
@@ -663,9 +666,10 @@ function App() {
     setActivity(loadActivity(nextId))
     setIgnoredMode(loadIgnoredMode(nextId))
     setHandoffOnly(false)
+    setValueOnly(false)
     setPendingOnly(getTenantProfile(nextId, customDimensions).dimensions.scale === 'surge')
     setShowCompactInsights(false)
-    setTriageLocked(localStorage.getItem(tenantKey(triageLockKey, nextId)) === 'true')
+    setInsightView('work')
     setEvidenceReviewedId(null)
     const landingId = getTenantWorkspaceRule(getTenantProfile(nextId, customDimensions)).landingConversationId
     setActiveId(landingId)
@@ -685,17 +689,19 @@ function App() {
     setFilter('all')
     setQuery('')
     setHandoffOnly(false)
+    setValueOnly(false)
     setPendingOnly(getTenantProfile(step.tenantId, customDimensions).dimensions.scale === 'surge')
     setEvidenceReviewedId(null)
     setShowAi(Boolean(step.showAi))
     setAiMode('reply')
     setShowCompactInsights(window.innerWidth <= 1000 && ['memory', 'purchase', 'collaboration', 'coverage', 'insight'].includes(step.highlight))
+    setInsightView(step.highlight === 'memory' ? 'fan' : 'work')
   }
 
   function startDemoTour() {
     if (tourStep !== null) return
     tourRestoreRef.current = { tenantId, activeId, openFanIds, note, filter, query, showAi, aiMode,
-      showCompactInsights, pendingOnly, handoffOnly, evidenceReviewedId }
+      showCompactInsights, insightView, pendingOnly, handoffOnly, valueOnly, evidenceReviewedId }
     setShowTenantDialog(false)
     setShowSettings(false)
     setTourStartTenantId(tenantId)
@@ -717,8 +723,10 @@ function App() {
     setShowAi(previous.showAi)
     setAiMode(previous.aiMode)
     setShowCompactInsights(previous.showCompactInsights)
+    setInsightView(previous.insightView)
     setPendingOnly(previous.pendingOnly)
     setHandoffOnly(previous.handoffOnly)
+    setValueOnly(previous.valueOnly)
     setEvidenceReviewedId(previous.evidenceReviewedId)
     requestAnimationFrame(() => tourTriggerRef.current?.focus())
   }
@@ -734,29 +742,11 @@ function App() {
     const next = { ...customDimensions, [key]: value }
     setCustomDimensions(next)
     if (tenantId === 'custom') {
-      const nextItems = storedItems.slice(0, conversationLimit(next.scale))
-      if (key === 'scale') {
-        setPendingOnly(next.scale === 'surge')
-        if (!nextItems.some((item) => item.id === activeId)) {
-          const landingId = getTenantWorkspaceRule(getTenantProfile('custom', next)).landingConversationId
-          setActiveId(landingId)
-          setOpenFanIds([landingId])
-        }
-      }
-      if (key === 'tasks') {
-        const landingId = getTenantWorkspaceRule(getTenantProfile('custom', next)).landingConversationId
-        setActiveId(landingId)
-        setOpenFanIds((current) => current.includes(landingId) ? current : [...current, landingId])
-        setNote(conversations.find((item) => item.id === landingId)?.note ?? conversations[0].note)
-        setShowAi(false)
-      }
-      if (key === 'collaboration') {
-        setAssignments(defaultAssignments(storedItems, next.collaboration))
-        setHandoffOnly(false)
-      }
-      if (key === 'ai') setTriageLocked(false)
+      if (key === 'scale' && next.scale === 'low') setPendingOnly(false)
+      if (key === 'fans' && next.fans === 'low') setValueOnly(false)
+      if (key === 'collaboration' && next.collaboration === 'solo') setHandoffOnly(false)
       if (key === 'data') setEvidenceReviewedId(null)
-      const proposal = inferSmartMode(nextItems, activity, filter, getTenantProfile('custom', next), actionStatuses)
+      const proposal = inferSmartMode(storedItems, activity, filter, getTenantProfile('custom', next), actionStatuses)
       setConfigurationMode('smart')
       setVisibleFilterIds(proposal.queues)
       setPreferences({ ...defaultPreferences, ...proposal.preferences })
@@ -868,15 +858,15 @@ function App() {
   }
 
   function showRecommendationEvidence() {
-    if (viewPreferences.profileRecommendation && scoreDetailsRef.current) {
-      scoreDetailsRef.current.open = true
-      scoreDetailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    } else if (factsSectionRef.current) {
-      factsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    } else if (viewPreferences.chatCopilot) {
-      setAiMode('strategy')
-      setShowAi(true)
-    }
+    const target: InsightView = tenant.dimensions.data === 'sparse' ? 'fan' : 'work'
+    setInsightView(target)
+    if (window.innerWidth <= 1000) setShowCompactInsights(true)
+    requestAnimationFrame(() => {
+      if (target === 'work' && scoreDetailsRef.current) {
+        scoreDetailsRef.current.open = true
+        scoreDetailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      } else if (factsSectionRef.current) factsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    })
   }
 
   function sendMessage() {
@@ -890,7 +880,9 @@ function App() {
   }
 
   function rewriteDraft() {
-    updateDraft(draftOptions(active)[1]?.text ?? draftOptions(active)[0].text)
+    const options = draftOptions(active)
+    const example = options.find((option) => !needsEvidence || !option.requiresVerification)
+    if (example) updateDraft(example.text)
   }
 
   function confirmMemory(memory: string) {
@@ -941,10 +933,10 @@ function App() {
       <div className="action-meta"><span>处理时间</span><strong>{activeActionStatus === 'pending' ? action.due : activeActionStatus === 'waiting' ? action.kind === 'fulfillment' ? '等待团队确认' : '等待粉丝' : activeActionStatus === 'scheduled' ? '已安排' : '暂无'}</strong></div>
       <div className="task-controls">{activeActionStatus === 'pending' && intelligence.strategy.taskAction && <button className="priority-action" onClick={createSmartTask}>{action.kind === 'fulfillment' ? '请求团队核对' : intelligence.strategy.taskAction}</button>}{activeActionStatus === 'pending' ? action.kind !== 'fulfillment' && <button className="task-secondary" onClick={completeAction}>标记完成</button> : <>{!(action.kind === 'fulfillment' && activeActionStatus === 'done') && <button className="task-secondary" onClick={reopenAction}>恢复待办</button>}{activeActionStatus !== 'done' && <button className="task-secondary" onClick={completeAction}>{action.kind === 'fulfillment' ? '确认已交付' : '标记完成'}</button>}</>}</div>
       {activeActionStatus !== 'done' && <p className="strategy-boundary">沟通边界：{intelligence.strategy.guardrail}</p>}
-      <details className="score-details" ref={scoreDetailsRef} onToggle={(event) => { if (event.currentTarget.open) setEvidenceReviewedId(active.id) }}><summary>查看建议依据与来源 <span>样例数据</span></summary><p className="score-explanation">{intelligence.reason}</p>{intelligence.scoreBreakdown.map((factor) => <div className="score-factor" key={factor.label}><div className="factor-line"><span>{factor.label}</span></div><small>{factor.source} · {factor.updatedAt}</small></div>)}<p className="data-updated">更新：{intelligence.updatedAt}</p></details>
+      <details className="score-details" ref={scoreDetailsRef}><summary>查看建议依据与来源 <span>样例数据</span></summary><p className="score-explanation">{intelligence.reason}</p>{intelligence.scoreBreakdown.map((factor) => <div className="score-factor" key={factor.label}><div className="factor-line"><span>{factor.label}</span></div><small>{factor.source} · {factor.updatedAt}</small></div>)}<p className="data-updated">更新：{intelligence.updatedAt}</p></details>
     </section> : null,
     metrics: viewPreferences.profileMetrics ? <div className="fan-summary"><span>{active.name} · {active.handle} <small>演示资料</small></span><strong>累计消费 {active.spend}</strong></div> : null,
-    facts: viewPreferences.profileKnown ? <section className="detail-section facts-section" ref={factsSectionRef}><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3>{tenant.dimensions.data === 'sparse' && <button className="source-confirm" onClick={() => { setEvidenceReviewedId(active.id); notify('已核对当前会话来源') }}>{needsEvidence ? '确认已核对' : '已核对'}</button>}</div>{tenant.dimensions.data === 'sparse' && <p className="source-caution">仅将平台与团队记录视为已知事实；AI 推断仍待确认。</p>}{fanFacts[active.id].map((fact) => {
+    facts: viewPreferences.profileKnown ? <section className="detail-section facts-section" ref={factsSectionRef}><div className="section-title"><h3><Tag size={17} />关键事实与线索</h3>{tenant.dimensions.data === 'sparse' && (needsEvidence || evidenceReviewedId === active.id) && <button className="source-confirm" onClick={() => { setEvidenceReviewedId(active.id); notify('已核对当前会话来源') }}>{evidenceReviewedId === active.id ? '已核对' : '确认已核对'}</button>}</div>{tenant.dimensions.data === 'sparse' && <p className="source-caution">资料较少，优先依据平台和团队记录；未确认偏好不能当成事实。</p>}{fanFacts[active.id].map((fact) => {
       const deliveryFact = action.kind === 'fulfillment' && fact.label === '交付安排'
       const state = workflows[active.id].fulfillmentStatus
       return <div className="fact-row" key={fact.label}><div><strong>{fact.label}</strong><span className={`fact-kind ${fact.kind}`}>{fact.kind === 'recorded' ? '平台记录' : fact.kind === 'team' ? '团队记录' : 'AI 推断'}</span></div><p>{deliveryFact ? state === 'delivered' ? '已由操作员确认交付' : state === 'reviewing' ? '团队核对中，交付时间未确认' : fact.value : fact.value}</p><small>{deliveryFact && state !== 'awaiting-review' ? '本次演示操作 · 刚刚' : `${fact.source} · ${fact.updatedAt}`}</small></div>
@@ -956,23 +948,22 @@ function App() {
     <aside className={`inbox-panel ${viewPreferences.compactList ? 'compact-list' : ''}`} aria-label="用户列表">
       <header className="inbox-header"><div className="brand-mark" aria-label="Messages Pro">M</div><div className="search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索用户或对话" aria-label="搜索用户或对话" />{query && <button onClick={() => setQuery('')} aria-label="清除搜索"><X size={15} /></button>}</div></header>
       <div className="inbox-controls">
-        <div className="queue-heading"><strong>行动队列</strong><span>{configurationMode === 'smart' ? workspaceRule.queueHint : '本租户手动配置'}</span></div>
+        <div className="queue-heading"><strong>行动分类</strong><span>按当前任务筛选</span></div>
         <div className="queue-grid" role="group" aria-label="行动队列" data-tour-highlight={currentTourStep?.highlight === 'queue'}>{visibleFilters.map((option) => <button key={option.id} className={`queue-button ${filter === option.id ? 'active' : ''}`} aria-pressed={filter === option.id} onClick={() => setInboxFilter(option.id)}><span>{option.label}</span><b>{queueCount(option.id)}</b></button>)}</div>
         <div className="list-toolbar"><strong>会话列表</strong><span>{visibleConversations.length} 位 · 按{workspaceRule.sortLabel}排序</span></div>
-        {tenant.dimensions.scale !== 'low' && <div className={`load-action-bar ${tenant.dimensions.scale}`} data-tour-highlight={currentTourStep?.highlight === 'load'}><div><strong>{tenant.dimensions.scale === 'surge' && pendingOnly && filter === 'all' ? '待处理会话' : '当前会话'}</strong><span>{scopedPendingCount} 项待处理 · 共 {scopedConversations.length} 位</span></div><div className="load-actions">{tenant.dimensions.scale === 'surge' && filter === 'all' && <button className="load-view-toggle" onClick={() => setPendingOnly((value) => !value)}>{pendingOnly ? '查看全部' : '只看待处理'}</button>}<button onClick={openNextPending} disabled={!hasNextPending}>下一条</button></div></div>}
-        {((tenant.dimensions.ai === 'triage' && configurationMode === 'smart') || tenant.dimensions.collaboration === 'shifts') && <div className="list-workflow-tools">
-          {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <button className={triageLocked ? 'active' : ''} onClick={() => setTriageLocked((value) => !value)} title="只冻结次要行动队列的顺序，不影响会话优先级">{triageLocked ? '队列已固定' : '队列自适应'}</button>}
-          {tenant.dimensions.collaboration === 'shifts' && <button className={handoffOnly ? 'active' : ''} onClick={() => setHandoffOnly((value) => !value)}>待交接 {handoffCount}</button>}
-        </div>}
-        {tenant.dimensions.ai === 'triage' && configurationMode === 'smart' && <p className="triage-reason">{triageLocked ? '已固定当前队列顺序，可随时恢复自适应。' : '次要队列根据近期操作排序；已付款履约始终优先。'}</p>}</div>
-      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all'); setPendingOnly(false); setHandoffOnly(false) }}>显示会话</button></div>}
+        {(tenant.dimensions.scale !== 'low' || tenant.dimensions.fans !== 'low' || tenant.dimensions.collaboration === 'shifts' || tenant.dimensions.ai === 'triage') && <div className={`load-action-bar ${tenant.dimensions.scale}`} data-tour-highlight={currentTourStep?.highlight === 'load'} data-recommended-next={recommendedNext?.name ?? ''}>
+          <div className="processing-context"><strong>{pendingOnly && filter === 'all' && tenant.dimensions.scale !== 'low' ? '待处理会话' : '当前处理视图'}</strong><span>{scopedPendingCount} 项待处理 · 共 {scopedConversations.length} 位{recommendedNext ? ' · 列表中已标出建议下一条' : ''}</span></div>
+          <div className="load-actions">{tenant.dimensions.scale !== 'low' && filter === 'all' && <button className={pendingOnly ? 'active' : ''} onClick={() => setPendingOnly((value) => !value)}>{pendingOnly ? '查看全部' : '只看待处理'}</button>}{tenant.dimensions.fans !== 'low' && <button className={valueOnly ? 'active' : ''} onClick={() => setValueOnly((value) => !value)}>{valueOnly ? '查看全部粉丝' : '重点粉丝'}</button>}{tenant.dimensions.collaboration === 'shifts' && <button className={handoffOnly ? 'active' : ''} onClick={() => setHandoffOnly((value) => !value)}>{handoffOnly ? '全部交接' : `待交接 ${handoffCount}`}</button>}{tenant.dimensions.scale !== 'low' || tenant.dimensions.ai === 'triage' ? <button className="next-conversation" onClick={openNextPending} disabled={!hasNextPending}>下一条</button> : null}</div>
+        </div>}</div>
+      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all'); setPendingOnly(false); setHandoffOnly(false); setValueOnly(false) }}>显示会话</button></div>}
       <div className="conversation-list">{visibleConversations.length ? visibleConversations.map((item) => {
         const itemAction = conversationActions[item.id]
         const itemStatus = actionStatus(item.id, actionStatuses)
-        return <button ref={item.id === active.id ? selectedConversationRef : undefined} className={`conversation ${item.id === active.id ? 'selected' : ''}`} onClick={() => selectConversation(item.id)} key={item.id}>
-          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><time>{item.updatedAt}</time></div>{viewPreferences.listPreview && <p>{item.preview}</p>}{viewPreferences.listPriority && <div className="conversation-meta"><span title={composition.decisions[item.id].reasons.join(' · ')}>{composition.decisions[item.id].primaryAction}</span><em className={`action-state ${itemStatus}`}>{composition.decisions[item.id].statusLabel}</em></div>}{(tenant.dimensions.collaboration !== 'solo' || tenant.dimensions.fans === 'high' || composition.decisions[item.id].needsVerification) && <div className="conversation-signals">{tenant.dimensions.collaboration !== 'solo' && <span>{assignments[item.id]?.handoffPending ? '待交接' : `负责人 ${assignments[item.id]?.owner ?? '我'}`}</span>}{tenant.dimensions.fans === 'high' && isHighValue(item) && <span>高价值关系</span>}{composition.decisions[item.id].needsVerification && <span>待核对来源</span>}</div>}{viewPreferences.listSla && itemStatus === 'pending' && <small className="sla-hint">{itemAction.due}</small>}</div>{item.unread > 0 && <b className="unread-count">{item.unread}</b>}
+        const row = presentConversation({ tenant, item, action: itemAction, workflow: workflows[item.id], facts: fanFacts[item.id], assignment: assignments[item.id], decision: composition.decisions[item.id], recommended: recommendedNext?.id === item.id })
+        return <button ref={item.id === active.id ? selectedConversationRef : undefined} className={`conversation row-${row.emphasis} ${row.recommended ? 'recommended' : ''} ${item.id === active.id ? 'selected' : ''}`} data-tour-highlight={currentTourStep?.highlight === 'list' && item.id === active.id} onClick={() => selectConversation(item.id)} key={item.id}>
+          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><span className="conversation-title-side">{item.unread > 0 && <b className="unread-count" aria-label={`${item.unread} 条未读`}>{item.unread}</b>}<time>{item.updatedAt}</time></span></div>{viewPreferences.listPreview && <p>{item.preview}</p>}{viewPreferences.listPriority && <><div className="conversation-meta"><span title={composition.decisions[item.id].reasons.join(' · ')}>{row.headline}</span><em className={`action-state ${itemStatus}`}>{composition.decisions[item.id].statusLabel}</em></div><div className="conversation-context" title={row.context}>{row.context}</div></>}{(row.badges.length > 0 || viewPreferences.listSla && row.urgency) && <div className="conversation-foot">{row.badges.length > 0 && <div className="conversation-signals">{row.badges.map((badge) => <span key={badge}>{badge}</span>)}</div>}{viewPreferences.listSla && row.urgency && <small className="sla-hint">{row.urgency}</small>}</div>}</div>
         </button>
-      }) : <div className="empty-list"><Search size={18} /><strong>{tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly ? '当前没有待处理会话' : '没有匹配的用户'}</strong><span>{tenant.dimensions.scale === 'surge' && filter === 'all' && pendingOnly ? '可点“查看全部”浏览其他会话' : '尝试调整搜索或筛选条件'}</span></div>}</div>
+      }) : <div className="empty-list"><Search size={18} /><strong>{valueOnly ? '当前没有符合条件的重点粉丝' : pendingOnly && filter === 'all' ? '当前没有待处理会话' : '没有匹配的用户'}</strong><span>{valueOnly || pendingOnly ? '可切换处理视图浏览其他会话' : '尝试调整搜索或筛选条件'}</span></div>}</div>
       <div className="inbox-settings">
         <div className="user-settings-entry">
           <button className={`${showSettings ? 'active' : ''} ${hasSmartChanges && !recommendationIgnored ? 'has-suggestion' : ''}`} onClick={() => { setSettingsView('smart'); setShowSettings(true) }} aria-label={hasSmartChanges && !recommendationIgnored ? '工作台设置，有智能建议' : '工作台设置'} aria-haspopup="dialog" aria-expanded={showSettings} aria-controls="workspace-settings-dialog" title="配置当前租户的工作台"><Settings2 size={16} /><span><strong>工作台设置</strong><small>调整当前租户的显示方式</small></span></button>
@@ -990,7 +981,8 @@ function App() {
       <footer className="composer">
         {(viewPreferences.chatNextStep || (action.kind === 'fulfillment' && activeActionStatus !== 'done')) && <ActionTray
           action={action} workflow={workflows[active.id]} decision={composition.decisions[active.id]}
-          aiEnabled={viewPreferences.chatCopilot} showEvidence={viewPreferences.profileRecommendation} highlighted={currentTourStep?.highlight === 'action' || currentTourStep?.highlight === 'fulfillment'}
+          steps={buildWorkPlan(action, workflows[active.id], activeAssignment, tenant.dimensions.collaboration, needsEvidence)}
+          aiEnabled={viewPreferences.chatCopilot && tenant.dimensions.ai !== 'advisory'} showEvidence={viewPreferences.profileRecommendation} highlighted={currentTourStep?.highlight === 'action' || currentTourStep?.highlight === 'fulfillment'}
           onOpenAi={() => { setAiMode('reply'); setShowAi(true) }} onReview={createSmartTask}
           onComplete={completeAction} onSchedule={createSmartTask} onShowEvidence={showRecommendationEvidence}
         />}
@@ -998,9 +990,9 @@ function App() {
         {viewPreferences.chatCopilot && showAi && <section className="ai-workbench" data-tour-surface={currentTourStep?.highlight === 'verification'}>
           <div className="ai-workbench-header"><div><span className="ai-orb"><Sparkles size={15} /></span><div><strong>AI Copilot</strong><p>所有建议都可编辑，确认后才会发送或写入资料。</p></div></div><button onClick={() => setShowAi(false)} aria-label="关闭 AI Copilot"><X size={16} /></button></div>
           <div className="ai-tabs"><button className={aiMode === 'reply' ? 'active' : ''} onClick={() => setAiMode('reply')}>回复</button><button className={aiMode === 'strategy' ? 'active' : ''} onClick={() => setAiMode('strategy')}>策略</button><button className={aiMode === 'rewrite' ? 'active' : ''} onClick={() => setAiMode('rewrite')}>改写</button><button className={aiMode === 'memory' ? 'active' : ''} onClick={() => setAiMode('memory')}>记忆</button></div>
-          {aiMode === 'reply' && <div className="ai-content"><div className="ai-assessment"><div><span>回复目标</span><strong>{intelligence.strategy.goal}</strong></div><div><span>安全等级</span><strong className={`risk-${intelligence.risk}`}><ShieldCheck size={13} />{intelligence.risk}风险</strong></div></div><p className="ai-strategy"><Lightbulb size={14} />{intelligence.strategy.nextAction}</p><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p>{needsEvidence && <div className="ai-evidence-gate" data-tour-highlight={currentTourStep?.highlight === 'verification'}><span>资料不足，先核对右侧事实和建议来源，再插入 AI 草稿。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}<div className="ai-drafts">{draftOptions(active).map((option) => <article key={option.tone}><div><strong>{option.tone}</strong><p>{option.text}</p></div><button disabled={needsEvidence} onClick={() => updateDraft(option.text)}>插入</button></article>)}</div></div>}
+          {aiMode === 'reply' && <div className="ai-content"><div className="ai-assessment"><div><span>回复目标</span><strong>{intelligence.strategy.goal}</strong></div><div><span>安全等级</span><strong className={`risk-${intelligence.risk}`}><ShieldCheck size={13} />{intelligence.risk}风险</strong></div></div><p className="ai-strategy"><Lightbulb size={14} />{intelligence.strategy.nextAction}</p><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p>{needsEvidence && <div className="ai-evidence-gate" data-tour-highlight={currentTourStep?.highlight === 'verification'}><span>涉及未确认偏好的草稿需先核对来源；普通回复仍可使用。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}<div className="ai-drafts">{draftOptions(active).map((option) => <article key={option.tone}><div><strong>{option.tone}</strong>{needsEvidence && option.requiresVerification && <small className="draft-source-tag">需核对来源</small>}<p>{option.text}</p></div><button disabled={needsEvidence && Boolean(option.requiresVerification)} onClick={() => updateDraft(option.text)}>插入</button></article>)}</div></div>}
           {aiMode === 'strategy' && <div className="ai-content strategy-card"><p className="strategy-title">{intelligence.strategy.goal}</p><div><span>下一步</span><strong>{intelligence.strategy.nextAction}</strong></div><div><span>关键意图</span><strong>{intelligence.signal}</strong></div><div><span>最佳触达</span><strong>{intelligence.bestTime}</strong></div><p className="ai-guardrail">沟通边界：{intelligence.strategy.guardrail}</p><p className="ai-warning">{tenant.dimensions.data === 'sparse' ? '资料不足，请核对事实与来源后再采用建议。' : `置信度 ${intelligence.confidence}% · ${intelligence.reason}`}</p></div>}
-          {aiMode === 'rewrite' && <div className="ai-content rewrite-card"><p>当前为演示版，可插入一条符合此粉丝阶段的示例回复，再自行编辑。</p>{needsEvidence && <p className="ai-guardrail">资料不足，请先核对右侧建议来源。</p>}<button className="primary-ai-action" disabled={needsEvidence} onClick={rewriteDraft}><WandSparkles size={15} />插入阶段示例</button></div>}
+          {aiMode === 'rewrite' && <div className="ai-content rewrite-card"><p>当前为演示版，可插入一条符合此粉丝阶段的示例回复，再自行编辑。</p>{needsEvidence && <p className="ai-guardrail">涉及未确认偏好的示例需先核对；这里仍可插入普通回复。</p>}<button className="primary-ai-action" onClick={rewriteDraft}><WandSparkles size={15} />插入阶段示例</button></div>}
           {aiMode === 'memory' && <div className="ai-content memory-card"><p>仅从已记录的信息提取候选记忆，确认后写入粉丝画像。</p>{memoryCandidates(active).map((memory) => <div className="memory-item" key={memory.text}><span>{memory.text}<small>来源：{memory.source}</small></span><button className={activeMemories.includes(memory.text) ? 'confirmed' : ''} onClick={() => confirmMemory(memory.text)}>{activeMemories.includes(memory.text) ? <><Check size={13} />已确认</> : '确认保存'}</button></div>)}</div>}
         </section>}
         <div className="composer-box"><textarea value={draft} onChange={(event) => updateDraft(event.target.value)} onKeyDown={(event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); sendMessage() } }} placeholder={`回复 ${active.name}…`} rows={1} aria-label={`回复 ${active.name}`} /><button onClick={sendMessage} className="send-button" aria-label="发送" disabled={!draft.trim()}><Send size={18} /></button></div>{viewPreferences.chatHelp && <p className="composer-help"><span>⌘ / Ctrl + Enter 发送</span><span>草稿自动保存 · AI 内容发送前请确认</span></p>}
@@ -1009,12 +1001,15 @@ function App() {
     {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
     <aside className={`detail-panel ${showCompactInsights ? 'mobile-open' : ''}`} aria-label="会话洞察">
       <header><h2>会话洞察</h2><div className="detail-header-actions"><a className="report-link" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
+      <div className="insight-tabs" role="tablist" aria-label="会话洞察分类"><button role="tab" aria-selected={insightView === 'work'} className={insightView === 'work' ? 'active' : ''} onClick={() => setInsightView('work')}>当前处理</button><button role="tab" aria-selected={insightView === 'fan'} className={insightView === 'fan' ? 'active' : ''} onClick={() => setInsightView('fan')}>粉丝资料</button></div>
+      {insightView === 'work' && <>
       <div className="tenant-insight-brief" data-tour-highlight={currentTourStep?.highlight === 'purchase' || currentTourStep?.highlight === 'insight'}><span>{workspaceRule.insightTitle}</span><strong>{tenantInsight}</strong><div className="tenant-insight-metrics">{insightMetrics.map((metric) => <div key={metric.label}><small>{metric.label}</small><b>{metric.value}</b></div>)}</div>{tenantId === 'custom' && <div className="tenant-custom-signals"><span>{dimensionLabel('collaboration', customDimensions.collaboration)}</span><span>AI：{dimensionLabel('ai', customDimensions.ai)}</span></div>}</div>
       {tenant.dimensions.data === 'sparse' && <div className="coverage-warning" data-tour-highlight={currentTourStep?.highlight === 'coverage'}><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；AI 推断请先核对来源。</span><button onClick={showRecommendationEvidence}>查看来源</button></div>}
       {tenant.dimensions.data === 'partial' && <div className="data-quality-note"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；购买与偏好线索请留意来源和更新时间。</span></div>}
       {tenant.dimensions.data === 'complete' && <div className="data-quality-note complete"><ShieldCheck size={14} /><span>资料较充分，可参考已记录偏好；新推断仍需确认。</span></div>}
       {tenant.dimensions.collaboration !== 'solo' && <section className="collaboration-panel" data-tour-highlight={currentTourStep?.highlight === 'collaboration'}><div><strong>{tenant.dimensions.collaboration === 'shifts' ? '轮班交接' : '小组协作'}</strong><span>{activeAssignment.handoffPending ? '待确认交接' : `负责人：${activeAssignment.owner}`}</span></div><p>{activeAssignment.event} · {action.kind === 'fulfillment' ? '付款与交付状态需一起移交。' : `最近消息：${active.preview}`}</p><div className="collaboration-actions">{activeAssignment.owner !== '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已认领当前会话')}>认领会话</button>}{tenant.dimensions.collaboration === 'shifts' && activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已确认本班次接手')}>确认交接</button>}{activeAssignment.owner === '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('Alex', tenant.dimensions.collaboration === 'shifts', tenant.dimensions.collaboration === 'shifts' ? '已发起交接，待下一班次确认' : '已转交 Alex')}>{tenant.dimensions.collaboration === 'shifts' ? '发起交接' : '转交 Alex'}</button>}</div></section>}
-      {composition.presentation.detailOrder.map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}
+      {profilePanels.recommendation}</>}
+      {insightView === 'fan' && <>{profilePanels.metrics}{composition.presentation.detailOrder.filter((section) => section !== 'recommendation' && section !== 'metrics').map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}</>}
     </aside>
     <dialog className="tenant-dialog" id="tenant-switch-dialog" ref={tenantDialogRef} aria-labelledby="tenant-dialog-title" onClose={() => setShowTenantDialog(false)} onClick={(event) => {
       if (event.target !== tenantDialogRef.current) return
@@ -1033,7 +1028,7 @@ function App() {
             {tenantDimensionDefinitions.map((dimension) => <div className="tenant-dimension-row" key={dimension.key} role="group" aria-label={dimension.label}>
               <strong>{dimension.label}</strong><div className="tenant-level-options">{dimension.options.map((option) => <button key={option.value} className={tenant.dimensions[dimension.key] === option.value ? 'selected' : ''} aria-pressed={tenant.dimensions[dimension.key] === option.value} disabled={tenantId !== 'custom'} onClick={() => updateCustomDimension(dimension.key, option.value)}>{option.label}</button>)}</div>
             </div>)}
-            <p className="tenant-dimension-note">{tenantId === 'custom' ? '调整等级后，行动队列、会话排序与右侧洞察会同步更新；消息由人工确认发送。' : '这些等级是预设租户的固定特征。选择“自定义租户”可自由组合。'}</p>
+            <p className="tenant-dimension-note">{tenantId === 'custom' ? '调整后即时改变处理节奏、会话路径和信息侧栏；当前聊天与已有记录不会丢失。' : '这些等级是预设租户的固定特征。选择“自定义租户”可自由组合。'}</p>
           </div>
         </div>
       </div>

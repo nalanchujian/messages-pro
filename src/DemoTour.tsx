@@ -4,7 +4,7 @@ import { dimensionLabel, getTenantProfile, tenantProfiles } from './tenantProfil
 import type { TenantDimensions, TenantId } from './tenantProfiles'
 import { getTenantWorkspaceRule } from './tenantWorkspaceRules'
 
-export type DemoTourHighlight = 'queue' | 'load' | 'action' | 'fulfillment' | 'memory' | 'purchase' | 'collaboration' | 'coverage' | 'verification' | 'copilot' | 'insight'
+export type DemoTourHighlight = 'list' | 'queue' | 'load' | 'action' | 'fulfillment' | 'memory' | 'purchase' | 'collaboration' | 'coverage' | 'verification' | 'copilot' | 'insight'
 
 export type DemoTourStep = {
   id: string
@@ -29,31 +29,31 @@ function stepsForTenant(tenantId: TenantId, customDimensions: TenantDimensions):
       : tenant.portrait.signature,
   }
   if (tenantId === 'aster') return [
-    { ...base, id: 'aster-queue', conversationId: 'mason', area: '左侧 · 行动队列', title: '把关系维护排在前面', description: '高价值粉丝占比较高，队列保留续订关怀与日常回复。和 North 的履约优先不同，这里先确保长期关系不断线。', highlight: 'queue' },
-    { ...base, id: 'aster-action', conversationId: 'mason', area: '中间 · 当前行动', title: '围绕已有兴趣继续聊', description: '当前行动结合 Mason 已表达的兴趣给出下一句方向。操作员可以查看依据，再决定是否生成或发送回复。', highlight: 'action' },
-    { ...base, id: 'aster-memory', conversationId: 'mason', area: '右侧 · 团队记录', title: '接话前看已知背景', description: '右侧优先保留团队备注与已确认记忆，让不同操作员延续同一段关系，避免重复提问和过度推销。', highlight: 'memory' },
+    { ...base, id: 'aster-list', conversationId: 'mason', area: '左侧 · 会话列表', title: '一眼看到关系背景', description: 'Mason 的会话直接显示消费价值、已知偏好和本次回复目标。关系信息跟着人走，不需要先切换分类才能判断。', highlight: 'list' },
+    { ...base, id: 'aster-action', conversationId: 'mason', area: '中间 · 处理路径', title: '围绕已有兴趣继续聊', description: '处理路径先回顾对话，再回应粉丝，最后等待反馈。AI 可以给出可编辑草稿，发送仍由操作员决定。', highlight: 'action' },
+    { ...base, id: 'aster-memory', conversationId: 'mason', area: '右侧 · 粉丝资料', title: '接话前看已知背景', description: '切到粉丝资料后，消费、团队备注与记忆集中查看。关系经营先看已知背景，避免重复提问和过度推销。', highlight: 'memory' },
   ]
   if (tenantId === 'north') return [
-    { ...base, id: 'north-load', conversationId: 'riley', area: '左侧 · 待处理会话', title: '先稳住高峰处理节奏', description: '会话量大时，左侧汇总待处理数量并提供“下一条”。履约请求按处理时限优先，避免高峰期漏掉已付款粉丝。', highlight: 'load' },
-    { ...base, id: 'north-fulfillment', conversationId: 'riley', area: '中间 · 当前行动', title: '回复与交付分开处理', description: 'Riley 已付款但交付待核对。发送消息不会自动完成交付；先请求团队核对，再由操作员确认履约。', highlight: 'fulfillment' },
+    { ...base, id: 'north-list', conversationId: 'riley', area: '左侧 · 会话列表', title: '待履约状态直接落在会话上', description: 'Riley 这一行同时显示付款、交付状态、负责人和处理时限。高负载列表更紧凑，操作员可以逐条处理并看见推荐下一条。', highlight: 'list' },
+    { ...base, id: 'north-fulfillment', conversationId: 'riley', area: '中间 · 处理路径', title: '回复与交付分开处理', description: '处理路径区分付款、团队核对和交付确认。回复不会自动完成履约，已付款请求始终需要明确的交付操作。', highlight: 'fulfillment' },
     { ...base, id: 'north-handoff', conversationId: 'riley', area: '右侧 · 轮班交接', title: '让下一班接得住', description: '右侧展示负责人、交接状态与最近事件。North 的规模化处理需要任务和上下文一并移交。', highlight: 'collaboration' },
   ]
   if (tenantId === 'pulse') return [
-    { ...base, id: 'pulse-queue', conversationId: 'leo', area: '左侧 · 行动队列', title: '购买后跟进排在前面', description: '购买活跃的团队把首购反馈与后续互动优先呈现，避免只看未读消息而错过刚发生的购买信号。', highlight: 'queue' },
-    { ...base, id: 'pulse-action', conversationId: 'leo', area: '中间 · 当前行动', title: '先回应购买体验', description: 'Leo 对已购内容给出了正面反馈。当前行动先建议致谢并询问偏好，不直接跳到下一次销售。', highlight: 'action' },
+    { ...base, id: 'pulse-list', conversationId: 'leo', area: '左侧 · 会话列表', title: '购买信号跟着会话走', description: 'Leo 这一行显示 PPV 已购、首次购买后的反馈，以及尚未确认的内容偏好；处理员无需先进入购买队列才能发现机会。', highlight: 'list' },
+    { ...base, id: 'pulse-action', conversationId: 'leo', area: '中间 · 处理路径', title: '先回应购买体验', description: '购买路径先核实交易，再回应体验，最后等待反馈或安排下一次互动；不会把刚购买等同于可以立即推销。', highlight: 'action' },
     { ...base, id: 'pulse-purchase', conversationId: 'leo', area: '右侧 · 购买与互动', title: '用消费线索决定下一句', description: '右侧集中展示购买跟进量与当前消费线索，帮助操作员判断何时继续互动、何时停止推销。', highlight: 'purchase' },
   ]
   if (tenantId === 'seed') return [
-    { ...base, id: 'seed-queue', conversationId: 'nate', area: '左侧 · 行动队列', title: '先把基础判断做对', description: '资料稀疏、团队新人多，队列保留人工判断和回复入口；不像 North 那样追求高并发连续处理。', highlight: 'queue' },
-    { ...base, id: 'seed-coverage', conversationId: 'nate', area: '右侧 · 资料核对', title: '看清哪些信息还不可靠', description: '资料覆盖较低时，右侧明确提醒区分平台记录、团队记录和 AI 推断，避免把猜测当成粉丝事实。', highlight: 'coverage' },
-    { ...base, id: 'seed-verification', conversationId: 'nate', area: '中间 · AI 草稿核对', title: '核对来源后再用 AI 草稿', description: 'AI 可以建议回复，但来源未经核对时无法插入草稿。新人先确认事实，再由人工决定发送。', highlight: 'verification', showAi: true },
+    { ...base, id: 'seed-list', conversationId: 'mason', area: '左侧 · 会话列表', title: '资料缺口直接标在会话上', description: 'Mason 的会话标出待核对推断和具体内容，普通回复可继续使用；新人能在打开聊天前识别风险。', highlight: 'list' },
+    { ...base, id: 'seed-coverage', conversationId: 'mason', area: '右侧 · 资料核对', title: '看清哪些信息还不可靠', description: '资料覆盖较低时，右侧明确区分平台记录、团队记录和 AI 推断，避免把猜测当成粉丝事实。', highlight: 'coverage' },
+    { ...base, id: 'seed-verification', conversationId: 'mason', area: '中间 · AI 草稿核对', title: '只拦截引用未确认线索的草稿', description: 'Mason 的部分草稿引用尚未核对的内容偏好，需要先查看来源；普通回应仍可插入，最后由人工决定发送。', highlight: 'verification', showAi: true },
   ]
 
   const rule = getTenantWorkspaceRule(tenant)
   return [
-    { ...base, id: 'custom-queue', conversationId: rule.landingConversationId, area: '左侧 · 行动队列', title: '六维特征决定队列顺序', description: `当前选择${dimensionLabel('scale', customDimensions.scale)}、${dimensionLabel('tasks', customDimensions.tasks)}、${dimensionLabel('fans', customDimensions.fans)}。队列据此突出主要任务，同时保留付款履约约束。`, highlight: 'queue' },
+    { ...base, id: 'custom-list', conversationId: rule.landingConversationId, area: '左侧 · 会话列表', title: '六维组合体现在每条会话', description: `当前选择${dimensionLabel('scale', customDimensions.scale)}、${dimensionLabel('tasks', customDimensions.tasks)}、${dimensionLabel('fans', customDimensions.fans)}。同一份会话数据会显示不同的处理依据、关系线索和任务状态。`, highlight: 'list' },
     { ...base, id: 'custom-copilot', conversationId: rule.landingConversationId, area: '中间 · AI 辅助', title: 'AI 介入随团队能力变化', description: `当前为${dimensionLabel('ai', customDimensions.ai)}，会话采用${dimensionLabel('collaboration', customDimensions.collaboration)}。AI 的入口和提示会变化，但消息仍由操作员确认发送。`, highlight: 'copilot' },
-    { ...base, id: 'custom-insight', conversationId: rule.landingConversationId, area: '右侧 · 会话洞察', title: '洞察随资料完备度调整', description: `当前资料完备度为${dimensionLabel('data', customDimensions.data)}。右侧按六维组合显示重点；资料不足时会提醒核对来源。`, highlight: 'insight' },
+    { ...base, id: 'custom-insight', conversationId: rule.landingConversationId, area: '右侧 · 会话洞察', title: '洞察随资料完备度调整', description: `当前资料完备度为${dimensionLabel('data', customDimensions.data)}。右侧把当前处理和粉丝资料分开；资料不足时只对引用未确认线索的草稿要求核对。`, highlight: 'insight' },
   ]
 }
 

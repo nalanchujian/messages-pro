@@ -53,14 +53,12 @@ export function inferSmartMode(items: Conversation[], activity: ActivityEvent[],
       || (queue === 'fulfillment' && actionStatuses[item.id] === 'waiting')
     )).length
   const primary = rule.queues[1]
-  const queues = composeQueueOrder(tenant, recent)
+  const queues = composeQueueOrder(tenant)
   const primaryLabel = ({ reply: '需回复', fulfillment: '待履约', renewal: '续订关怀', 'purchase-follow-up': '购买跟进', manual: '人工判断', waiting: '等待中', all: '全部' } as Record<InboxFilter, string>)[primary]
-  const reasons = [`${rule.queueHint}，优先显示「${primaryLabel}」；当前有 ${count(primary)} 个相关会话。`]
-  if (tenant.dimensions.ai === 'triage') reasons.push(recent.length
-    ? `最近 7 天有 ${recent.length} 次队列、会话或发送操作，次要队列据此自适应排序。`
-    : '次要队列会根据后续操作自适应排序。')
+  const reasons = [`行动队列按固定分类展示；当前有 ${count(primary)} 个「${primaryLabel}」会话，优先级体现在每条会话的排序和原因。`]
+  if (tenant.dimensions.ai === 'triage') reasons.push('分类位置保持稳定；AI 根据付款、交接和待办状态推荐下一条会话，并说明原因。')
   else if (tenant.dimensions.ai === 'assisted') reasons.push('AI 主动提示下一步并提供回复草稿，队列按租户特征保持固定顺序。')
-  else reasons.push('AI 按需提供建议与依据，不主动提示下一步；所有操作由人工确认。')
+  else reasons.push('当前任务与已知事实照常显示；AI 仅在操作员打开时提供建议，所有操作由人工确认。')
   if (currentFilter !== 'all' && currentFilter !== primary) reasons.push('当前筛选只影响本次查看，不改变租户的首要工作重点。')
   return { id: rule.modeId, title: rule.title, description: rule.description, workStyle: rule.workStyle, reasons, queues, preferences: rule.preferences, activityCount: recent.length }
 }

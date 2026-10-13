@@ -81,8 +81,8 @@ export const fanIntelligence: Record<string, FanIntelligence> = {
       guardrail: '先确认预览意愿，避免跳过互动直接推销。', taskAction: '创建今晚跟进',
       drafts: [
         { tone: '自然回应', text: 'Leg day 听起来很累 😂 今天先好好休息。你最喜欢练哪个动作？' },
-        { tone: '征询预览意愿', text: '辛苦啦！海边训练系列里有一小段我觉得你会喜欢，想先看看预览吗？' },
-        { tone: '留待稍后', text: '那你先好好放松。等你有空，我可以把海边训练的预览发给你。' },
+        { tone: '征询预览意愿', text: '辛苦啦！海边训练系列里有一小段我觉得你会喜欢，想先看看预览吗？', requiresVerification: true },
+        { tone: '留待稍后', text: '那你先好好放松。等你有空，我可以把海边训练的预览发给你。', requiresVerification: true },
       ],
     },
     memoryCandidates: [
@@ -185,11 +185,24 @@ const workloadSamples = [
   { id: 'micah', from: 'riley', name: 'Micah Gray', handle: '@micah_g', spend: '$430', updatedAt: '51m', unread: 1, preview: 'Any update on my custom request?' },
 ] as const
 
+const workloadDetails: Record<string, { reason: string; note: string; fact: string; preference?: string }> = {
+  aria: { reason: '询问最近训练片段，等待自然回应', note: '对训练过程感兴趣，可先聊最近一次训练。', fact: '可能想看最近训练片段', preference: '对训练过程互动更积极' },
+  oliver: { reason: '付款已记录，粉丝追问交付日期', note: '交付日期尚未由团队确认。', fact: '具体交付日期尚未确认' },
+  jules: { reason: '购买新套图后给出正面反馈', note: '称赞新套图；具体内容偏好尚未确认。', fact: '喜欢新套图，具体主题尚未确认' },
+  sam: { reason: '已约定明天继续聊天，适合届时跟进', note: '尊重明天再聊的约定，今晚不追加触达。', fact: '约定明天再聊' },
+  devon: { reason: '昨日付款后追问内容是否备妥', note: '内容准备状态尚未由团队确认。', fact: '昨日付款，内容准备状态待确认' },
+  blake: { reason: '回应海边预览，适合继续聊内容兴趣', note: '对海边预览有积极反馈，可继续确认兴趣。', fact: '可能想看海边预览', preference: '对海边短片互动更活跃' },
+  harper: { reason: '购买照片集后称赞套图配色', note: '喜欢这组照片的配色；其他偏好尚未确认。', fact: '喜欢套图配色，其他偏好待确认' },
+  casey: { reason: '最近表示感谢，当前无需主动触达', note: '已表达感谢，等待下次自然互动。', fact: '对照片集表示感谢' },
+  micah: { reason: '定制请求已付款，粉丝询问处理进度', note: '定制请求进度尚未由团队确认。', fact: '定制请求交付进度待确认' },
+}
+
 for (const sample of workloadSamples) {
   const original = conversations.find((item) => item.id === sample.from)!
+  const detail = workloadDetails[sample.id]
   const lastInboundId = [...original.messages].reverse().find((message) => message.direction === 'inbound')?.id
-  conversations.push({ ...original, id: sample.id, name: sample.name, handle: sample.handle, avatar: sample.name[0], spend: sample.spend, updatedAt: sample.updatedAt, unread: sample.unread, preview: sample.preview, messages: original.messages.map((message) => ({ ...message, text: message.id === lastInboundId ? sample.preview : message.text })) })
-  conversationActions[sample.id] = { ...conversationActions[sample.from] }
-  fanFacts[sample.id] = fanFacts[sample.from].map((fact) => ({ ...fact }))
-  fanIntelligence[sample.id] = { ...fanIntelligence[sample.from], priorityScore: fanIntelligence[sample.from].priorityScore - 4 }
+  conversations.push({ ...original, id: sample.id, name: sample.name, handle: sample.handle, avatar: sample.name[0], spend: sample.spend, updatedAt: sample.updatedAt, unread: sample.unread, preview: sample.preview, note: detail.note, summary: detail.reason, messages: original.messages.map((message) => ({ ...message, text: message.id === lastInboundId ? sample.preview : message.text })) })
+  conversationActions[sample.id] = { ...conversationActions[sample.from], reason: detail.reason }
+  fanFacts[sample.id] = fanFacts[sample.from].map((fact, index, source) => ({ ...fact, value: index === source.length - 1 ? detail.fact : detail.preference && fact.label === '沟通偏好' ? detail.preference : fact.value }))
+  fanIntelligence[sample.id] = { ...fanIntelligence[sample.from], priorityScore: fanIntelligence[sample.from].priorityScore - 4, reason: detail.reason }
 }

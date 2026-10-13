@@ -65,7 +65,7 @@ export type FanIntelligence = {
     nextAction: string
     guardrail: string
     taskAction: string | null
-    drafts: Array<{ tone: string; text: string }>
+    drafts: Array<{ tone: string; text: string; requiresVerification?: boolean }>
   }
   memoryCandidates: Array<{ text: string; source: string }>
   risk: '低' | '中' | '高'

@@ -1,11 +1,13 @@
 import { Check, ShieldCheck, Sparkles } from 'lucide-react'
 import type { ConversationAction, ConversationWorkflow } from './types'
 import type { ConversationDecision } from './workspaceEngine'
+import type { WorkPlanStep } from './workPlan'
 
 type Props = {
   action: ConversationAction
   workflow: ConversationWorkflow
   decision: ConversationDecision
+  steps: WorkPlanStep[]
   aiEnabled: boolean
   showEvidence: boolean
   highlighted?: boolean
@@ -16,7 +18,7 @@ type Props = {
   onShowEvidence: () => void
 }
 
-export function ActionTray({ action, workflow, decision, aiEnabled, showEvidence, highlighted, onOpenAi, onReview, onComplete, onSchedule, onShowEvidence }: Props) {
+export function ActionTray({ action, workflow, decision, steps, aiEnabled, showEvidence, highlighted, onOpenAi, onReview, onComplete, onSchedule, onShowEvidence }: Props) {
   const isFulfillment = action.kind === 'fulfillment'
   const isDone = workflow.actionStatus === 'done'
   const stage = isFulfillment
@@ -31,6 +33,7 @@ export function ActionTray({ action, workflow, decision, aiEnabled, showEvidence
             : '已付款请求需核对交付安排；发送回复不会完成履约。'
         : isDone ? '本轮行动已完成，等待新的业务事件。' : action.reason}</p></div>
     </div>
+    <ol className="work-plan" aria-label="当前会话处理路径">{steps.map((item, index) => <li key={`${item.label}-${index}`} className={item.state}><i aria-hidden="true">{item.state === 'done' ? '✓' : index + 1}</i><span>{item.label}</span></li>)}</ol>
     <div className="action-tray-actions">
       {isFulfillment && workflow.fulfillmentStatus === 'awaiting-review' && <button className="tray-primary" onClick={onReview}>请求团队核对</button>}
       {isFulfillment && workflow.fulfillmentStatus === 'reviewing' && <button className="tray-primary" onClick={onComplete}>确认已交付</button>}

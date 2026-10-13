@@ -42,15 +42,11 @@ export type WorkspaceInput = {
   now?: number
 }
 
-export function composeQueueOrder(tenant: TenantProfile, activity: ActivityEvent[], now = Date.now()): InboxFilter[] {
-  const base = getTenantWorkspaceRule(tenant).queues
-  const primary = base[1]
-  const secondary = base.slice(2).map((queue, index) => ({
-    queue, index,
-    usage: activity.filter((event) => event.focus === queue && event.at >= now - 7 * 24 * 60 * 60 * 1000 && event.at <= now).length,
-  }))
-  if (tenant.dimensions.ai === 'triage') secondary.sort((a, b) => b.usage - a.usage || a.index - b.index)
-  return [...new Set<InboxFilter>(['all', primary, ...secondary.map((item) => item.queue)])].slice(0, 6)
+export function composeQueueOrder(tenant: TenantProfile): InboxFilter[] {
+  // The queue is navigation by action type; tenant priority belongs to conversation rows.
+  const available = new Set(getTenantWorkspaceRule(tenant).queues)
+  const categories: InboxFilter[] = ['all', 'reply', 'fulfillment', 'purchase-follow-up', 'renewal', 'manual', 'waiting']
+  return categories.filter((category) => available.has(category)).slice(0, 6)
 }
 
 function decideConversation(input: WorkspaceInput, item: Conversation, rule: TenantWorkspaceRule): ConversationDecision {
@@ -61,7 +57,9 @@ function decideConversation(input: WorkspaceInput, item: Conversation, rule: Ten
   const kind = action.kind
   const status = workflow.actionStatus
   const paidFulfillmentOpen = kind === 'fulfillment' && workflow.paymentStatus === 'paid' && workflow.fulfillmentStatus !== 'delivered'
-  const needsVerification = tenant.dimensions.data === 'sparse' && input.reviewedEvidenceId !== item.id
+  const needsVerification = tenant.dimensions.data === 'sparse'
+    && input.reviewedEvidenceId !== item.id
+    && Boolean(intelligence[item.id]?.strategy.drafts.some((draft) => draft.requiresVerification))
   const reasons = [paidFulfillmentOpen ? '已付款请求尚未交付' : action.reason]
   if (assignment?.handoffPending) reasons.push('待确认交接')
   if (needsVerification) reasons.push('资料不足，先核对来源')
@@ -98,7 +96,7 @@ export function composeWorkspace(input: WorkspaceInput): WorkspaceComposition {
     .map((item) => item.id)
   return {
     rule,
-    queueOrder: composeQueueOrder(input.tenant, input.activity, input.now),
+    queueOrder: composeQueueOrder(input.tenant),
     orderedConversationIds,
     decisions,
     presentation: {

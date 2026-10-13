@@ -16,7 +16,7 @@ export const tenantDimensionDefinitions = [
   { key: 'tasks', label: '主导会话类型', options: [{ value: 'conversation', label: '日常互动' }, { value: 'fulfillment', label: '服务履约' }, { value: 'purchase', label: '购买跟进' }] },
   { key: 'data', label: '粉丝资料完备度', options: [{ value: 'sparse', label: '较低' }, { value: 'partial', label: '中等' }, { value: 'complete', label: '较高' }] },
   { key: 'collaboration', label: '会话协作模式', options: [{ value: 'solo', label: '专人负责' }, { value: 'team', label: '小组共享' }, { value: 'shifts', label: '轮班交接' }] },
-  { key: 'ai', label: 'AI 介入级别', options: [{ value: 'advisory', label: '按需建议' }, { value: 'assisted', label: '主动辅助' }, { value: 'triage', label: '队列自适应' }] },
+  { key: 'ai', label: 'AI 介入级别', options: [{ value: 'advisory', label: '按需建议' }, { value: 'assisted', label: '主动辅助' }, { value: 'triage', label: '智能分流' }] },
 ] as const
 
 export const defaultCustomDimensions: TenantDimensions = {
