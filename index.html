@@ -4,10 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>Messages Pro</title>
+    <title>Messages Pro · 演示门户</title>
+    <meta name="description" content="消息运营工作台项目门户：Messages Pro 概念演示、Infloww 交互复刻与四平台八模块对比报告。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" />
+    <link rel="stylesheet" href="/src/hub.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <main class="hub">
+      <header class="hub-top">
+        <span class="wordmark">Messages Pro</span>
+        <a class="repo-link" href="https://github.com/nalanchujian/messages-pro">GitHub 仓库</a>
+      </header>
+
+      <section class="hub-hero">
+        <h1>从竞品研究，到消息工作台原型。</h1>
+        <p>这里汇集本项目的三份产出：Messages Pro 概念演示、Infloww 交互复刻，以及支撑它们的四平台八模块对比报告。</p>
+      </section>
+
+      <nav class="hub-list" aria-label="项目入口">
+        <article class="entry">
+          <a class="entry-link" href="/messages-pro/app/">
+            <span class="entry-kind">概念原型</span>
+            <h2>Messages Pro</h2>
+            <p class="entry-desc">AI 辅助的消息工作台：会话队列与交付工作流、粉丝智能评分、多租户配置与引导式演示。</p>
+            <p class="entry-meta">4 个租户预设，中文界面</p>
+          </a>
+          <span class="entry-action">打开演示</span>
+        </article>
+
+        <article class="entry">
+          <a class="entry-link" href="/messages-pro/infloww/">
+            <span class="entry-kind">交互复刻</span>
+            <h2>Infloww Demo</h2>
+            <p class="entry-desc">以 Infloww 为蓝本的高保真复刻：收件箱、聊天编写器与粉丝洞察，可模拟管理员与聊天专员双角色运营。</p>
+            <p class="entry-meta">中英双语，收件箱、聊天、洞察三大面板</p>
+          </a>
+          <span class="entry-action">打开演示</span>
+        </article>
+
+        <article class="entry">
+          <a class="entry-link" href="/messages-pro/reports/four-platform-module-comparison/index.html">
+            <span class="entry-kind">研究报告</span>
+            <h2>四平台八模块功能对比</h2>
+            <p class="entry-desc">Infloww、Supercreator、OnlyMonster、CreatorHero 在八个模块上的功能对比，每条结论都附来源核查记录。</p>
+            <p class="entry-meta">32 张功能卡片，2026 年 10 月核查</p>
+          </a>
+          <span class="entry-actions">
+            <span class="entry-action">在线阅读</span>
+            <a class="entry-action entry-action-quiet" href="/messages-pro/reports/four-platform-eight-module-analysis.pdf">下载 PDF</a>
+          </span>
+        </article>
+      </nav>
+
+      <footer class="hub-foot">两个演示均使用本地种子数据，不含真实账号信息。推送 master 后由 GitHub Pages 自动部署。</footer>
+    </main>
   </body>
 </html>

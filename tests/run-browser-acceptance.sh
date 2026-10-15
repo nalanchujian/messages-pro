@@ -24,7 +24,7 @@ trap cleanup EXIT
 
 ready=false
 for _ in {1..40}; do
-  if curl -fsS "http://127.0.0.1:$port/messages-pro/" >/dev/null 2>&1; then
+  if curl -fsS "http://127.0.0.1:$port/messages-pro/app/" >/dev/null 2>&1; then
     ready=true
     break
   fi
@@ -35,6 +35,15 @@ if [[ "$ready" != true ]]; then
   exit 1
 fi
 
-"$cli" -s="$session" open "http://127.0.0.1:$port/messages-pro/" >/dev/null
+# Smoke-check the portal and every entry it links to.
+for path in "/messages-pro/" "/messages-pro/infloww/" "/messages-pro/reports/four-platform-module-comparison/index.html"; do
+  curl -fsS "http://127.0.0.1:$port$path" >/dev/null
+done
+hub_html="$(curl -fsS "http://127.0.0.1:$port/messages-pro/")"
+for link in "/messages-pro/app/" "/messages-pro/infloww/" "/messages-pro/reports/four-platform-module-comparison/index.html"; do
+  grep -q "href=\"$link\"" <<<"$hub_html" || { echo "Portal is missing a link to $link" >&2; exit 1; }
+done
+
+"$cli" -s="$session" open "http://127.0.0.1:$port/messages-pro/app/" >/dev/null
 "$cli" -s="$session" run-code --filename tests/browser-acceptance.js |
   awk '/^### Result$/{getline; print; print > "output/playwright/acceptance-report.json"; next} /^### Error$/{print; getline; print}'

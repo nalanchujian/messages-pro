@@ -8,7 +8,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+        app: 'app/index.html',
         infloww: 'infloww/index.html',
+        report: 'reports/four-platform-module-comparison/index.html',
       },
     },
   },
