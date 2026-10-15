@@ -1,0 +1,36 @@
+# Shared implementation contract
+
+New page only, no changes to existing src/main.tsx/styles.css/types.ts. New entry is /messages-pro/infloww/. UI styles use if- prefix under #infloww-demo.
+
+Import types from ./types. Import useDemo, selectFans, fanMetrics, messagesFor, money, relativeTime, displayName from ./store. Import Modal, IconButton, Avatar, MediaView from ./ui. Import saveMedia and useMediaUrl from ./mediaStorage.
+
+useDemo returns { state, dispatch, creator, fan, workspace, draft, now, notify }. fan can be undefined. dispatch accepts Action in types.ts. Defaults creatorId to activeCreatorId and fanId to active fan, unless explicitly supplied. notify(text) displays feedback. selectFans(state,cid) returns current workspace filtered Fans. fanMetrics(state,cid,fid) returns {tips,messages,spent,lastPaid,highestPurchase,ppvs,buyRate,highestPrice,lowestPrice}; amounts are dollars, PPVs are Message[]. messagesFor(state,cid,fid) returns Message[]. money(amount) formats dollars. relativeTime(timestamp,now) formats short age. displayName(fan) = name (nickname is variable replacement only).
+
+Modal props { title:string, onClose:()=>void, children:ReactNode, wide?:boolean }. IconButton {label:string,children:ReactNode,onClick?:()=>void,disabled?:boolean,active?:boolean}. Avatar {name:string,color?:string,online?:boolean,size?:number}. MediaView {media:Media|undefined, compact?:boolean}. SaveMedia(file:File) returns Promise<Media> with Blob persisted to IndexedDB. Dispatch ADD_MEDIA payload Media afterwards.
+
+Reducer action API:
+- OPEN_CREATOR payload creatorId string; CLOSE_CREATOR payload creatorId. SET_ACTIVE_CREATOR payload id.
+- OPEN_FAN fanId; CLOSE_FAN fanId; PATCH_WORKSPACE payload Partial<Workspace>; FLUSH_FOCUS.
+- PATCH_FAN fanId payload Partial<Fan>; PATCH_CREATOR payload Partial<Creator>.
+- PATCH_DRAFT payload Partial<Draft> (format is full TextFormat). CLEAR_DRAFT. SEND payload? {source?:'manual'|'smart'|'mass'|'auto',draft?:Draft,campaignId?:string,allowRestricted?:boolean}. SEND writes one unified state transition. SEND respects schedule, blocked/restricted and failure toggle. RETRY messageId.
+- CLEAR_FANS payload string[] ids (confirm in UI first). HIDE_FAN fanId; MARK_READ payload {ids:string[],unread:boolean}. PIN_LIST payload {listId:string,pinned:boolean}. ADD_LIST payload {name:string}. SET_FAN_LISTS fanId payload string[] listIds. MOVE_INBOX payload {fanIds:string[],inboxId:number}. SPLIT_INBOX payload {enabled:boolean,count:number} (confirm redistribution in UI).
+- PIN_MESSAGE / LIKE_MESSAGE messageId (toggle). WITHDRAW messageId (only own unpurchased messages within 60m; preserve withdrawn entry). COPY_DRAFT messageId (only modifies draft). ADD_SCRIPT_MESSAGE messageId. REPLY messageId (sets draft replyToId).
+- ADD_MEDIA payload Media. ADD_SCRIPT payload Script. PATCH_EMOJIS payload string[].
+- READ_NOTIFICATIONS payload {kind?:Notification['kind']}. NOTIFICATION_REPLY payload {notificationId:string,text:string}.
+- SIMULATE payload {kind:'reply'|'subscription'|'tip'|'purchase'|'platform'|'new-fan',fanId?:string,messageId?:string}. Demo events update relevant messages/notifications/transactions.
+- PURCHASE messageId (only PPV, once). VIEW_PPV messageId.
+- CREATE_TASK payload {kind:Task['kind'],dueAt:number,text:string,draft?:Draft}. CANCEL_TASK payload taskId string. TICK payload timestamp number. ADVANCE_TIME payload seconds number; these perform due tasks once.
+- OPEN_NOTIFICATION_CHAT payload {notificationId:string} opens/selects one fan tab and keeps the Home conversation and both drafts. SET_NOTE_TEMPLATE payload string saves the creator's default fan-note template; existing notes are retained and both demo roles can edit it.
+- CREATE_TASK also accepts minutes (integer 1–60) for reminder/timed modes; the engine calculates dueAt from its own clock. Timed mode captures a valid draft independently of the main composer. Failed due delivery is recorded as failed and is not executed again automatically.
+- CREATE_CAMPAIGN payload {title:string,type:Campaign['type'],fanIds:string[],draft:Draft,audience?:OnlineAudienceFilter,scheduledAt?:number,saveOnly?:boolean}. Online audience constraints are applied on creation and rechecked at dispatch; later matches do not expand the original recipient set. CANCEL_CAMPAIGN payload campaignId string cancels unsent drafts or scheduled campaigns; delivered messages use WITHDRAW individually.
+- PATCH_WORKSPACE accepts onlineAudience. selectOnlineFans(state,creatorId,audience,now) applies online status, subscription status/duration, spend/tip thresholds, excluded lists/creators, muted inclusion and recent outbound contact. Subscription months use 30 days in this demo.
+- WITHDRAW retains an immutable WithdrawalRecord with message/media snapshots, original sender and withdrawing user. canWithdrawMessage(message,now) is shared by UI and reducer; only sent/read, outbound, unpurchased messages within 60 minutes qualify.
+- READ_WITHDRAWALS payload? {id:string} marks one record or all records read; OPEN_WITHDRAWAL_CHAT payload {id:string} selects the record's creator and dedicated fan tab while retaining Home/drafts. Both actions require admin; the agency notification entry and transient alerts are also admin-only.
+- Draft/Message may carry scriptId and releaseFormIds. SEND, timed drafts, COPY_DRAFT and saved scripts retain these values. SET_MESSAGE_TAGS accepts the legacy creator ID array or {creatorTags,releaseFormIds}; sent-message editing is isolated from the main draft. Forms with declined/failed/expired status or another creator's ownership are unavailable.
+- PATCH_MEDIA payload {id:string,notes?:string,tags?:string[]} updates only local notes/tags. Media history is derived from scoped successful outbound messages plus withdrawal snapshots; it excludes inbound/failed/sending and respects each attachment's free-preview flag.
+- PATCH_CREATOR allows local creator notes for both roles; administrative properties/default nickname retain the admin guard. All outside-page navigation is Toast-only under the current scope. Modal details and explicit internal creator/fan tabs remain functional.
+- ROLE payload 'admin'|'chatter'; FAILURE payload boolean; RESET payload? 'all' resets new demo only.
+
+Panel exports default InboxPanel, ChatPanel, InsightsPanel respectively. Each panel owns its dialogs, CSS, controls and imports; don't edit shared store/types/ui unless requesting root. Scope reports/campaign editor under InboxPanel. Message forwarding opens a locally owned campaign editor in ChatPanel using CREATE_CAMPAIGN; must not auto-send. All creator/fan-specific actions accept creatorId/fanId explicit for quick replies and inactive recipients. Fan opened marks read. Closing tabs must retain data. Priority is fixture state, not AI score. Pinned view derives from pinned messages. With Tips derives tip transactions; unread_tips additionally requires fan.unread.
+
+Workspaces restore per creator, drafts per creator+fan. Header creator tabs provided by root. Root owns data, store, mediaStorage, ui, main, shell.css and meaningful state tests. Agents own component and component CSS only. Use local seeded data, not private code copied from Infloww repos.

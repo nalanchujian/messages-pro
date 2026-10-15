@@ -1,0 +1,166 @@
+{
+  "chat.complete.moreScripts": {
+    "en": "More Scripts",
+    "zh": "更多话术"
+  },
+  "chat.complete.scriptsPage": {
+    "en": "Scripts",
+    "zh": "话术管理"
+  },
+  "chat.complete.navigation": {
+    "en": "{0} opens a separate page. This demo keeps you in Messages Pro.",
+    "zh": "{0}将打开独立页面，当前演示暂留在消息工作台。"
+  },
+  "chat.complete.profilePage": {
+    "en": "Fan profile",
+    "zh": "粉丝主页"
+  },
+  "chat.complete.newWindow": {
+    "en": "Chat in a new window",
+    "zh": "独立聊天窗口"
+  },
+  "chat.complete.note": {
+    "en": "Note:",
+    "zh": "备注："
+  },
+  "chat.complete.founder": {
+    "en": "Founder:",
+    "zh": "创建人："
+  },
+  "chat.complete.sentBy": {
+    "en": "Sent by {0}",
+    "zh": "由 {0} 发送过"
+  },
+  "chat.complete.lastSent": {
+    "en": "Last sent {0}",
+    "zh": "最近发送于 {0}"
+  },
+  "chat.complete.previousMedia": {
+    "en": "Previous media",
+    "zh": "上一组素材"
+  },
+  "chat.complete.nextMedia": {
+    "en": "Next media",
+    "zh": "下一组素材"
+  },
+  "chat.complete.previewMedia": {
+    "en": "Preview {0}",
+    "zh": "预览 {0}"
+  },
+  "chat.complete.mediaStatus.sent": {
+    "en": "Sent",
+    "zh": "已发送"
+  },
+  "chat.complete.mediaStatus.bought": {
+    "en": "Purchased",
+    "zh": "已购买"
+  },
+  "chat.complete.mediaStatus.unbought": {
+    "en": "Sent, not purchased",
+    "zh": "已发送，未购买"
+  },
+  "chat.complete.searchTags": {
+    "en": "Search for user or release form",
+    "zh": "搜索用户或授权表单"
+  },
+  "chat.complete.filters": {
+    "en": "Filter and sort",
+    "zh": "筛选和排序"
+  },
+  "chat.complete.all": {
+    "en": "All",
+    "zh": "全部"
+  },
+  "chat.complete.pending": {
+    "en": "Pending",
+    "zh": "待处理"
+  },
+  "chat.complete.approved": {
+    "en": "Approved",
+    "zh": "已批准"
+  },
+  "chat.complete.expired": {
+    "en": "Expired",
+    "zh": "已过期"
+  },
+  "chat.complete.failed": {
+    "en": "Failed",
+    "zh": "审核失败"
+  },
+  "chat.complete.declined": {
+    "en": "Declined",
+    "zh": "已拒绝"
+  },
+  "chat.complete.signed": {
+    "en": "Signed",
+    "zh": "已签署"
+  },
+  "chat.complete.unsigned": {
+    "en": "Unsigned",
+    "zh": "未签署"
+  },
+  "chat.complete.recent": {
+    "en": "Recent",
+    "zh": "最近"
+  },
+  "chat.complete.name": {
+    "en": "Name",
+    "zh": "名称"
+  },
+  "chat.complete.ascending": {
+    "en": "Ascending",
+    "zh": "升序"
+  },
+  "chat.complete.descending": {
+    "en": "Descending",
+    "zh": "降序"
+  },
+  "chat.complete.noTagResults": {
+    "en": "No matching users or release forms",
+    "zh": "没有匹配的用户或授权表单"
+  },
+  "chat.complete.releaseForm": {
+    "en": "Release form",
+    "zh": "授权表单"
+  },
+  "chat.complete.document": {
+    "en": "ID document",
+    "zh": "身份证明文件"
+  },
+  "chat.complete.link": {
+    "en": "Release link",
+    "zh": "授权链接"
+  },
+  "chat.complete.removeRelease": {
+    "en": "Remove release form {0}",
+    "zh": "移除授权表单 {0}"
+  },
+  "chat.complete.selectRecipients": {
+    "en": "Select all available fans",
+    "zh": "选择所有可用粉丝"
+  },
+  "chat.complete.searchRecipients": {
+    "en": "Search recipients",
+    "zh": "搜索收件人"
+  },
+  "chat.complete.textLength": {
+    "en": "Maximum 6,500 characters",
+    "zh": "最多 6,500 个字符"
+  },
+  "chat.complete.date": {
+    "en": "Date",
+    "zh": "日期"
+  },
+  "chat.complete.hour": {
+    "en": "Hour",
+    "zh": "小时"
+  },
+  "chat.complete.minute": {
+    "en": "Minute",
+    "zh": "分钟"
+  },
+  "chat.complete.timezone": {
+    "en": "Timezone: {0}",
+    "zh": "时区：{0}"
+  }
+}

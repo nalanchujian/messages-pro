@@ -1,0 +1,18 @@
+{
+  "translation.01": { "en": "Hey! How has your day been? 😊", "zh": "嗨！你今天过得怎么样？😊" },
+  "translation.02": { "en": "Pretty good! I loved your recent travel photos.", "zh": "挺好的！我很喜欢你最近的旅行照片。" },
+  "translation.03": { "en": "Thank you! I put together a little collection from the coast.", "zh": "谢谢！我整理了一组海边的小作品。" },
+  "translation.04": { "en": "A quiet afternoon by the sea 🌊", "zh": "海边宁静的午后 🌊" },
+  "translation.05": { "en": "Is there another preview from this trip?", "zh": "这次旅行还有其他预览吗？" },
+  "translation.06": { "en": "When will the new studio set be ready?", "zh": "新的工作室照片集什么时候准备好？" },
+  "translation.07": { "en": "That photo set was amazing!", "zh": "那组照片太棒了！" },
+  "translation.08": { "en": "Sounds good, talk tomorrow!", "zh": "听起来不错，明天聊！" },
+  "translation.09": { "en": "Hi! Happy to be here 😊", "zh": "嗨！很高兴来到这里 😊" },
+  "translation.10": { "en": "Thanks!", "zh": "谢谢！" },
+  "seli.ready1": { "en": "Thanks for your patience, {0}. Let me check the collection’s availability before I give you a confirmed date.", "zh": "谢谢你耐心等待，{0}。我先核对这组内容的准备情况，确认后再告诉你准确安排。" },
+  "seli.ready2": { "en": "I saw your question, {0}. I’ll check the details first and get back to you with an update.", "zh": "{0}，我看到你的问题了。让我确认一下进度，再给你可靠的答复。" },
+  "seli.preview1": { "en": "Happy to chat about it, {0} 😊 Do you prefer coastal scenes or the little behind-the-scenes moments?", "zh": "当然可以聊聊，{0} 😊 你更喜欢这次旅行的海边风景，还是幕后的日常片段？" },
+  "seli.preview2": { "en": "Glad this trip caught your interest, {0}. Which part would you like to see more of?", "zh": "{0}，很开心你对这次旅行感兴趣。你最想先了解哪一部分？" },
+  "seli.generic1": { "en": "Thanks, {0} 😊 Lovely to hear from you. How is your day going?", "zh": "谢谢你，{0} 😊 很高兴收到你的消息。你今天过得怎么样？" },
+  "seli.generic2": { "en": "Happy to catch up, {0}. What has been the highlight of your day?", "zh": "{0}，很开心和你聊聊。最近有什么让你开心的小事吗？" }
+}

@@ -1,0 +1,1734 @@
+{
+  "interface.389": {
+    "en": "English",
+    "zh": "英文"
+  },
+  "interface.282": {
+    "en": "active",
+    "zh": "有效订阅"
+  },
+  "interface.332": {
+    "en": "notifications",
+    "zh": "通知"
+  },
+  "interface.216": {
+    "en": "AI",
+    "zh": "AI"
+  },
+  "interface.009": {
+    "en": "Open in new tab",
+    "zh": "在新页签打开"
+  },
+  "interface.087": {
+    "en": "Hide chat",
+    "zh": "隐藏聊天"
+  },
+  "interface.100": {
+    "en": "Online fans",
+    "zh": "在线粉丝"
+  },
+  "interface.101": {
+    "en": "Message all online fans",
+    "zh": "向所有在线粉丝发消息"
+  },
+  "interface.162": {
+    "en": "Subscription",
+    "zh": "订阅"
+  },
+  "interface.102": {
+    "en": "All fans",
+    "zh": "全部粉丝"
+  },
+  "interface.103": {
+    "en": "Active fans",
+    "zh": "有效订阅"
+  },
+  "interface.104": {
+    "en": "Expired fans",
+    "zh": "已过期"
+  },
+  "interface.105": {
+    "en": "Include muted fans",
+    "zh": "包含已静音粉丝"
+  },
+  "interface.197": {
+    "en": "Expired",
+    "zh": "已过期"
+  },
+  "interface.106": {
+    "en": "Notifications",
+    "zh": "通知"
+  },
+  "interface.110": {
+    "en": "Quick reply…",
+    "zh": "快速回复…"
+  },
+  "interface.111": {
+    "en": "Reply",
+    "zh": "回复"
+  },
+  "interface.112": {
+    "en": "Split inbox settings",
+    "zh": "分组收件箱设置"
+  },
+  "interface.113": {
+    "en": "Split inbox",
+    "zh": "分组收件箱"
+  },
+  "interface.114": {
+    "en": "Number of inboxes",
+    "zh": "收件箱数量"
+  },
+  "interface.072": {
+    "en": "Cancel",
+    "zh": "取消"
+  },
+  "interface.073": {
+    "en": "Save",
+    "zh": "保存"
+  },
+  "interface.115": {
+    "en": "Pinned lists",
+    "zh": "固定列表"
+  },
+  "interface.117": {
+    "en": "New list name",
+    "zh": "新列表名称"
+  },
+  "interface.116": {
+    "en": "Create",
+    "zh": "创建"
+  },
+  "interface.074": {
+    "en": "Done",
+    "zh": "完成"
+  },
+  "interface.212": {
+    "en": "Inbox",
+    "zh": "收件箱"
+  },
+  "interface.353": {
+    "en": "Move",
+    "zh": "移动"
+  },
+  "interface.118": {
+    "en": "New smart message",
+    "zh": "新建智能消息"
+  },
+  "interface.119": {
+    "en": "Task name",
+    "zh": "任务名称"
+  },
+  "interface.121": {
+    "en": "fans",
+    "zh": "位粉丝"
+  },
+  "interface.122": {
+    "en": "Search recipients",
+    "zh": "搜索接收者"
+  },
+  "interface.123": {
+    "en": "Select a list…",
+    "zh": "选择列表…"
+  },
+  "interface.124": {
+    "en": "Message",
+    "zh": "消息"
+  },
+  "interface.125": {
+    "en": "Insert script",
+    "zh": "插入话术"
+  },
+  "interface.126": {
+    "en": "Choose a script…",
+    "zh": "选择话术…"
+  },
+  "interface.127": {
+    "en": "PPV price",
+    "zh": "PPV 价格"
+  },
+  "interface.128": {
+    "en": "Lock message text",
+    "zh": "锁定消息文字"
+  },
+  "interface.129": {
+    "en": "Attach media",
+    "zh": "附加素材"
+  },
+  "interface.130": {
+    "en": "Schedule sending",
+    "zh": "排程发送"
+  },
+  "interface.131": {
+    "en": "Save draft",
+    "zh": "保存草稿"
+  },
+  "interface.132": {
+    "en": "Schedule",
+    "zh": "排程"
+  },
+  "interface.019": {
+    "en": "Send",
+    "zh": "发送"
+  },
+  "interface.133": {
+    "en": "Message statistics",
+    "zh": "消息统计"
+  },
+  "interface.134": {
+    "en": "Draft",
+    "zh": "草稿"
+  },
+  "interface.135": {
+    "en": "Scheduled",
+    "zh": "已排程"
+  },
+  "interface.136": {
+    "en": "Sent",
+    "zh": "已发送"
+  },
+  "interface.137": {
+    "en": "Cancelled",
+    "zh": "已取消"
+  },
+  "interface.138": {
+    "en": "Recipient",
+    "zh": "接收者"
+  },
+  "interface.139": {
+    "en": "Status",
+    "zh": "状态"
+  },
+  "interface.140": {
+    "en": "Viewed",
+    "zh": "已查看"
+  },
+  "interface.059": {
+    "en": "Purchased",
+    "zh": "已购买"
+  },
+  "interface.141": {
+    "en": "Yes",
+    "zh": "是"
+  },
+  "interface.142": {
+    "en": "Retry",
+    "zh": "重试"
+  },
+  "interface.143": {
+    "en": "Open chat",
+    "zh": "打开聊天"
+  },
+  "interface.144": {
+    "en": "Tasks",
+    "zh": "任务"
+  },
+  "interface.145": {
+    "en": "PPV revenue",
+    "zh": "PPV 收入"
+  },
+  "interface.146": {
+    "en": "Details",
+    "zh": "详情"
+  },
+  "interface.147": {
+    "en": "Copy",
+    "zh": "复制"
+  },
+  "interface.149": {
+    "en": "New message task",
+    "zh": "新建消息任务"
+  },
+  "interface.150": {
+    "en": "Delete selected conversations?",
+    "zh": "删除所选会话？"
+  },
+  "interface.151": {
+    "en": "Delete conversation?",
+    "zh": "删除会话？"
+  },
+  "interface.152": {
+    "en": "Confirm split inbox",
+    "zh": "确认分组收件箱"
+  },
+  "interface.153": {
+    "en": "Remove split inboxes",
+    "zh": "取消收件箱分组"
+  },
+  "interface.154": {
+    "en": "Withdraw eligible messages?",
+    "zh": "撤回符合条件的消息？"
+  },
+  "interface.155": {
+    "en": "Delete",
+    "zh": "删除"
+  },
+  "interface.156": {
+    "en": "Confirm",
+    "zh": "确认"
+  },
+  "interface.255": {
+    "en": "Fan details",
+    "zh": "粉丝详情"
+  },
+  "interface.017": {
+    "en": "Rename user",
+    "zh": "重命名用户"
+  },
+  "interface.085": {
+    "en": "Add to / remove from lists",
+    "zh": "添加到/移出列表"
+  },
+  "interface.013": {
+    "en": "Fan notes",
+    "zh": "粉丝备注"
+  },
+  "interface.256": {
+    "en": "Chat gallery",
+    "zh": "聊天媒体库"
+  },
+  "interface.083": {
+    "en": "Fan actions",
+    "zh": "粉丝操作"
+  },
+  "interface.086": {
+    "en": "Give user a discount",
+    "zh": "给用户折扣"
+  },
+  "interface.257": {
+    "en": "Report user · local demo",
+    "zh": "举报用户 · 本地演示"
+  },
+  "interface.258": {
+    "en": "Emoji keyboard",
+    "zh": "表情键盘"
+  },
+  "interface.067": {
+    "en": "Seli · sample reply assistant",
+    "zh": "Seli · 示例回复助手"
+  },
+  "interface.031": {
+    "en": "Scripts",
+    "zh": "话术"
+  },
+  "interface.259": {
+    "en": "Timed message or reminder",
+    "zh": "定时消息或提醒"
+  },
+  "interface.260": {
+    "en": "Vault",
+    "zh": "素材库"
+  },
+  "interface.261": {
+    "en": "GIFs",
+    "zh": "GIF 动图"
+  },
+  "interface.262": {
+    "en": "Schedule message",
+    "zh": "排程消息"
+  },
+  "interface.024": {
+    "en": "Message price",
+    "zh": "消息价格"
+  },
+  "interface.263": {
+    "en": "Tag other Creator(s)",
+    "zh": "标记其他创作者"
+  },
+  "interface.264": {
+    "en": "Translate draft · sample dictionary",
+    "zh": "翻译草稿 · 示例词典"
+  },
+  "interface.265": {
+    "en": "Forward to a mass-message draft",
+    "zh": "转发为群发消息草稿"
+  },
+  "interface.095": {
+    "en": "Hide this chat?",
+    "zh": "隐藏此聊天？"
+  },
+  "interface.096": {
+    "en": "Block this user?",
+    "zh": "屏蔽此用户？"
+  },
+  "interface.097": {
+    "en": "Restrict this user?",
+    "zh": "限制此用户？"
+  },
+  "interface.266": {
+    "en": "Copy text",
+    "zh": "复制文本"
+  },
+  "interface.269": {
+    "en": "Copied to clipboard",
+    "zh": "已复制到剪贴板"
+  },
+  "interface.270": {
+    "en": "This demo uses a $3–$200 PPV price range, or free",
+    "zh": "演示中的 PPV 价格范围为 $3–$200，也可以免费。"
+  },
+  "interface.271": {
+    "en": "Choose at least one paid item or lock the message text",
+    "zh": "请至少选择一项付费内容，或锁定消息文字。"
+  },
+  "interface.272": {
+    "en": "Choose a future date and time",
+    "zh": "请选择未来的日期和时间。"
+  },
+  "interface.273": {
+    "en": "Select up to 40 media files",
+    "zh": "最多可选择 40 个素材文件。"
+  },
+  "interface.274": {
+    "en": "Clear paid content, media and Creator tags before adding a GIF",
+    "zh": "添加 GIF 前，请清除付费内容、素材和创作者标签。"
+  },
+  "interface.275": {
+    "en": "Remove the GIF before adding other media",
+    "zh": "添加其他素材前，请先移除 GIF。"
+  },
+  "interface.276": {
+    "en": "Remove the GIF before uploading media",
+    "zh": "上传素材前，请先移除 GIF。"
+  },
+  "interface.277": {
+    "en": "A maximum of 40 media files can be attached",
+    "zh": "最多可附加 40 个素材文件。"
+  },
+  "interface.279": {
+    "en": "Unable to save media locally. Try a smaller file or check browser storage.",
+    "zh": "无法在本地保存素材。请尝试较小的文件，或检查浏览器存储空间。"
+  },
+  "interface.281": {
+    "en": "paid",
+    "zh": "已购买"
+  },
+  "interface.318": {
+    "en": "Renewal",
+    "zh": "自动续订"
+  },
+  "interface.198": {
+    "en": "On",
+    "zh": "开启"
+  },
+  "interface.199": {
+    "en": "Off",
+    "zh": "关闭"
+  },
+  "interface.319": {
+    "en": "Country",
+    "zh": "国家/地区"
+  },
+  "interface.191": {
+    "en": "Unknown",
+    "zh": "未知"
+  },
+  "interface.320": {
+    "en": "Source",
+    "zh": "来源"
+  },
+  "interface.321": {
+    "en": "Last seen",
+    "zh": "上次在线"
+  },
+  "interface.084": {
+    "en": "Copy link to profile",
+    "zh": "复制主页链接"
+  },
+  "interface.322": {
+    "en": "Display name",
+    "zh": "显示名称"
+  },
+  "interface.323": {
+    "en": "This changes the name shown in your demo workspace. The fan handle is unchanged.",
+    "zh": "这会更改演示工作台中的显示名称，不会改变粉丝账号。"
+  },
+  "interface.324": {
+    "en": "Save name",
+    "zh": "保存名称"
+  },
+  "interface.325": {
+    "en": "Choose lists for",
+    "zh": "为"
+  },
+  "interface.327": {
+    "en": "Notes for",
+    "zh": "的备注"
+  },
+  "interface.328": {
+    "en": "Preferences, important details and conversation context…",
+    "zh": "偏好、重要细节和聊天背景…"
+  },
+  "interface.329": {
+    "en": "Save notes",
+    "zh": "保存备注"
+  },
+  "interface.330": {
+    "en": "Unmute",
+    "zh": "取消静音"
+  },
+  "interface.331": {
+    "en": "Mute",
+    "zh": "静音"
+  },
+  "interface.091": {
+    "en": "Unrestrict",
+    "zh": "取消限制"
+  },
+  "interface.090": {
+    "en": "Restrict",
+    "zh": "限制"
+  },
+  "interface.093": {
+    "en": "Unblock",
+    "zh": "取消屏蔽"
+  },
+  "interface.092": {
+    "en": "Block",
+    "zh": "屏蔽"
+  },
+  "interface.094": {
+    "en": "Report",
+    "zh": "举报"
+  },
+  "interface.333": {
+    "en": "Hide",
+    "zh": "隐藏"
+  },
+  "interface.334": {
+    "en": "Allow this fan to participate in conversations again.",
+    "zh": "允许该粉丝再次参与聊天。"
+  },
+  "interface.335": {
+    "en": "Block this fan in the local demo. Sending is disabled until you unblock them.",
+    "zh": "在本地演示中屏蔽该粉丝。解除屏蔽前无法发送消息。"
+  },
+  "interface.336": {
+    "en": "Restrict this fan in the local demo. Sending is disabled until the restriction is removed.",
+    "zh": "在本地演示中限制该粉丝。解除限制前无法发送消息。"
+  },
+  "interface.098": {
+    "en": "Block user",
+    "zh": "屏蔽用户"
+  },
+  "interface.099": {
+    "en": "Restrict user",
+    "zh": "限制用户"
+  },
+  "interface.337": {
+    "en": "Current demo subscription price:",
+    "zh": "当前演示订阅价格："
+  },
+  "interface.338": {
+    "en": "Discount percentage",
+    "zh": "折扣比例"
+  },
+  "interface.339": {
+    "en": "New local offer:",
+    "zh": "新的本地优惠："
+  },
+  "interface.340": {
+    "en": "Creates an offer in this demo only.",
+    "zh": "该优惠仅在本地演示中创建。"
+  },
+  "interface.341": {
+    "en": "Apply demo offer",
+    "zh": "应用演示优惠"
+  },
+  "interface.342": {
+    "en": "This records a simulated report and a local notification. It does not contact a platform.",
+    "zh": "这会记录模拟举报和本地通知，不会联系外部平台。"
+  },
+  "interface.343": {
+    "en": "Reason",
+    "zh": "原因"
+  },
+  "interface.344": {
+    "en": "Spam",
+    "zh": "垃圾信息"
+  },
+  "interface.345": {
+    "en": "Harassment",
+    "zh": "骚扰"
+  },
+  "interface.346": {
+    "en": "Impersonation",
+    "zh": "冒充他人"
+  },
+  "interface.347": {
+    "en": "Other",
+    "zh": "其他"
+  },
+  "interface.348": {
+    "en": "Additional details",
+    "zh": "补充说明"
+  },
+  "interface.349": {
+    "en": "Optional details",
+    "zh": "可选说明"
+  },
+  "interface.350": {
+    "en": "Record demo report",
+    "zh": "记录演示举报"
+  },
+  "interface.351": {
+    "en": "Clipboard access is unavailable. Select and copy this text.",
+    "zh": "无法访问剪贴板，请选择并复制此文本。"
+  },
+  "interface.065": {
+    "en": "No pinned messages. Pin an important message from its actions.",
+    "zh": "暂无置顶消息。请从消息操作中置顶重要消息。"
+  },
+  "interface.058": {
+    "en": "All",
+    "zh": "全部"
+  },
+  "interface.038": {
+    "en": "Unlocked",
+    "zh": "已解锁"
+  },
+  "interface.061": {
+    "en": "Photos",
+    "zh": "图片"
+  },
+  "interface.062": {
+    "en": "Videos",
+    "zh": "视频"
+  },
+  "interface.063": {
+    "en": "Audio",
+    "zh": "音频"
+  },
+  "interface.196": {
+    "en": "Free",
+    "zh": "免费"
+  },
+  "interface.060": {
+    "en": "Not purchased",
+    "zh": "未购买"
+  },
+  "interface.064": {
+    "en": "View in chat",
+    "zh": "在聊天中查看"
+  },
+  "interface.066": {
+    "en": "No media in this chat matches the filter.",
+    "zh": "此聊天没有符合筛选条件的素材。"
+  },
+  "interface.352": {
+    "en": "Manage favorite emojis. Click a favorite to remove it; use arrows to arrange the quick keyboard.",
+    "zh": "管理常用表情。点击常用表情可移除，使用箭头调整快捷键顺序。"
+  },
+  "interface.356": {
+    "en": "Sample assistant · deterministic local drafts, no AI provider connected. Uses the selected recent messages and your prompt; never sends automatically.",
+    "zh": "示例助手 · 使用确定性的本地草稿，不连接 AI 服务。根据所选近期消息和提示生成，绝不会自动发送。"
+  },
+  "interface.070": {
+    "en": "Recent message count",
+    "zh": "最近消息数量"
+  },
+  "interface.071": {
+    "en": "Prompt",
+    "zh": "提示词"
+  },
+  "interface.069": {
+    "en": "Regenerate sample",
+    "zh": "重新生成示例"
+  },
+  "interface.068": {
+    "en": "Generate sample",
+    "zh": "生成示例"
+  },
+  "interface.359": {
+    "en": "Custom",
+    "zh": "自定义"
+  },
+  "interface.078": {
+    "en": "Title",
+    "zh": "标题"
+  },
+  "interface.079": {
+    "en": "Category",
+    "zh": "分类"
+  },
+  "interface.080": {
+    "en": "Text",
+    "zh": "正文"
+  },
+  "interface.082": {
+    "en": "Back",
+    "zh": "返回"
+  },
+  "interface.081": {
+    "en": "Save script",
+    "zh": "保存话术"
+  },
+  "interface.075": {
+    "en": "Search scripts",
+    "zh": "搜索话术"
+  },
+  "interface.076": {
+    "en": "Search scripts…",
+    "zh": "搜索话术…"
+  },
+  "interface.361": {
+    "en": "All categories",
+    "zh": "全部分类"
+  },
+  "interface.077": {
+    "en": "New script",
+    "zh": "新建话术"
+  },
+  "interface.362": {
+    "en": "media · inserted into your draft",
+    "zh": "个素材 · 已插入草稿"
+  },
+  "interface.363": {
+    "en": "No scripts found.",
+    "zh": "没有找到话术。"
+  },
+  "interface.364": {
+    "en": "Timed message",
+    "zh": "定时消息"
+  },
+  "interface.365": {
+    "en": "Timed reminder",
+    "zh": "定时提醒"
+  },
+  "interface.366": {
+    "en": "Send after",
+    "zh": "发送延迟"
+  },
+  "interface.367": {
+    "en": "Remind me after",
+    "zh": "提醒延迟"
+  },
+  "interface.369": {
+    "en": "Reminder note",
+    "zh": "提醒备注"
+  },
+  "interface.370": {
+    "en": "Write the timed message…",
+    "zh": "编写定时消息…"
+  },
+  "interface.371": {
+    "en": "Remember to follow up…",
+    "zh": "记得跟进…"
+  },
+  "interface.368": {
+    "en": "Message price ($)",
+    "zh": "消息价格 ($)"
+  },
+  "interface.372": {
+    "en": "Uses the current draft’s attachments, preview choices and Creator tags.",
+    "zh": "使用当前草稿中的素材、预览设置和创作者标签。"
+  },
+  "interface.373": {
+    "en": "Alarm sound",
+    "zh": "提醒声音"
+  },
+  "interface.374": {
+    "en": "Soft tone",
+    "zh": "轻提示音"
+  },
+  "interface.375": {
+    "en": "Bell",
+    "zh": "铃声"
+  },
+  "interface.376": {
+    "en": "Silent",
+    "zh": "静音"
+  },
+  "interface.377": {
+    "en": "Preview",
+    "zh": "试听"
+  },
+  "interface.378": {
+    "en": "Local demo: tasks run while this page is open or when you return. No background platform delivery is performed.",
+    "zh": "本地演示：任务会在页面打开或重新返回时执行，不会进行后台平台投递。"
+  },
+  "interface.379": {
+    "en": "Start timer",
+    "zh": "启动定时器"
+  },
+  "interface.381": {
+    "en": "Date and time",
+    "zh": "日期和时间"
+  },
+  "interface.382": {
+    "en": "The current draft remains editable. Press Send to add it to the local scheduled queue.",
+    "zh": "当前草稿仍可编辑。点击发送即可加入本地排程队列。"
+  },
+  "interface.303": {
+    "en": "Remove schedule",
+    "zh": "取消排程"
+  },
+  "interface.383": {
+    "en": "Set schedule",
+    "zh": "设置排程"
+  },
+  "interface.384": {
+    "en": "Demo price range: $3–$200, or 0 for a free message.",
+    "zh": "演示价格范围为 $3–$200，或设为 0 代表免费消息。"
+  },
+  "interface.385": {
+    "en": "Save price",
+    "zh": "保存价格"
+  },
+  "interface.386": {
+    "en": "Tag Creators featured in this message’s media. This is not a fan mention.",
+    "zh": "标记消息素材中出现的创作者，这不是提及粉丝。"
+  },
+  "interface.387": {
+    "en": "Draft text",
+    "zh": "草稿文字"
+  },
+  "interface.388": {
+    "en": "Translation language",
+    "zh": "翻译语言"
+  },
+  "interface.390": {
+    "en": "Translate sample",
+    "zh": "翻译示例"
+  },
+  "interface.391": {
+    "en": "Review and edit",
+    "zh": "检查并编辑"
+  },
+  "interface.392": {
+    "en": "Use translation",
+    "zh": "使用译文"
+  },
+  "interface.393": {
+    "en": "Save a mass-message draft. Saving does not send to any recipients.",
+    "zh": "保存群发消息草稿，保存后不会向任何接收者发送。"
+  },
+  "interface.394": {
+    "en": "Campaign title",
+    "zh": "群发标题"
+  },
+  "interface.396": {
+    "en": "selected",
+    "zh": "已选择"
+  },
+  "interface.397": {
+    "en": "Unavailable",
+    "zh": "不可用"
+  },
+  "interface.398": {
+    "en": "Save mass-message draft",
+    "zh": "保存群发草稿"
+  },
+  "interface.007": {
+    "en": "Chat workspace",
+    "zh": "聊天工作区"
+  },
+  "interface.287": {
+    "en": "Blocked",
+    "zh": "已屏蔽"
+  },
+  "interface.288": {
+    "en": "Restricted",
+    "zh": "已限制"
+  },
+  "interface.207": {
+    "en": "Available now",
+    "zh": "当前在线"
+  },
+  "interface.089": {
+    "en": "Unmute notifications",
+    "zh": "取消静音"
+  },
+  "interface.088": {
+    "en": "Mute notifications",
+    "zh": "静音通知"
+  },
+  "interface.015": {
+    "en": "Gallery",
+    "zh": "媒体库"
+  },
+  "interface.016": {
+    "en": "Find",
+    "zh": "查找"
+  },
+  "interface.290": {
+    "en": "No results",
+    "zh": "没有结果"
+  },
+  "interface.291": {
+    "en": "Search messages",
+    "zh": "搜索消息"
+  },
+  "interface.208": {
+    "en": "Conversation with",
+    "zh": "与…的会话"
+  },
+  "interface.209": {
+    "en": "Local demo ·",
+    "zh": "本地演示 ·"
+  },
+  "interface.295": {
+    "en": "Start a conversation. Your first message will appear here.",
+    "zh": "开始聊天后，第一条消息会显示在这里。"
+  },
+  "interface.296": {
+    "en": "Reminder",
+    "zh": "提醒"
+  },
+  "interface.298": {
+    "en": "Replying to",
+    "zh": "正在回复"
+  },
+  "interface.057": {
+    "en": "Media message",
+    "zh": "媒体消息"
+  },
+  "interface.297": {
+    "en": "Remove quote",
+    "zh": "移除引用"
+  },
+  "interface.299": {
+    "en": "Scheduled for",
+    "zh": "已排程至"
+  },
+  "interface.036": {
+    "en": "Free preview",
+    "zh": "免费预览"
+  },
+  "interface.300": {
+    "en": "Price to view",
+    "zh": "查看价格"
+  },
+  "interface.301": {
+    "en": "Lock text",
+    "zh": "锁定文字"
+  },
+  "interface.302": {
+    "en": "Remove PPV price",
+    "zh": "移除 PPV 价格"
+  },
+  "interface.305": {
+    "en": "Text size",
+    "zh": "文字大小"
+  },
+  "interface.306": {
+    "en": "Bold",
+    "zh": "加粗"
+  },
+  "interface.307": {
+    "en": "Italic",
+    "zh": "斜体"
+  },
+  "interface.308": {
+    "en": "Color",
+    "zh": "颜色"
+  },
+  "interface.309": {
+    "en": "Text color",
+    "zh": "文字颜色"
+  },
+  "interface.310": {
+    "en": "Clear formatting",
+    "zh": "清除格式"
+  },
+  "interface.311": {
+    "en": "Close text format",
+    "zh": "关闭文字格式"
+  },
+  "interface.312": {
+    "en": "Scripts · quick search",
+    "zh": "话术 · 快速搜索"
+  },
+  "interface.314": {
+    "en": "User is blocked",
+    "zh": "该用户已被屏蔽"
+  },
+  "interface.315": {
+    "en": "User is restricted",
+    "zh": "该用户已被限制"
+  },
+  "interface.316": {
+    "en": "Clear",
+    "zh": "清除"
+  },
+  "interface.317": {
+    "en": "Sending unavailable · change the fan restriction to resume",
+    "zh": "当前无法发送消息，请解除粉丝限制后重试。"
+  },
+  "interface.033": {
+    "en": "Enter to send · Shift+Enter for a new line",
+    "zh": "按 Enter 发送 · Shift+Enter 换行"
+  },
+  "interface.210": {
+    "en": "Draft saved locally",
+    "zh": "草稿已保存到本地"
+  },
+  "interface.213": {
+    "en": "PPV",
+    "zh": "PPV"
+  },
+  "interface.extra.pinnedMessages": {
+    "en": "Pinned messages",
+    "zh": "置顶消息"
+  },
+  "interface.008": {
+    "en": "Back to inbox",
+    "zh": "返回收件箱"
+  },
+  "interface.012": {
+    "en": "Lists",
+    "zh": "列表"
+  },
+  "interface.014": {
+    "en": "Open pinned messages",
+    "zh": "打开置顶消息"
+  },
+  "interface.010": {
+    "en": "Refresh current chat",
+    "zh": "刷新当前聊天"
+  },
+  "interface.011": {
+    "en": "More fan actions",
+    "zh": "更多粉丝操作"
+  },
+  "interface.292": {
+    "en": "Previous search result",
+    "zh": "上一个搜索结果"
+  },
+  "interface.293": {
+    "en": "Next search result",
+    "zh": "下一个搜索结果"
+  },
+  "interface.294": {
+    "en": "Close chat search",
+    "zh": "关闭聊天搜索"
+  },
+  "interface.028": {
+    "en": "Choose emoji",
+    "zh": "选择表情"
+  },
+  "interface.029": {
+    "en": "Emoji keyboard settings",
+    "zh": "表情键盘设置"
+  },
+  "interface.032": {
+    "en": "Set a timed message or reminder",
+    "zh": "设置定时消息或提醒"
+  },
+  "interface.020": {
+    "en": "Add media",
+    "zh": "添加素材"
+  },
+  "interface.021": {
+    "en": "Add GIF",
+    "zh": "添加 GIF"
+  },
+  "interface.022": {
+    "en": "Add media from vault",
+    "zh": "从素材库添加"
+  },
+  "interface.023": {
+    "en": "Schedule your message",
+    "zh": "排程发送"
+  },
+  "interface.025": {
+    "en": "Tag other Creators",
+    "zh": "标记其他创作者"
+  },
+  "interface.026": {
+    "en": "Format text",
+    "zh": "格式化文字"
+  },
+  "interface.027": {
+    "en": "Translate draft",
+    "zh": "翻译草稿"
+  },
+  "interface.extra.01": {
+    "en": "Add to lists",
+    "zh": "添加到列表"
+  },
+  "interface.extra.02": {
+    "en": "Mark as",
+    "zh": "标记为"
+  },
+  "interface.extra.03": {
+    "en": "Move to another split inbox",
+    "zh": "移到其他分组收件箱"
+  },
+  "interface.extra.04": {
+    "en": "Clear messages",
+    "zh": "清除消息"
+  },
+  "interface.extra.05": {
+    "en": "Total spent ≥",
+    "zh": "总消费 ≥"
+  },
+  "interface.extra.06": {
+    "en": "Subscribed over",
+    "zh": "订阅超过"
+  },
+  "interface.extra.07": {
+    "en": "1 month",
+    "zh": "1 个月"
+  },
+  "interface.extra.08": {
+    "en": "3 months",
+    "zh": "3 个月"
+  },
+  "interface.extra.09": {
+    "en": "6 months",
+    "zh": "6 个月"
+  },
+  "interface.extra.10": {
+    "en": "12 months",
+    "zh": "12 个月"
+  },
+  "interface.extra.11": {
+    "en": "Target inbox",
+    "zh": "目标收件箱"
+  },
+  "interface.extra.12": {
+    "en": "of",
+    "zh": "的"
+  },
+  "interface.extra.13": {
+    "en": "Send to ·",
+    "zh": "发送给 ·"
+  },
+  "interface.extra.14": {
+    "en": "to",
+    "zh": "给"
+  },
+  "interface.extra.15": {
+    "en": "Task / Created",
+    "zh": "任务 / 创建时间"
+  },
+  "interface.extra.16": {
+    "en": "Audience",
+    "zh": "受众"
+  },
+  "interface.extra.17": {
+    "en": "Price",
+    "zh": "价格"
+  },
+  "interface.extra.18": {
+    "en": "Sent / Unsent",
+    "zh": "已发送 / 未发送"
+  },
+  "interface.extra.19": {
+    "en": "Viewed / Bought",
+    "zh": "已查看 / 已购买"
+  },
+  "interface.extra.20": {
+    "en": "Withdraw eligible",
+    "zh": "撤回符合条件的消息"
+  },
+  "interface.extra.21": {
+    "en": ". Changes save immediately.",
+    "zh": "。更改会立即保存。"
+  },
+  "interface.extra.22": {
+    "en": "from the current inbox. Messages, drafts and purchases remain in the local demo.",
+    "zh": "从当前收件箱隐藏。消息、草稿和购买记录仍保留在本地演示中。"
+  },
+  "interface.extra.23": {
+    "en": "/40 favorites",
+    "zh": "/40 个收藏"
+  },
+  "interface.extra.24": {
+    "en": "Save keyboard",
+    "zh": "保存键盘"
+  },
+  "interface.extra.25": {
+    "en": "Use",
+    "zh": "使用"
+  },
+  "interface.extra.26": {
+    "en": "for the fan nickname or Creator default nickname.",
+    "zh": "表示粉丝昵称或创作者默认昵称。"
+  },
+  "interface.extra.27": {
+    "en": "(1–60 minutes)",
+    "zh": "（1–60 分钟）"
+  },
+  "interface.extra.28": {
+    "en": "/40 attached",
+    "zh": "/40 个附件"
+  },
+  "interface.extra.29": {
+    "en": "Price ($)",
+    "zh": "价格（$）"
+  },
+  "interface.extra.30": {
+    "en": "PPV price ($)",
+    "zh": "PPV 价格（$）"
+  },
+  "interface.extra.31": {
+    "en": "Recipients ·",
+    "zh": "收件人 ·"
+  },
+  "interface.extra.32": {
+    "en": "Open a conversation",
+    "zh": "打开一个会话"
+  },
+  "interface.extra.33": {
+    "en": "Select a fan from the inbox to start chatting.",
+    "zh": "从收件箱选择一位粉丝开始聊天。"
+  },
+  "interface.extra.34": {
+    "en": "All media",
+    "zh": "全部素材"
+  },
+  "interface.extra.35": {
+    "en": "Sent & unsent",
+    "zh": "已发送和未发送"
+  },
+  "interface.extra.36": {
+    "en": "Sent to this fan",
+    "zh": "已发送给这位粉丝"
+  },
+  "interface.extra.37": {
+    "en": "Unsent to this fan",
+    "zh": "未发送给这位粉丝"
+  },
+  "interface.extra.38": {
+    "en": "Already sent ·",
+    "zh": "已发送 ·"
+  },
+  "interface.extra.39": {
+    "en": ". You can resend.",
+    "zh": "。可以再次发送。"
+  },
+  "interface.extra.40": {
+    "en": "No media matches these filters.",
+    "zh": "没有符合筛选条件的素材。"
+  },
+  "interface.extra.41": {
+    "en": "Script category",
+    "zh": "话术分类"
+  },
+  "interface.extra.42": {
+    "en": "Find in chat",
+    "zh": "在聊天中查找"
+  },
+  "interface.extra.43": {
+    "en": "Cancel scheduled task",
+    "zh": "取消排程任务"
+  },
+  "interface.extra.44": {
+    "en": "Media type",
+    "zh": "素材类型"
+  },
+  "interface.extra.45": {
+    "en": "Media category",
+    "zh": "素材分类"
+  },
+  "interface.extra.46": {
+    "en": "Media send status",
+    "zh": "素材发送状态"
+  },
+  "interface.extra.moveEmojiEarlier": {
+    "en": "Move {0} earlier",
+    "zh": "将 {0} 向前移动"
+  },
+  "interface.extra.seenAgo": {
+    "en": "Seen {0}",
+    "zh": "上次在线 {0}"
+  },
+  "interface.extra.addToListsFor": {
+    "en": "Add to lists · {0}",
+    "zh": "添加到列表 · {0}"
+  },
+  "interface.extra.searchGifs": {
+    "en": "Search GIFs",
+    "zh": "搜索 GIF"
+  },
+  "interface.extra.searchVault": {
+    "en": "Search vault",
+    "zh": "搜索素材库"
+  },
+  "interface.extra.searchGifsPlaceholder": {
+    "en": "Search GIFs…",
+    "zh": "搜索 GIF…"
+  },
+  "interface.extra.searchMediaPlaceholder": {
+    "en": "Search media, categories or tags…",
+    "zh": "搜索素材、分类或标签…"
+  },
+  "interface.extra.purchasedSuffix": {
+    "en": " · purchased",
+    "zh": " · 已购买"
+  },
+  "interface.extra.mediaAttachment": {
+    "en": "Media attachment",
+    "zh": "素材附件"
+  },
+  "status.subscription.active": {
+    "en": "Active",
+    "zh": "订阅中"
+  },
+  "status.subscription.expired": {
+    "en": "Expired",
+    "zh": "已到期"
+  },
+  "status.subscription.trial": {
+    "en": "Trial",
+    "zh": "试用中"
+  },
+  "status.subscription.free": {
+    "en": "Free",
+    "zh": "免费订阅"
+  },
+  "status.message.sending": {
+    "en": "Sending",
+    "zh": "发送中"
+  },
+  "status.message.sent": {
+    "en": "Sent",
+    "zh": "已发送"
+  },
+  "status.message.read": {
+    "en": "Read",
+    "zh": "已读"
+  },
+  "status.message.failed": {
+    "en": "Failed",
+    "zh": "发送失败"
+  },
+  "status.message.withdrawn": {
+    "en": "Withdrawn",
+    "zh": "已撤回"
+  },
+  "media.type.image": {
+    "en": "image",
+    "zh": "图片"
+  },
+  "media.type.video": {
+    "en": "video",
+    "zh": "视频"
+  },
+  "media.type.audio": {
+    "en": "audio",
+    "zh": "音频"
+  },
+  "media.type.gif": {
+    "en": "GIF",
+    "zh": "GIF"
+  },
+  "interface.action.markRead": {
+    "en": "read",
+    "zh": "已读"
+  },
+  "interface.action.markUnread": {
+    "en": "unread",
+    "zh": "未读"
+  },
+  "interface.report.status.cancelled": {
+    "en": "Cancelled",
+    "zh": "已取消"
+  },
+  "interface.report.status.scheduled": {
+    "en": "Scheduled",
+    "zh": "已排程"
+  },
+  "interface.report.status.cleared": {
+    "en": "Cleared",
+    "zh": "已清除"
+  },
+  "interface.report.status.skipped": {
+    "en": "Skipped",
+    "zh": "已跳过"
+  },
+  "interface.report.status.draft": {
+    "en": "Draft",
+    "zh": "草稿"
+  },
+  "interface.translation.review": {
+    "en": "Dictionary sample. Review and edit before using.",
+    "zh": "示例词典结果。使用前请检查并编辑。"
+  },
+  "interface.translation.missing": {
+    "en": "No dictionary translation for this text. Enter and review a translation manually.",
+    "zh": "示例词典中没有这段文字的翻译。请手动输入并检查译文。"
+  },
+  "popup.scriptPreview": {
+    "zh": "消息预览",
+    "en": "Message preview"
+  },
+  "popup.scriptPreviewHint": {
+    "zh": "对此消息的修改不会影响话术模板。",
+    "en": "Changes to this message will not affect the script template."
+  },
+  "popup.countdown": {
+    "zh": "添加倒计时",
+    "en": "Add Countdown"
+  },
+  "popup.duration": {
+    "zh": "时长",
+    "en": "Duration"
+  },
+  "popup.durationPlaceholder": {
+    "zh": "1–60 分钟",
+    "en": "1–60 minutes"
+  },
+  "popup.alarm": {
+    "zh": "提示音",
+    "en": "Alarm sound"
+  },
+  "popup.audio": {
+    "zh": "提示音 {0}",
+    "en": "Audio {0}"
+  },
+  "popup.start": {
+    "zh": "开始",
+    "en": "Start"
+  },
+  "popup.chosen": {
+    "zh": "{0} / {1} 已选择",
+    "en": "{0} / {1} Chosen"
+  },
+  "popup.add": {
+    "zh": "添加",
+    "en": "Add"
+  },
+  "popup.clear": {
+    "zh": "清空选择",
+    "en": "Clear selection"
+  },
+  "popup.close": {
+    "zh": "关闭",
+    "en": "Close"
+  },
+  "popup.vault": {
+    "zh": "媒体库",
+    "en": "Vault"
+  },
+  "popup.categories": {
+    "zh": "分类",
+    "en": "Categories"
+  },
+  "popup.emojiSearch": {
+    "zh": "搜索表情",
+    "en": "Search emoji"
+  },
+  "popup.favorites": {
+    "zh": "收藏表情",
+    "en": "Favorite emojis"
+  },
+  "popup.favoritesHint": {
+    "zh": "拖动排序，点击 × 移除收藏",
+    "en": "Drag to reorder. Click × to remove a favorite."
+  },
+  "popup.emojiLimit": {
+    "zh": "最多可收藏 40 个表情，请先移除一个收藏。",
+    "en": "Maximum emoji limit reached. Remove a favorite before adding a new one."
+  },
+  "popup.pickFavorite": {
+    "zh": "点击下方表情添加到收藏",
+    "en": "Click an emoji to add to your favorites"
+  },
+  "popup.priceHistory": {
+    "zh": "粉丝最近购买的付费消息",
+    "en": "Last PPV messages purchased by fan"
+  },
+  "popup.priceHistoryHint": {
+    "zh": "数据来自最近 30 条付费消息。",
+    "en": "Data from the last 30 paid messages in the gallery."
+  },
+  "popup.priceMax": {
+    "zh": "最高：",
+    "en": "Max:"
+  },
+  "popup.priceAvg": {
+    "zh": "平均：",
+    "en": "Avg:"
+  },
+  "popup.paid": {
+    "zh": "付费",
+    "en": "Paid"
+  },
+  "popup.nameTag": {
+    "zh": "姓名标签",
+    "en": "Name tag"
+  },
+  "popup.removeMedia": {
+    "zh": "移除 {0}",
+    "en": "Remove {0}"
+  },
+  "popup.previewMedia": {
+    "zh": "预览 {0}",
+    "en": "Preview {0}"
+  },
+  "popup.mediaPreview": {
+    "zh": "媒体预览",
+    "en": "Media preview"
+  },
+  "popup.defaultNicknameRequired": {
+    "zh": "默认昵称不能为空",
+    "en": "Default nickname cannot be empty"
+  },
+  "popup.selectAll": {
+    "zh": "全选",
+    "en": "Select all"
+  },
+  "popup.previousMedia": {
+    "zh": "上一个媒体",
+    "en": "Previous media"
+  },
+  "popup.nextMedia": {
+    "zh": "下一个媒体",
+    "en": "Next media"
+  },
+  "popup.select": {
+    "zh": "选择",
+    "en": "Select"
+  },
+  "popup.deselect": {
+    "zh": "取消选择",
+    "en": "Deselect"
+  },
+  "popup.saveToList": {
+    "zh": "保存到列表",
+    "en": "Save to list"
+  },
+  "popup.searchLists": {
+    "zh": "搜索我的列表",
+    "en": "Search my lists"
+  },
+  "popup.newList": {
+    "zh": "新建列表",
+    "en": "New list"
+  },
+  "popup.refreshLists": {
+    "zh": "刷新列表",
+    "en": "Refresh lists"
+  },
+  "popup.listsSynced": {
+    "zh": "列表已更新",
+    "en": "Lists are up to date"
+  },
+  "popup.listEntries": {
+    "zh": "{0} 位粉丝",
+    "en": "{0} entries"
+  },
+  "popup.emojiDuplicate": {
+    "zh": "此表情已在收藏中，请选择其他表情。",
+    "en": "Emoji already exists in your favorites. Please select a different emoji."
+  },
+  "popup.unsupportedFile": {
+    "zh": "不支持的文件：{0}",
+    "en": "Unsupported file: {0}"
+  },
+  "popup.recipientCount": {
+    "zh": "已选择 {0} 位接收人",
+    "en": "{0} recipients selected"
+  },
+  "popup.searchOptions": {
+    "zh": "搜索",
+    "en": "Search"
+  },
+  "popup.selectDate": {
+    "zh": "选择日期",
+    "en": "Select date"
+  },
+  "popup.previousYear": {
+    "zh": "上一年",
+    "en": "Previous year"
+  },
+  "popup.nextYear": {
+    "zh": "下一年",
+    "en": "Next year"
+  },
+  "popup.previousMonth": {
+    "zh": "上个月",
+    "en": "Previous month"
+  },
+  "popup.nextMonth": {
+    "zh": "下个月",
+    "en": "Next month"
+  },
+  "popup.today": {
+    "zh": "今天",
+    "en": "Today"
+  },
+  "popup.tagUser": {
+    "zh": "标记用户",
+    "en": "Tag user"
+  },
+  "popup.releaseForm": {
+    "zh": "授权表单",
+    "en": "Release form"
+  },
+  "popup.noReleaseForms": {
+    "zh": "暂无授权表单",
+    "en": "No release forms yet"
+  },
+  "popup.creator": {
+    "zh": "创作者",
+    "en": "Creator"
+  },
+  "popup.searchCreators": {
+    "zh": "搜索创作者",
+    "en": "Search creators"
+  },
+  "popup.tagsSelected": {
+    "zh": "已选择 {0} 项",
+    "en": "{0} selected"
+  },
+  "popup.addTag": {
+    "zh": "添加标记",
+    "en": "Add a tag"
+  },
+  "fanSignal.new": {
+    "en": "NEW",
+    "zh": "新"
+  },
+  "fanSignal.off": {
+    "en": "OFF",
+    "zh": "关"
+  },
+  "notification.openTab": {
+    "en": "Open chat tab for {0}",
+    "zh": "打开 {0} 的会话页签"
+  },
+  "popup.timing": {
+    "en": "Timed messages and reminders",
+    "zh": "延时消息与提醒"
+  },
+  "popup.timedMessage": {
+    "en": "Timed message",
+    "zh": "延时消息"
+  },
+  "popup.timedReminder": {
+    "en": "Timed reminder",
+    "zh": "倒计时提醒"
+  },
+  "noteTemplate.title": {
+    "en": "Fan note template",
+    "zh": "粉丝备注模板"
+  },
+  "noteTemplate.content": {
+    "en": "Template",
+    "zh": "模板内容"
+  },
+  "noteTemplate.description": {
+    "en": "Customize the default notes for this creator. This template applies to new fans and fans without existing notes. Existing fan notes are kept.",
+    "zh": "自定义该创作者的默认粉丝备注。模板适用于新粉丝及尚无备注的粉丝，已有备注将保留。"
+  },
+  "audience.filters": {
+    "en": "Online fan filters",
+    "zh": "在线粉丝筛选"
+  },
+  "audience.minSpend": {
+    "en": "Minimum total spend",
+    "zh": "最低总消费"
+  },
+  "audience.minTips": {
+    "en": "Minimum tips",
+    "zh": "最低累计打赏"
+  },
+  "audience.subscription": {
+    "en": "Subscription duration",
+    "zh": "订阅时长"
+  },
+  "audience.months": {
+    "en": "{0}+ months",
+    "zh": "{0} 个月以上"
+  },
+  "audience.recentHours": {
+    "en": "Exclude fans messaged within (hours)",
+    "zh": "排除近期已联系粉丝（小时）"
+  },
+  "audience.excludeLists": {
+    "en": "Exclude lists",
+    "zh": "排除粉丝列表"
+  },
+  "audience.chooseLists": {
+    "en": "Select lists",
+    "zh": "选择列表"
+  },
+  "audience.listCount": {
+    "en": "{0} lists excluded",
+    "zh": "已排除 {0} 个列表"
+  },
+  "audience.searchLists": {
+    "en": "Search lists",
+    "zh": "搜索列表"
+  },
+  "audience.removeExclusion": {
+    "en": "Remove exclusion: {0}",
+    "zh": "取消排除：{0}"
+  },
+  "audience.excludeCreators": {
+    "en": "Exclude Creators",
+    "zh": "排除创作者"
+  },
+  "audience.matching": {
+    "en": "{0} matching online fans",
+    "zh": "符合条件的在线粉丝：{0}"
+  },
+  "audience.reset": {
+    "en": "Reset filters",
+    "zh": "重置筛选"
+  },
+  "audience.results": {
+    "en": "Matching online fans",
+    "zh": "符合条件的在线粉丝"
+  },
+  "audience.empty": {
+    "en": "No fans match these filters.",
+    "zh": "没有符合当前筛选条件的粉丝。"
+  },
+  "audience.messageOnline": {
+    "en": "Message online fans",
+    "zh": "向在线粉丝群发消息"
+  },
+  "withdrawal.center": {
+    "en": "Agency notifications",
+    "zh": "机构通知"
+  },
+  "withdrawal.back": {
+    "en": "Back to messages",
+    "zh": "返回消息工作台"
+  },
+  "withdrawal.readAll": {
+    "en": "Mark all as read",
+    "zh": "全部标为已读"
+  },
+  "withdrawal.title": {
+    "en": "Message withdrawn",
+    "zh": "消息已撤回"
+  },
+  "withdrawal.description": {
+    "en": "{0} withdrew this message on {1}. It was sent by {2} for Creator {3}.",
+    "zh": "{0} 于 {1} 撤回了这条消息。原发送人为 {2}，所属创作者为 {3}。"
+  },
+  "withdrawal.summary": {
+    "en": "{0} withdrew a message for {1}, in the conversation with {2}.",
+    "zh": "{0} 撤回了 {1} 与 {2} 会话中的一条消息。"
+  },
+  "withdrawal.viewDetails": {
+    "en": "View details",
+    "zh": "查看详情"
+  },
+  "withdrawal.viewRecord": {
+    "en": "View withdrawal: {0} / {1}",
+    "zh": "查看撤回记录：{0} / {1}"
+  },
+  "withdrawal.empty": {
+    "en": "Messages withdrawn by your team will appear here.",
+    "zh": "团队撤回消息后，记录会显示在这里。"
+  },
+  "withdrawal.goToChat": {
+    "en": "Go to chat",
+    "zh": "打开会话"
+  },
+  "withdrawal.readAllConfirm": {
+    "en": "Mark all agency notifications as read?",
+    "zh": "将全部机构通知标记为已读？"
+  },
+  "withdrawal.confirm": {
+    "en": "Confirm",
+    "zh": "确认"
+  }
+}

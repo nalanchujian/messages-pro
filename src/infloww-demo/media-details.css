@@ -1,0 +1,21 @@
+#infloww-demo .if-shared-media-preview .if-modal-body{padding:18px}
+#infloww-demo .if-shared-media-preview .if-vault-large-preview{display:grid;grid-template-columns:30px minmax(0,1fr) 30px;align-items:center;gap:12px;min-height:240px}
+#infloww-demo .if-shared-media-preview .if-vault-large-preview>.if-media-view{height:min(62dvh,580px);display:grid;place-items:center;background:#111;border-radius:6px;overflow:hidden}
+#infloww-demo .if-shared-media-preview .if-media-view>img,#infloww-demo .if-shared-media-preview .if-media-view>video{width:100%;height:100%;max-height:62dvh;object-fit:contain}
+#infloww-demo .if-shared-media-preview footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;color:#777;font-size:12px}
+#infloww-demo .if-media-activity-button{position:absolute;left:6px;top:6px;z-index:1;display:flex;align-items:center;gap:4px;max-width:calc(100% - 12px);padding:4px 6px;border-radius:4px;background:#555b;color:#fff;font-size:11px}
+#infloww-demo .if-vault-item{position:relative}
+#infloww-demo .if-media-activity-button.bought{background:#159b79dd}
+#infloww-demo .if-media-activity-button.unpaid{background:#e57869e6}
+#infloww-demo .if-media-history-popover{padding:8px;max-height:320px;overflow:auto}
+#infloww-demo .if-media-history-popover h3{font-size:13px;padding:7px 8px;border-bottom:1px solid #eee}
+#infloww-demo .if-media-history-record{display:flex;align-items:center;gap:8px;padding:11px 8px;border-bottom:1px solid #eee;font-size:12px;color:#444}
+#infloww-demo .if-media-history-record>div{flex:1}
+#infloww-demo .if-media-history-record small{display:block;color:#999;font-size:10px;margin-top:3px}
+#infloww-demo .if-media-info-trigger{display:grid;place-items:center;width:22px;height:22px;flex:none;color:#999}
+#infloww-demo .if-media-info-popover{padding:14px;font-size:12px;color:#555}
+#infloww-demo .if-media-info-popover h3{font-size:13px;color:#222;margin-bottom:12px}
+#infloww-demo .if-media-info-popover p{white-space:pre-wrap;line-height:1.7;padding-bottom:10px}
+#infloww-demo .if-media-info-popover dl{display:grid;grid-template-columns:70px minmax(0,1fr);gap:9px}
+#infloww-demo .if-media-info-popover dt{color:#999}
+#infloww-demo .if-media-info-popover dd{margin:0;overflow-wrap:anywhere}

@@ -1,0 +1,1610 @@
+{
+  "ui.001": {
+    "zh": "创作者与会话",
+    "en": "Creators and conversations"
+  },
+  "ui.002": {
+    "zh": "创作者页签、粉丝会话页签、工作区恢复、复合草稿、本地持久化",
+    "en": "Creator tabs, fan chat tabs, workspace restore, rich drafts, local persistence"
+  },
+  "ui.003": {
+    "zh": "查找和分组",
+    "en": "Find and organize"
+  },
+  "ui.004": {
+    "zh": "搜索、在线粉丝、通知快速回复、分组收件箱、固定粉丝列表、排序、聚焦模式、已读、单个/批量删除",
+    "en": "Search, online fans, notification quick replies, grouped inboxes, pinned fan lists, sorting, focus mode, read status, individual and bulk removal"
+  },
+  "ui.005": {
+    "zh": "聊天操作",
+    "en": "Chat actions"
+  },
+  "ui.006": {
+    "zh": "列表、静音、粉丝备注、置顶消息、媒体库、查找、更多菜单、复制、引用、点赞、转发、存为话术、撤回、失败重试",
+    "en": "Lists, mute, fan notes, pinned messages, gallery, find, more menu, copy, reply, like, forward, save as script, withdraw, retry failed messages"
+  },
+  "ui.007": {
+    "zh": "输入和发送",
+    "en": "Compose and send"
+  },
+  "ui.008": {
+    "zh": "快捷表情、Seli 草稿、话术、上传/GIF/素材库、价格与免费预览、共同创作者标签、文字格式、翻译、排程、定时消息和提醒",
+    "en": "Quick emojis, Seli drafts, scripts, upload/GIF/vault, pricing and free previews, co-creator tags, text formatting, translation, scheduling, timed messages and reminders"
+  },
+  "ui.009": {
+    "zh": "资料与交易",
+    "en": "Profile and sales"
+  },
+  "ui.010": {
+    "zh": "消费、订阅、续订、地区时区、来源、昵称、生日、粉丝备注、PPV 历史/图表/复制草稿、创作者备注",
+    "en": "Spending, subscriptions, renewals, location and time zone, source, nickname, birthday, fan notes, PPV history/charts/copy to draft, creator notes"
+  },
+  "ui.011": {
+    "zh": "运营与演示",
+    "en": "Operations and demo"
+  },
+  "ui.012": {
+    "zh": "智能消息编辑、在线群发、三类消息报告、模拟事件、角色权限、时钟快进、独立重置",
+    "en": "Smart message editing, online mass messages, three message reports, simulated events, role permissions, clock advance, separate reset"
+  },
+  "ui.013": {
+    "zh": "打开原有工作台",
+    "en": "Open original workspace"
+  },
+  "ui.014": {
+    "zh": "演示",
+    "en": "Demo"
+  },
+  "ui.015": {
+    "zh": "创作者页签",
+    "en": "Creator tabs"
+  },
+  "ui.016": {
+    "zh": "创作者 {0}",
+    "en": "Creator {0}"
+  },
+  "ui.017": {
+    "zh": "关闭创作者 {0}",
+    "en": "Close creator {0}"
+  },
+  "ui.018": {
+    "zh": "添加创作者",
+    "en": "Add a creator"
+  },
+  "ui.019": {
+    "zh": "打开创作者",
+    "en": "Open creator"
+  },
+  "ui.020": {
+    "zh": "安全浏览模式",
+    "en": "Safe browsing mode"
+  },
+  "ui.021": {
+    "zh": "安全浏览模式：模糊媒体；⌘/Ctrl + Shift + S",
+    "en": "Safe browsing mode: blur media; ⌘/Ctrl + Shift + S"
+  },
+  "ui.022": {
+    "zh": "安全模式",
+    "en": "Safe mode"
+  },
+  "ui.023": {
+    "zh": "界面语言",
+    "en": "Interface language"
+  },
+  "ui.024": {
+    "zh": "简体中文",
+    "en": "Simplified Chinese"
+  },
+  "ui.025": {
+    "zh": "全屏查看工作台",
+    "en": "View workspace fullscreen"
+  },
+  "ui.026": {
+    "zh": "当前浏览器不支持全屏模式",
+    "en": "Fullscreen is unavailable in this browser"
+  },
+  "ui.027": {
+    "zh": "功能清单",
+    "en": "Feature list"
+  },
+  "ui.028": {
+    "zh": "演示控制",
+    "en": "Demo controls"
+  },
+  "ui.029": {
+    "zh": "粉丝会话页签",
+    "en": "Fan conversation tabs"
+  },
+  "ui.030": {
+    "zh": "首页",
+    "en": "Home"
+  },
+  "ui.031": {
+    "zh": "打开 {0} 的会话页签",
+    "en": "Open chat tab for {0}"
+  },
+  "ui.032": {
+    "zh": "未读消息",
+    "en": "Unread messages"
+  },
+  "ui.033": {
+    "zh": "关闭 {0} 的会话页签",
+    "en": "Close chat tab for {0}"
+  },
+  "ui.034": {
+    "zh": "粉丝洞察",
+    "en": "Fan insights"
+  },
+  "ui.035": {
+    "zh": "移动端区域",
+    "en": "Mobile sections"
+  },
+  "ui.036": {
+    "zh": "会话",
+    "en": "Inbox"
+  },
+  "ui.037": {
+    "zh": "聊天",
+    "en": "Chat"
+  },
+  "ui.038": {
+    "zh": "资料",
+    "en": "Insights"
+  },
+  "ui.039": {
+    "zh": "关闭粉丝资料",
+    "en": "Close fan insights"
+  },
+  "ui.040": {
+    "zh": "关闭资料抽屉",
+    "en": "Close insights drawer"
+  },
+  "ui.041": {
+    "zh": "演示工作台 · 数据保存在当前浏览器",
+    "en": "Demo workspace · Data saved in this browser"
+  },
+  "ui.042": {
+    "zh": "管理员",
+    "en": "Administrator"
+  },
+  "ui.043": {
+    "zh": "聊天员",
+    "en": "Chatter"
+  },
+  "ui.044": {
+    "zh": "原有页面",
+    "en": "Original page"
+  },
+  "ui.045": {
+    "zh": "让每个状态都可以体验",
+    "en": "Explore every state"
+  },
+  "ui.046": {
+    "zh": "所有事件只作用于新页面的本地样例。AI 与翻译使用演示结果。",
+    "en": "All events affect local samples on this page only. AI and translation use sample results."
+  },
+  "ui.047": {
+    "zh": "演示角色",
+    "en": "Demo role"
+  },
+  "ui.048": {
+    "zh": "管理员 · 完整功能",
+    "en": "Admin · Full access"
+  },
+  "ui.049": {
+    "zh": "聊天员 · 示例权限限制",
+    "en": "Chatter · Limited sample permissions"
+  },
+  "ui.050": {
+    "zh": "模拟发送失败",
+    "en": "Simulate send failure"
+  },
+  "ui.051": {
+    "zh": "当前粉丝 ·",
+    "en": "Current fan ·"
+  },
+  "ui.052": {
+    "zh": "未选择",
+    "en": "None selected"
+  },
+  "ui.053": {
+    "zh": "收到回复",
+    "en": "Receive reply"
+  },
+  "ui.054": {
+    "zh": "收到打赏",
+    "en": "Receive tip"
+  },
+  "ui.055": {
+    "zh": "购买 PPV",
+    "en": "Purchase PPV"
+  },
+  "ui.056": {
+    "zh": "新订阅",
+    "en": "New subscription"
+  },
+  "ui.057": {
+    "zh": "平台通知",
+    "en": "Platform notification"
+  },
+  "ui.058": {
+    "zh": "新增粉丝",
+    "en": "New fan"
+  },
+  "ui.059": {
+    "zh": "已模拟：{0}",
+    "en": "Simulated: {0}"
+  },
+  "ui.060": {
+    "zh": "演示时钟",
+    "en": "Demo clock"
+  },
+  "ui.061": {
+    "zh": "个待执行任务",
+    "en": "pending tasks"
+  },
+  "ui.062": {
+    "zh": "快进",
+    "en": "Advance"
+  },
+  "ui.063": {
+    "zh": "1 分钟",
+    "en": "1 minute"
+  },
+  "ui.064": {
+    "zh": "5 分钟",
+    "en": "5 minutes"
+  },
+  "ui.065": {
+    "zh": "1 小时",
+    "en": "1 hour"
+  },
+  "ui.066": {
+    "zh": "1 天",
+    "en": "1 day"
+  },
+  "ui.067": {
+    "zh": "页面运行及重新打开时检查到期任务，每个任务执行一次。关闭网页期间没有后台服务。",
+    "en": "Due tasks run once when the page is open or reopened. There is no background service while the page is closed."
+  },
+  "ui.068": {
+    "zh": "提醒",
+    "en": "Reminder"
+  },
+  "ui.069": {
+    "zh": "消息",
+    "en": "Message"
+  },
+  "ui.070": {
+    "zh": "媒体消息",
+    "en": "Media message"
+  },
+  "ui.071": {
+    "zh": "取消",
+    "en": "Cancel"
+  },
+  "ui.072": {
+    "zh": "重置新页面样例",
+    "en": "Reset demo data"
+  },
+  "ui.073": {
+    "zh": "原有页面的数据独立保存。",
+    "en": "Data on the original page is saved separately."
+  },
+  "ui.074": {
+    "zh": "功能覆盖与演示路径",
+    "en": "Features and demo paths"
+  },
+  "ui.075": {
+    "zh": "推荐体验",
+    "en": "Try this"
+  },
+  "ui.076": {
+    "zh": "输入带素材和价格的草稿，切换创作者，再切回查看恢复。",
+    "en": "Compose a draft with media and price, switch creators, then return to see it restored."
+  },
+  "ui.077": {
+    "zh": "置顶一条消息，然后在左栏打开“已置顶”。",
+    "en": "Pin a message, then open Pinned in the left column."
+  },
+  "ui.078": {
+    "zh": "发送 PPV，在右栏模拟购买，查看消费、时间线及通知同步。",
+    "en": "Send a PPV, simulate a purchase on the right, then check spending, timeline, and notifications."
+  },
+  "ui.079": {
+    "zh": "开启聚焦模式，再模拟收到消息，点击新消息条刷新。",
+    "en": "Enable focus mode, simulate a new message, then click the new-message banner to refresh."
+  },
+  "ui.080": {
+    "zh": "创建分钟定时任务，在演示控制中快进时钟。",
+    "en": "Create a timed task and advance the clock in Demo controls."
+  },
+  "ui.081": {
+    "zh": "“优先级”使用预设分类状态。消费来自本地交易记录；订阅费单独记录，不计入总消费。",
+    "en": "Priority uses preset categories. Spending comes from local transactions; subscription fees are tracked separately and excluded from total spend."
+  },
+  "ui.082": {
+    "zh": "重置演示数据？",
+    "en": "Reset demo data?"
+  },
+  "ui.083": {
+    "zh": "这会清除新页面的本地操作并恢复初始样例。原有页面保持独立。",
+    "en": "This clears local changes on this page and restores the initial samples. The original page is separate."
+  },
+  "ui.084": {
+    "zh": "新页面样例已恢复。",
+    "en": "Demo data restored."
+  },
+  "ui.085": {
+    "zh": "确认重置",
+    "en": "Confirm reset"
+  },
+  "ui.086": {
+    "zh": "优先级群发消息",
+    "en": "Priority mass message"
+  },
+  "ui.087": {
+    "zh": "OF 群发消息",
+    "en": "OF mass message"
+  },
+  "ui.088": {
+    "zh": "自动化消息",
+    "en": "Automated message"
+  },
+  "ui.089": {
+    "zh": "订阅",
+    "en": "Subscription"
+  },
+  "ui.090": {
+    "zh": "打赏",
+    "en": "Tips"
+  },
+  "ui.091": {
+    "zh": "购买",
+    "en": "Purchases"
+  },
+  "ui.092": {
+    "zh": "已到期",
+    "en": "Expired"
+  },
+  "ui.093": {
+    "zh": "续订关",
+    "en": "Renewal off"
+  },
+  "ui.094": {
+    "zh": "付费内容",
+    "en": "Paid content"
+  },
+  "ui.095": {
+    "zh": "72 小时",
+    "en": "72 hours"
+  },
+  "ui.096": {
+    "zh": "演示权限：管理员可使用此操作；此为 Demo 的权限配置",
+    "en": "Demo permission: this action requires an admin role"
+  },
+  "ui.097": {
+    "zh": "全部",
+    "en": "All"
+  },
+  "ui.098": {
+    "zh": "置顶",
+    "en": "Pinned"
+  },
+  "ui.099": {
+    "zh": "优先级",
+    "en": "Priority"
+  },
+  "ui.100": {
+    "zh": "未读",
+    "en": "Unread"
+  },
+  "ui.101": {
+    "zh": "有打赏",
+    "en": "With tips"
+  },
+  "ui.102": {
+    "zh": "切换筛选或排序后已退出聚焦模式",
+    "en": "Focus mode ended after changing the filter or sort order"
+  },
+  "ui.103": {
+    "zh": "已更新当前创作者的本地会话列表",
+    "en": "Local conversations refreshed for this creator"
+  },
+  "ui.104": {
+    "zh": "请填写消息任务名称",
+    "en": "Enter a message task name"
+  },
+  "ui.105": {
+    "zh": "请选择接收粉丝",
+    "en": "Select recipients"
+  },
+  "ui.106": {
+    "zh": "请填写消息或选择素材",
+    "en": "Enter a message or choose media"
+  },
+  "ui.107": {
+    "zh": "请选择晚于演示当前时间的发送时间",
+    "en": "Choose a send time after the current demo time"
+  },
+  "ui.108": {
+    "zh": "自动消息演示需要设置定时触发时间",
+    "en": "Set a trigger time for this automated message demo"
+  },
+  "ui.109": {
+    "zh": "已保存消息任务草稿",
+    "en": "Message task draft saved"
+  },
+  "ui.110": {
+    "zh": "已加入定时发送任务",
+    "en": "Scheduled message task added"
+  },
+  "ui.111": {
+    "zh": "任务已执行；演示发送失败，可在报告中查看",
+    "en": "Task ran; simulated send failure. See the report."
+  },
+  "ui.112": {
+    "zh": "消息任务已执行，可在统计中查看结果",
+    "en": "Message task ran. See the report for results."
+  },
+  "ui.113": {
+    "zh": "这位粉丝当前不可发送消息",
+    "en": "Messages cannot be sent to this fan right now"
+  },
+  "ui.114": {
+    "zh": "演示发送失败，请在对应聊天中重试",
+    "en": "Simulated send failure. Retry in the chat."
+  },
+  "ui.115": {
+    "zh": "已回复 {0}",
+    "en": "Replied to {0}"
+  },
+  "ui.116": {
+    "zh": "所选会话已清除",
+    "en": "Selected conversations cleared"
+  },
+  "ui.117": {
+    "zh": "已启用 {0} 个分组收件箱",
+    "en": "Enabled {0} grouped inboxes"
+  },
+  "ui.118": {
+    "zh": "已取消收件箱分组",
+    "en": "Inbox grouping removed"
+  },
+  "ui.119": {
+    "zh": "已撤回符合条件的消息",
+    "en": "Eligible messages withdrawn"
+  },
+  "ui.120": {
+    "zh": "[草稿] {0}",
+    "en": "[Draft] {0}"
+  },
+  "ui.121": {
+    "zh": "暂无消息",
+    "en": "No messages yet"
+  },
+  "ui.122": {
+    "zh": "消息已撤回",
+    "en": "Message withdrawn"
+  },
+  "ui.123": {
+    "zh": "发送失败 · {0}",
+    "en": "Send failed · {0}"
+  },
+  "ui.124": {
+    "zh": "付费消息",
+    "en": "Paid message"
+  },
+  "ui.125": {
+    "zh": "媒体附件",
+    "en": "Media attachment"
+  },
+  "ui.126": {
+    "zh": "粉丝会话列表",
+    "en": "Fan conversation list"
+  },
+  "ui.127": {
+    "zh": "退出批量选择",
+    "en": "Exit bulk selection"
+  },
+  "ui.128": {
+    "zh": "已选择 {0} 个",
+    "en": "{0} selected"
+  },
+  "ui.129": {
+    "zh": "选择会话",
+    "en": "Select conversations"
+  },
+  "ui.130": {
+    "zh": "删除",
+    "en": "Delete"
+  },
+  "ui.131": {
+    "zh": "取消全选",
+    "en": "Deselect all"
+  },
+  "ui.132": {
+    "zh": "全选",
+    "en": "Select all"
+  },
+  "ui.133": {
+    "zh": "关闭并清除搜索",
+    "en": "Close and clear search"
+  },
+  "ui.134": {
+    "zh": "搜索粉丝",
+    "en": "Search fans"
+  },
+  "ui.135": {
+    "zh": "搜索粉丝或会话",
+    "en": "Search fans or conversations"
+  },
+  "ui.136": {
+    "zh": "消息统计报告",
+    "en": "Message reports"
+  },
+  "ui.137": {
+    "zh": "搜索",
+    "en": "Search"
+  },
+  "ui.138": {
+    "zh": "新建智能消息",
+    "en": "New smart message"
+  },
+  "ui.139": {
+    "zh": "群发消息",
+    "en": "Mass message"
+  },
+  "ui.140": {
+    "zh": "在线粉丝",
+    "en": "Online fans"
+  },
+  "ui.141": {
+    "zh": "通知",
+    "en": "Notifications"
+  },
+  "ui.142": {
+    "zh": "选择分组收件箱",
+    "en": "Select grouped inbox"
+  },
+  "ui.143": {
+    "zh": "分组收件箱尚未开启",
+    "en": "Grouped inboxes are not enabled"
+  },
+  "ui.144": {
+    "zh": "全部收件箱",
+    "en": "All inboxes"
+  },
+  "ui.145": {
+    "zh": "收件箱 {0}",
+    "en": "Inbox {0}"
+  },
+  "ui.146": {
+    "zh": "分组收件箱设置",
+    "en": "Split inbox settings"
+  },
+  "ui.147": {
+    "zh": "收件箱",
+    "en": "Inbox"
+  },
+  "ui.148": {
+    "zh": "最早优先",
+    "en": "Oldest first"
+  },
+  "ui.149": {
+    "zh": "最新优先",
+    "en": "Newest first"
+  },
+  "ui.150": {
+    "zh": "筛选、排序及会话操作",
+    "en": "Filter, sort, and conversation actions"
+  },
+  "ui.151": {
+    "zh": "筛选",
+    "en": "Filter"
+  },
+  "ui.152": {
+    "zh": "未读且有打赏",
+    "en": "Unread with tips"
+  },
+  "ui.153": {
+    "zh": "排序",
+    "en": "Sort"
+  },
+  "ui.154": {
+    "zh": "聚焦模式",
+    "en": "Focus mode"
+  },
+  "ui.155": {
+    "zh": "暂缓新会话插入列表",
+    "en": "Pause insertion of new conversations"
+  },
+  "ui.156": {
+    "zh": "AI 会话",
+    "en": "AI chats"
+  },
+  "ui.157": {
+    "zh": "包含 AI 会话",
+    "en": "Include AI chats"
+  },
+  "ui.158": {
+    "zh": "仅看 AI 会话",
+    "en": "AI chats only"
+  },
+  "ui.159": {
+    "zh": "隐藏 AI 会话",
+    "en": "Hide AI chats"
+  },
+  "ui.160": {
+    "zh": "当前筛选中的会话已标记为已读",
+    "en": "Filtered conversations marked as read"
+  },
+  "ui.161": {
+    "zh": "全部标为已读",
+    "en": "Mark all as read"
+  },
+  "ui.162": {
+    "zh": "批量选择并清除会话",
+    "en": "Select and clear conversations"
+  },
+  "ui.163": {
+    "zh": "批量选择",
+    "en": "Bulk select"
+  },
+  "ui.164": {
+    "zh": "刷新会话",
+    "en": "Refresh conversations"
+  },
+  "ui.165": {
+    "zh": "会话分类",
+    "en": "Conversation categories"
+  },
+  "ui.166": {
+    "zh": "{0} 位粉丝会话",
+    "en": "{0} fan conversations"
+  },
+  "ui.167": {
+    "zh": "选择固定粉丝列表",
+    "en": "Select pinned fan lists"
+  },
+  "ui.168": {
+    "zh": "管理固定粉丝列表",
+    "en": "Manage pinned fan lists"
+  },
+  "ui.169": {
+    "zh": "已加载新会话",
+    "en": "New conversations loaded"
+  },
+  "ui.170": {
+    "zh": "条新会话",
+    "en": "new conversations"
+  },
+  "ui.171": {
+    "zh": "个会话",
+    "en": "conversations"
+  },
+  "ui.172": {
+    "zh": "清除筛选",
+    "en": "Clear filters"
+  },
+  "ui.173": {
+    "zh": "没有找到结果",
+    "en": "No results found"
+  },
+  "ui.174": {
+    "zh": "收件箱为空",
+    "en": "Inbox is empty"
+  },
+  "ui.175": {
+    "zh": "调整搜索、分组或筛选条件",
+    "en": "Adjust your search, inbox, or filter"
+  },
+  "ui.176": {
+    "zh": "使用顶部「模拟事件」加入新会话",
+    "en": "Use Simulate event above to add a conversation"
+  },
+  "ui.177": {
+    "zh": "显示全部会话",
+    "en": "Show all conversations"
+  },
+  "ui.178": {
+    "zh": "选择 {0}",
+    "en": "Select {0}"
+  },
+  "ui.179": {
+    "zh": "{0} {1} 会话",
+    "en": "{0} {1} conversation"
+  },
+  "ui.180": {
+    "zh": "粉丝会话",
+    "en": "Fan conversation"
+  },
+  "ui.181": {
+    "zh": "新",
+    "en": "New"
+  },
+  "ui.182": {
+    "zh": "关",
+    "en": "Off"
+  },
+  "ui.183": {
+    "zh": "在线",
+    "en": "Online"
+  },
+  "ui.184": {
+    "zh": "7 天内订阅",
+    "en": "Subscribed within 7 days"
+  },
+  "ui.185": {
+    "zh": "订阅已到期",
+    "en": "Subscription expired"
+  },
+  "ui.186": {
+    "zh": "已关闭自动续订",
+    "en": "Auto-renewal is off"
+  },
+  "ui.187": {
+    "zh": "7 天内购买了付费内容",
+    "en": "Purchased paid content within 7 days"
+  },
+  "ui.188": {
+    "zh": "72 小时没有新消息",
+    "en": "No new messages for 72 hours"
+  },
+  "ui.189": {
+    "zh": "分钟",
+    "en": "minutes"
+  },
+  "ui.190": {
+    "zh": "通知已静音",
+    "en": "Notifications muted"
+  },
+  "ui.191": {
+    "zh": "清除会话消息",
+    "en": "Clear conversation messages"
+  },
+  "ui.192": {
+    "zh": "清除 {0} 会话消息",
+    "en": "Clear messages with {0}"
+  },
+  "ui.193": {
+    "zh": "会话已从收件箱隐藏",
+    "en": "Conversation hidden from inbox"
+  },
+  "ui.194": {
+    "zh": "位在线粉丝符合筛选",
+    "en": "online fans match the filter"
+  },
+  "ui.195": {
+    "zh": "向当前筛选的在线粉丝创建群发消息",
+    "en": "Create a mass message for filtered online fans"
+  },
+  "ui.196": {
+    "zh": "在线粉丝消息",
+    "en": "Online fan message"
+  },
+  "ui.197": {
+    "zh": "不限",
+    "en": "Any"
+  },
+  "ui.198": {
+    "zh": "该粉丝被屏蔽或限制",
+    "en": "This fan is blocked or restricted"
+  },
+  "ui.199": {
+    "zh": "打开 {0} 聊天",
+    "en": "Open chat with {0}"
+  },
+  "ui.200": {
+    "zh": "没有符合条件的在线粉丝",
+    "en": "No online fans match"
+  },
+  "ui.201": {
+    "zh": "刷新本地通知记录",
+    "en": "Refresh local notifications"
+  },
+  "ui.202": {
+    "zh": "通知已与当前演示事件同步",
+    "en": "Notifications synced with current demo events"
+  },
+  "ui.203": {
+    "zh": "在新页签打开粉丝会话",
+    "en": "Open fan chat in a new tab"
+  },
+  "ui.204": {
+    "zh": "当前不可回复",
+    "en": "Reply unavailable"
+  },
+  "ui.205": {
+    "zh": "快速回复 {0}",
+    "en": "Quick reply to {0}"
+  },
+  "ui.206": {
+    "zh": "此分类暂无通知。可使用顶部「模拟事件」生成通知。",
+    "en": "No notifications in this category. Use Simulate event above to create one."
+  },
+  "ui.207": {
+    "zh": "将当前创作者的粉丝分配到不同收件箱，便于分组处理。",
+    "en": "Assign this creator's fans to separate inboxes for team processing."
+  },
+  "ui.208": {
+    "zh": "2–9 个分组",
+    "en": "2–9 groups"
+  },
+  "ui.209": {
+    "zh": "将常用粉丝列表固定在会话分类栏。列表固定与消息 Pin 是不同操作。",
+    "en": "Pin frequently used fan lists to conversation categories. List pinning differs from pinning a message."
+  },
+  "ui.210": {
+    "zh": "位粉丝",
+    "en": "fans"
+  },
+  "ui.211": {
+    "zh": "尚无粉丝列表",
+    "en": "No fan lists yet"
+  },
+  "ui.212": {
+    "zh": "同名粉丝列表已存在",
+    "en": "A fan list with this name already exists"
+  },
+  "ui.213": {
+    "zh": "已创建并固定粉丝列表",
+    "en": "Fan list created and pinned"
+  },
+  "ui.214": {
+    "zh": "新粉丝列表名称",
+    "en": "New fan list name"
+  },
+  "ui.215": {
+    "zh": "先在 Pinned lists 中创建列表",
+    "en": "Create a list in Pinned lists first"
+  },
+  "ui.216": {
+    "zh": "当前在 Inbox",
+    "en": "Currently in Inbox"
+  },
+  "ui.217": {
+    "zh": "已移动到 Inbox {0}",
+    "en": "Moved to Inbox {0}"
+  },
+  "ui.218": {
+    "zh": "消息任务名称",
+    "en": "Message task name"
+  },
+  "ui.219": {
+    "zh": "例如：新内容预览",
+    "en": "For example: New content preview"
+  },
+  "ui.220": {
+    "zh": "当前筛选",
+    "en": "Current filter"
+  },
+  "ui.221": {
+    "zh": "清空",
+    "en": "Clear"
+  },
+  "ui.222": {
+    "zh": "搜索群发接收粉丝",
+    "en": "Search mass-message recipients"
+  },
+  "ui.223": {
+    "zh": "按粉丝列表选择接收者",
+    "en": "Select recipients by fan list"
+  },
+  "ui.224": {
+    "zh": "不可发送",
+    "en": "Cannot send"
+  },
+  "ui.225": {
+    "zh": "群发消息正文",
+    "en": "Mass-message body"
+  },
+  "ui.226": {
+    "zh": "输入消息内容；{name} 会替换为粉丝昵称",
+    "en": "Type a message; {name} is replaced with the fan's nickname"
+  },
+  "ui.227": {
+    "zh": "群发插入话术",
+    "en": "Insert script into mass message"
+  },
+  "ui.228": {
+    "zh": "群发 PPV 价格",
+    "en": "Mass-message PPV price"
+  },
+  "ui.229": {
+    "zh": "定时触发自动消息",
+    "en": "Scheduled automated message"
+  },
+  "ui.230": {
+    "zh": "消息任务发送时间",
+    "en": "Message task send time"
+  },
+  "ui.231": {
+    "zh": "Demo 用定时触发演示自动消息；顶部演示时钟可推进时间。",
+    "en": "This demo uses a scheduled trigger for automated messages. Advance the clock in Demo controls."
+  },
+  "ui.232": {
+    "zh": "← 返回统计列表",
+    "en": "← Back to reports"
+  },
+  "ui.233": {
+    "zh": "操作",
+    "en": "Actions"
+  },
+  "ui.234": {
+    "zh": "故障模拟仍开启，此次重试失败",
+    "en": "Failure simulation is still on. Retry failed."
+  },
+  "ui.235": {
+    "zh": "已重试该消息",
+    "en": "Message retried"
+  },
+  "ui.236": {
+    "zh": "统计来自当前创作者的演示消息、购买流水与任务记录。",
+    "en": "Reports use this creator's demo messages, purchases, and task history."
+  },
+  "ui.237": {
+    "zh": "{0} · 副本",
+    "en": "{0} · Copy"
+  },
+  "ui.238": {
+    "zh": "消息任务已取消",
+    "en": "Message task cancelled"
+  },
+  "ui.239": {
+    "zh": "此类型尚无任务。使用左栏「+」创建消息任务后，统计会显示在这里。",
+    "en": "No tasks of this type yet. Create one with + in the left column to see it here."
+  },
+  "ui.240": {
+    "zh": "将移除 {0} 个粉丝会话并清除聊天消息。这与关闭粉丝页签不同。",
+    "en": "Remove {0} fan conversations and clear their chat messages. This differs from closing fan tabs."
+  },
+  "ui.241": {
+    "zh": "当前创作者的全部粉丝将重新分配到 {0} 个分组。",
+    "en": "All fans for this creator will be reassigned to {0} groups."
+  },
+  "ui.242": {
+    "zh": "将启用 {0} 个分组收件箱，粉丝按现有分组显示。",
+    "en": "Enable {0} grouped inboxes and show fans in their existing groups."
+  },
+  "ui.243": {
+    "zh": "粉丝会话将合并回全部收件箱。",
+    "en": "Fan conversations will merge into All inboxes."
+  },
+  "ui.244": {
+    "zh": "将撤回 {0} 条未购买且在 60 分钟内发送的消息，保留撤回记录。",
+    "en": "Withdraw {0} unpurchased messages sent within 60 minutes. Withdrawal records remain."
+  },
+  "ui.245": {
+    "zh": "根据最近的聊天写一句温暖、简洁的回复。自然地追问一句，不要虚构可用性。",
+    "en": "Write a warm, concise reply based on the recent chat. Ask one natural follow-up. Do not invent availability."
+  },
+  "ui.246": {
+    "zh": "垃圾信息",
+    "en": "Spam"
+  },
+  "ui.247": {
+    "zh": "转发消息",
+    "en": "Forward message"
+  },
+  "ui.248": {
+    "zh": "已置顶",
+    "en": "Pinned"
+  },
+  "ui.249": {
+    "zh": "免费预览",
+    "en": "Free preview"
+  },
+  "ui.250": {
+    "zh": "已解锁",
+    "en": "Unlocked"
+  },
+  "ui.251": {
+    "zh": "已购买",
+    "en": "Purchased"
+  },
+  "ui.252": {
+    "zh": "已查看 · 未购买",
+    "en": "Viewed · Not purchased"
+  },
+  "ui.253": {
+    "zh": "未购买",
+    "en": "Not purchased"
+  },
+  "ui.254": {
+    "zh": "消息操作 {0}",
+    "en": "Message actions {0}"
+  },
+  "ui.255": {
+    "zh": "取消置顶",
+    "en": "Unpin message"
+  },
+  "ui.256": {
+    "zh": "置顶消息",
+    "en": "Pin message"
+  },
+  "ui.257": {
+    "zh": "回复消息",
+    "en": "Reply to message"
+  },
+  "ui.258": {
+    "zh": "取消点赞",
+    "en": "Unlike message"
+  },
+  "ui.259": {
+    "zh": "点赞消息",
+    "en": "Like message"
+  },
+  "ui.260": {
+    "zh": "翻译消息",
+    "en": "Translate message"
+  },
+  "ui.261": {
+    "zh": "更多消息操作",
+    "en": "More message actions"
+  },
+  "ui.262": {
+    "zh": "消息更多操作",
+    "en": "Message more actions"
+  },
+  "ui.263": {
+    "zh": "复制消息文本",
+    "en": "Copy message text"
+  },
+  "ui.264": {
+    "zh": "复制为草稿",
+    "en": "Copy message as draft"
+  },
+  "ui.265": {
+    "zh": "加入话术库",
+    "en": "Add to script library"
+  },
+  "ui.266": {
+    "zh": "撤回消息",
+    "en": "Unsend message"
+  },
+  "ui.267": {
+    "zh": "已读",
+    "en": "Read"
+  },
+  "ui.268": {
+    "zh": "发送失败",
+    "en": "Delivery failed"
+  },
+  "ui.269": {
+    "zh": "发送中",
+    "en": "Sending"
+  },
+  "ui.270": {
+    "zh": "已发送",
+    "en": "Sent"
+  },
+  "ui.271": {
+    "zh": "发送中…",
+    "en": "Sending…"
+  },
+  "ui.272": {
+    "zh": "发送失败 · 重试",
+    "en": "Failed to send · Resend"
+  },
+  "ui.273": {
+    "zh": "暂无对应的演示翻译，请手动核对和翻译。",
+    "en": "No sample translation available. Please check and translate manually."
+  },
+  "ui.274": {
+    "zh": "演示词典 ·",
+    "en": "Sample dictionary ·"
+  },
+  "ui.275": {
+    "zh": "中文",
+    "en": "Chinese"
+  },
+  "ui.276": {
+    "zh": "英语",
+    "en": "English"
+  },
+  "ui.277": {
+    "zh": "条可用消息 · 输入“中文”或“简短”可调整示例。",
+    "en": "available messages · Try “Chinese” or “short” to change the sample."
+  },
+  "ui.278": {
+    "zh": "已添加到顶部会话页签",
+    "en": "Added to top chat tabs"
+  },
+  "ui.279": {
+    "zh": "AI 助手",
+    "en": "AI assistant"
+  },
+  "ui.280": {
+    "zh": "话术",
+    "en": "Scripts"
+  },
+  "ui.281": {
+    "zh": "消息草稿",
+    "en": "Message draft"
+  },
+  "ui.282": {
+    "zh": "按 Enter 发送，Shift+Enter 换行",
+    "en": "Press Enter to send; Shift+Enter for a new line"
+  },
+  "ui.283": {
+    "zh": "输入“/”加关键词，快速搜索话术",
+    "en": "Type “/” and a keyword to search scripts"
+  },
+  "ui.284": {
+    "zh": "定时发送",
+    "en": "Scheduled send"
+  },
+  "ui.285": {
+    "zh": "发送",
+    "en": "Send"
+  },
+  "ui.286": {
+    "zh": "美国",
+    "en": "United States"
+  },
+  "ui.287": {
+    "zh": "美国 · 纽约",
+    "en": "United States · New York"
+  },
+  "ui.288": {
+    "zh": "美国 · 洛杉矶",
+    "en": "United States · Los Angeles"
+  },
+  "ui.289": {
+    "zh": "英国",
+    "en": "United Kingdom"
+  },
+  "ui.290": {
+    "zh": "英国 · 伦敦",
+    "en": "United Kingdom · London"
+  },
+  "ui.291": {
+    "zh": "加拿大",
+    "en": "Canada"
+  },
+  "ui.292": {
+    "zh": "加拿大 · 多伦多",
+    "en": "Canada · Toronto"
+  },
+  "ui.293": {
+    "zh": "法国",
+    "en": "France"
+  },
+  "ui.294": {
+    "zh": "法国 · 巴黎",
+    "en": "France · Paris"
+  },
+  "ui.295": {
+    "zh": "德国",
+    "en": "Germany"
+  },
+  "ui.296": {
+    "zh": "德国 · 柏林",
+    "en": "Germany · Berlin"
+  },
+  "ui.297": {
+    "zh": "西班牙",
+    "en": "Spain"
+  },
+  "ui.298": {
+    "zh": "西班牙 · 马德里",
+    "en": "Spain · Madrid"
+  },
+  "ui.299": {
+    "zh": "澳大利亚",
+    "en": "Australia"
+  },
+  "ui.300": {
+    "zh": "澳大利亚 · 悉尼",
+    "en": "Australia · Sydney"
+  },
+  "ui.301": {
+    "zh": "中国",
+    "en": "China"
+  },
+  "ui.302": {
+    "zh": "中国 · 上海",
+    "en": "China · Shanghai"
+  },
+  "ui.303": {
+    "zh": "日本",
+    "en": "Japan"
+  },
+  "ui.304": {
+    "zh": "日本 · 东京",
+    "en": "Japan · Tokyo"
+  },
+  "ui.305": {
+    "zh": "未知",
+    "en": "Unknown"
+  },
+  "ui.306": {
+    "zh": "其他",
+    "en": "Other"
+  },
+  "ui.307": {
+    "zh": "免费试用链接",
+    "en": "Free trial link"
+  },
+  "ui.308": {
+    "zh": "追踪链接",
+    "en": "Tracking link"
+  },
+  "ui.309": {
+    "zh": "年龄：\n职业：\n偏好：\n兴趣：\n国籍：\n性别：\n伴侣：\n其他：",
+    "en": "Age:\nJob:\nPreferences:\nHobbies:\nNationality:\nGender:\nPartner:\nOthers:"
+  },
+  "ui.310": {
+    "zh": "消费行为",
+    "en": "Spending behavior"
+  },
+  "ui.311": {
+    "zh": "组织指标",
+    "en": "Organization metrics"
+  },
+  "ui.312": {
+    "zh": "列表",
+    "en": "Lists"
+  },
+  "ui.313": {
+    "zh": "备注",
+    "en": "Notes"
+  },
+  "ui.314": {
+    "zh": "刚刚",
+    "en": "Just now"
+  },
+  "ui.315": {
+    "zh": "{0} 分钟前",
+    "en": "{0} minutes ago"
+  },
+  "ui.316": {
+    "zh": "{0} 小时前",
+    "en": "{0} hours ago"
+  },
+  "ui.317": {
+    "zh": "{0} 天前",
+    "en": "{0} days ago"
+  },
+  "ui.318": {
+    "zh": "收入金额",
+    "en": "Income amount"
+  },
+  "ui.319": {
+    "zh": "拖动调整{0}顺序",
+    "en": "Drag to reorder {0}"
+  },
+  "ui.320": {
+    "zh": "拖动调整顺序，或用 Alt + 上下方向键移动",
+    "en": "Drag to reorder, or press Alt + Up/Down"
+  },
+  "ui.321": {
+    "zh": "收起",
+    "en": "Collapse"
+  },
+  "ui.322": {
+    "zh": "展开",
+    "en": "Expand"
+  },
+  "ui.323": {
+    "zh": "暂无 PPV 记录",
+    "en": "No PPV records yet"
+  },
+  "ui.324": {
+    "zh": "PPV 时间线",
+    "en": "PPV timeline"
+  },
+  "ui.325": {
+    "zh": "最高：",
+    "en": "Highest:"
+  },
+  "ui.326": {
+    "zh": "最低：",
+    "en": "Lowest:"
+  },
+  "ui.327": {
+    "zh": "PPV 发送价格与购买状态时间线",
+    "en": "PPV send prices and purchase timeline"
+  },
+  "ui.328": {
+    "zh": "未解锁",
+    "en": "Locked"
+  },
+  "ui.329": {
+    "zh": "总消费",
+    "en": "Total spend"
+  },
+  "ui.330": {
+    "zh": "最近消费",
+    "en": "Last spend"
+  },
+  "ui.331": {
+    "zh": "总计",
+    "en": "Total"
+  },
+  "ui.332": {
+    "zh": "平均",
+    "en": "Avg"
+  },
+  "ui.333": {
+    "zh": "最高消费",
+    "en": "Highest spend"
+  },
+  "ui.334": {
+    "zh": "消费能力",
+    "en": "Spending power"
+  },
+  "ui.335": {
+    "zh": "根据粉丝最近一个月在组织各创作者的消费记录评估。演示数据无法确认组织评级。",
+    "en": "Estimated from this fan's spending with all creators in the organization over the last month. Demo data cannot confirm an organization rating."
+  },
+  "ui.336": {
+    "zh": "数据不足",
+    "en": "Insufficient data"
+  },
+  "ui.337": {
+    "zh": "拒付风险",
+    "en": "Chargeback risk"
+  },
+  "ui.338": {
+    "zh": "状态",
+    "en": "Status"
+  },
+  "ui.339": {
+    "zh": "已过期",
+    "en": "Expired"
+  },
+  "ui.340": {
+    "zh": "免费试用",
+    "en": "Free trial"
+  },
+  "ui.341": {
+    "zh": "订阅中",
+    "en": "Active"
+  },
+  "ui.342": {
+    "zh": "费用",
+    "en": "Cost"
+  },
+  "ui.343": {
+    "zh": "免费",
+    "en": "Free"
+  },
+  "ui.344": {
+    "zh": "时长",
+    "en": "Duration"
+  },
+  "ui.345": {
+    "zh": "自动续订",
+    "en": "Renewal"
+  },
+  "ui.346": {
+    "zh": "开启",
+    "en": "On"
+  },
+  "ui.347": {
+    "zh": "关闭",
+    "en": "Off"
+  },
+  "ui.348": {
+    "zh": "昵称",
+    "en": "Nickname"
+  },
+  "ui.349": {
+    "zh": "昵称会替换话术和消息中的",
+    "en": "The nickname replaces"
+  },
+  "ui.350": {
+    "zh": "。为空时使用创作者默认昵称。",
+    "en": "in scripts and messages. If empty, the creator's default nickname is used."
+  },
+  "ui.351": {
+    "zh": "未设置",
+    "en": "Not set"
+  },
+  "ui.352": {
+    "zh": "生日",
+    "en": "Birthday"
+  },
+  "ui.353": {
+    "zh": "地区与时区",
+    "en": "Location and time zone"
+  },
+  "ui.354": {
+    "zh": "地区",
+    "en": "Location"
+  },
+  "ui.355": {
+    "zh": "当地时间",
+    "en": "Local time"
+  },
+  "ui.356": {
+    "zh": "来源",
+    "en": "Source"
+  },
+  "ui.357": {
+    "zh": "粉丝来源",
+    "en": "Source"
+  },
+  "ui.358": {
+    "zh": "收入",
+    "en": "Salary"
+  },
+  "ui.359": {
+    "zh": "收入币种",
+    "en": "Salary currency"
+  },
+  "ui.360": {
+    "zh": "收入周期",
+    "en": "Salary period"
+  },
+  "ui.361": {
+    "zh": "每月",
+    "en": "Monthly"
+  },
+  "ui.362": {
+    "zh": "每两周",
+    "en": "Every two weeks"
+  },
+  "ui.363": {
+    "zh": "每周",
+    "en": "Weekly"
+  },
+  "ui.364": {
+    "zh": "每年",
+    "en": "Yearly"
+  },
+  "ui.365": {
+    "zh": "最近发薪日",
+    "en": "Last pay date"
+  },
+  "ui.366": {
+    "zh": "管理粉丝列表",
+    "en": "Manage fan lists"
+  },
+  "ui.367": {
+    "zh": "该粉丝尚未加入列表",
+    "en": "This fan is not on any lists"
+  },
+  "ui.368": {
+    "en": "Edit fan note template",
+    "zh": "编辑粉丝备注模板"
+  },
+  "ui.369": {
+    "zh": "粉丝备注",
+    "en": "Fan notes"
+  },
+  "ui.370": {
+    "zh": "粉丝信息",
+    "en": "Fan information"
+  },
+  "ui.371": {
+    "zh": "创作者备注",
+    "en": "Creator notes"
+  },
+  "ui.372": {
+    "zh": "查看图表",
+    "en": "See chart"
+  },
+  "ui.373": {
+    "zh": "已保存",
+    "en": "Saved"
+  },
+  "ui.374": {
+    "zh": "添加创作者的相关资料或备注，方便团队随时查阅。",
+    "en": "Add creator-specific details or notes for your team."
+  },
+  "ui.375": {
+    "zh": "请选择一个会话",
+    "en": "Select a conversation"
+  },
+  "ui.376": {
+    "zh": "粉丝资料和消费记录会显示在这里。",
+    "en": "Fan profile and spending will appear here."
+  },
+  "ui.377": {
+    "zh": "购买率：",
+    "en": "Buy rate:"
+  },
+  "ui.378": {
+    "zh": "粉丝购买的 PPV 数量占已发送 PPV 数量的比例。",
+    "en": "The share of sent PPV messages purchased by this fan."
+  },
+  "ui.379": {
+    "zh": "最高价格",
+    "en": "Highest price"
+  },
+  "ui.380": {
+    "zh": "最低价格",
+    "en": "Lowest price"
+  },
+  "ui.381": {
+    "zh": "查看 PPV：{0}",
+    "en": "View PPV: {0}"
+  },
+  "ui.382": {
+    "zh": "复制此 PPV 为草稿",
+    "en": "Copy this PPV to draft"
+  },
+  "ui.383": {
+    "zh": "粉丝信息页签",
+    "en": "Fan information tabs"
+  },
+  "ui.384": {
+    "zh": "洞察",
+    "en": "Insights"
+  },
+  "ui.385": {
+    "zh": "销售",
+    "en": "Sales"
+  },
+  "ui.386": {
+    "zh": "编辑昵称",
+    "en": "Edit nickname"
+  },
+  "ui.387": {
+    "zh": "该粉丝的昵称",
+    "en": "This fan’s nickname"
+  },
+  "ui.388": {
+    "zh": "该创作者所有粉丝的默认昵称",
+    "en": "Default nickname for all fans of this Creator"
+  },
+  "ui.389": {
+    "zh": "粉丝昵称用于替换",
+    "en": "The fan nickname replaces"
+  },
+  "ui.390": {
+    "zh": "；为空时使用创作者默认昵称。",
+    "en": "; if empty, the creator's default nickname is used."
+  },
+  "ui.391": {
+    "zh": "保存",
+    "en": "Save"
+  },
+  "ui.392": {
+    "zh": "粉丝列表已保存。",
+    "en": "Fan lists saved."
+  },
+  "ui.393": {
+    "zh": "消费习惯",
+    "en": "Spending habits"
+  },
+  "ui.394": {
+    "zh": "PPV 详情",
+    "en": "PPV details"
+  },
+  "ui.395": {
+    "zh": "关闭弹窗",
+    "en": "Close dialog"
+  },
+  "ui.396": {
+    "zh": "素材已不可用",
+    "en": "Media unavailable"
+  },
+  "ui.397": {
+    "zh": "此浏览器没有保存该上传文件",
+    "en": "This upload is not stored in this browser"
+  },
+  "ui.398": {
+    "zh": "请选择图片、GIF、视频或音频文件。",
+    "en": "Choose an image, GIF, video, or audio file."
+  },
+  "ui.399": {
+    "zh": "演示上传单个文件上限为 30 MB。",
+    "en": "Individual demo uploads are limited to 30 MB."
+  },
+  "ui.400": {
+    "zh": "上传",
+    "en": "Upload"
+  },
+  "ui.401": {
+    "en": "Infloww · Messaging workspace demo",
+    "zh": "Infloww · 消息工作台演示"
+  },
+  "ui.402": {
+    "en": "Browser storage is full. Remove some media or export the demo records.",
+    "zh": "浏览器保存空间不足，请移除部分素材或导出演示记录。"
+  }
+}

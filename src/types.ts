@@ -4,6 +4,7 @@ export type Message = {
   sentAt: string
   direction: 'inbound' | 'outbound'
   status?: 'sent' | 'read'
+  ppvId?: string
 }
 
 export type Conversation = {

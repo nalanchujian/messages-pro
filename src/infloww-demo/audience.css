@@ -1,0 +1,36 @@
+#infloww-demo .if-audience-filters{background:#fafafa;border:1px solid #eee;border-radius:6px;padding:16px;color:#333}
+#infloww-demo .if-audience-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+#infloww-demo .if-audience-field{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:12px;color:#666}
+#infloww-demo .if-audience-filters .if-select-field,#infloww-demo .if-audience-filters .if-select-field>button{width:100%;max-width:100%}
+#infloww-demo .if-audience-filters .if-select-field>button,#infloww-demo .if-audience-list-trigger{min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #ddd;border-radius:4px;background:#fff;color:#333;padding:7px 9px;font-size:13px;text-align:left}
+#infloww-demo .if-audience-number{display:flex;align-items:center;background:#fff;border:1px solid #ddd;border-radius:4px;min-height:36px;padding-left:10px;color:#777}
+#infloww-demo .if-audience-number>input{border:0!important;outline:0;min-width:0;width:100%;padding:7px 9px!important;background:transparent;color:#333;font-size:13px!important;min-height:34px}
+#infloww-demo .if-audience-exclusions{display:flex;gap:6px;flex-wrap:wrap;padding-top:12px}
+#infloww-demo .if-audience-exclusions>span{display:flex;gap:6px;align-items:center;background:#eef2ff;border-radius:4px;padding:4px 6px;font-size:12px;color:#3467ff}
+#infloww-demo .if-audience-exclusions button{display:grid;place-items:center}
+#infloww-demo .if-audience-switches{display:flex;gap:24px;flex-wrap:wrap;padding-top:15px;font-size:13px;color:#444}
+#infloww-demo .if-audience-switches label{display:flex;gap:8px;align-items:center;cursor:pointer}
+#infloww-demo .if-audience-switches input,#infloww-demo .if-audience-list-options input{accent-color:#3467ff;width:15px;height:15px}
+#infloww-demo .if-audience-list-popover{padding:6px}
+#infloww-demo .if-audience-list-options{max-height:230px;overflow:auto}
+#infloww-demo .if-audience-list-options>label{display:flex;align-items:center;gap:10px;padding:11px 9px;font-size:13px;cursor:pointer}
+#infloww-demo .if-audience-list-options>label:hover{background:#f4f6fc}
+#infloww-demo .if-audience-list-options>p,#infloww-demo .if-audience-empty{color:#999;font-size:13px;padding:25px;text-align:center}
+#infloww-demo .if-online-fans-modal .if-modal-body{padding:0;display:flex;flex-direction:column;max-height:calc(100dvh - 112px)}
+#infloww-demo .if-online-fans-body{padding:20px 24px;overflow:auto;min-height:0}
+#infloww-demo .if-online-fans-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:14px;color:#333}
+#infloww-demo .if-online-fans-toolbar>button{display:flex;align-items:center;gap:5px;font-size:12px;color:#777}
+#infloww-demo .if-online-fan-results{margin-top:14px}
+#infloww-demo .if-online-fans-modal .if-online-fan{padding:13px 0}
+#infloww-demo .if-online-fans-modal .if-online-fan strong{font-size:14px;color:#333}
+#infloww-demo .if-online-fans-modal .if-online-fan small{font-size:12px}
+#infloww-demo .if-online-fan strong>.if-online-creator-badge{display:inline-block;margin:0 0 0 6px;background:#f0f3fa;color:#777;border-radius:3px;padding:1px 4px;font-size:10px}
+#infloww-demo .if-online-fans-footer{flex:none;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #eee;background:#fff;padding:14px 24px}
+#infloww-demo .if-online-fans-footer>button{font-size:14px;min-height:34px}
+#infloww-demo .if-campaign-modal .if-modal-body{padding:0}
+#infloww-demo .if-campaign-modal .if-campaign-editor{display:flex;flex-direction:column;max-height:calc(100dvh - 112px)}
+#infloww-demo .if-campaign-content{padding:20px 24px;overflow:auto;min-height:0}
+#infloww-demo .if-campaign-editor>.if-dialog-actions{flex:none;border-top:1px solid #eee;margin:0;padding:14px 24px;background:#fff}
+#infloww-demo .if-campaign-editor .if-audience-filters{margin-top:14px}
+#infloww-demo .if-campaign-recipient-count{padding-top:12px;color:#666;font-size:13px}
+@media(max-width:600px){#infloww-demo .if-audience-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#infloww-demo .if-audience-field{font-size:11px}#infloww-demo .if-online-fans-body,#infloww-demo .if-campaign-content{padding:16px}#infloww-demo .if-audience-switches{gap:12px}}

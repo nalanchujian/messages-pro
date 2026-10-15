@@ -1,0 +1,262 @@
+{
+  "sample.01": {
+    "zh": "海岸日记",
+    "en": "Coastal journal"
+  },
+  "sample.02": {
+    "zh": "旅行",
+    "en": "Travel"
+  },
+  "sample.03": {
+    "zh": "棚拍精选",
+    "en": "Studio collection"
+  },
+  "sample.04": {
+    "zh": "写真",
+    "en": "Portraits"
+  },
+  "sample.05": {
+    "zh": "晨间光影",
+    "en": "Morning light"
+  },
+  "sample.06": {
+    "zh": "生活",
+    "en": "Lifestyle"
+  },
+  "sample.07": {
+    "zh": "花园随记",
+    "en": "Garden notes"
+  },
+  "sample.08": {
+    "zh": "夜色时分",
+    "en": "After dark"
+  },
+  "sample.09": {
+    "zh": "周末漫游",
+    "en": "Weekend wander"
+  },
+  "sample.10": {
+    "zh": "精选",
+    "en": "Featured"
+  },
+  "sample.11": {
+    "zh": "你好",
+    "en": "Hello"
+  },
+  "sample.12": {
+    "zh": "问候",
+    "en": "Greeting"
+  },
+  "sample.13": {
+    "zh": "谢谢",
+    "en": "Thanks"
+  },
+  "sample.14": {
+    "zh": "感谢",
+    "en": "Gratitude"
+  },
+  "sample.15": {
+    "zh": "语气温暖自然，喜欢旅行、摄影和晨间日常。承诺定制内容前请先确认可用性。",
+    "en": "Warm, natural tone; likes travel, photography, and morning routines. Confirm availability before promising custom content."
+  },
+  "sample.16": {
+    "zh": "你",
+    "en": "you"
+  },
+  "sample.17": {
+    "zh": "VIP 粉丝",
+    "en": "VIP fans"
+  },
+  "sample.18": {
+    "zh": "新粉丝",
+    "en": "New fans"
+  },
+  "sample.19": {
+    "zh": "旅行爱好者",
+    "en": "Travel lovers"
+  },
+  "sample.20": {
+    "zh": "细腻而活泼，分享棚拍照片与幕后故事。回复保持亲切、简洁。",
+    "en": "Thoughtful and playful, sharing studio photos and behind-the-scenes stories. Keep replies warm and concise."
+  },
+  "sample.21": {
+    "zh": "朋友",
+    "en": "friend"
+  },
+  "sample.22": {
+    "zh": "收藏者",
+    "en": "Collectors"
+  },
+  "sample.23": {
+    "zh": "棚拍粉丝",
+    "en": "Studio fans"
+  },
+  "sample.24": {
+    "zh": "友好的户外创作者，分享日常生活和周末散步。请尊重每位粉丝的沟通偏好。",
+    "en": "Friendly outdoor creator sharing daily life and weekend walks. Respect each fan's communication preferences."
+  },
+  "sample.25": {
+    "zh": "常客",
+    "en": "Regulars"
+  },
+  "sample.26": {
+    "zh": "温暖欢迎",
+    "en": "Warm welcome"
+  },
+  "sample.27": {
+    "zh": "欢迎",
+    "en": "Welcome"
+  },
+  "sample.28": {
+    "zh": "嗨，{name}！谢谢你的到来 😊 你想看到哪一类故事？",
+    "en": "Hi, {name}! Thanks for joining 😊 What kind of stories would you like to see?"
+  },
+  "sample.29": {
+    "zh": "购买致谢",
+    "en": "Purchase thanks"
+  },
+  "sample.30": {
+    "zh": "购买跟进",
+    "en": "Purchase follow-up"
+  },
+  "sample.31": {
+    "zh": "谢谢你支持这组内容，{name}！你最喜欢哪个瞬间？",
+    "en": "Thanks for supporting this set, {name}! Which moment was your favorite?"
+  },
+  "sample.32": {
+    "zh": "海岸预览",
+    "en": "Coast preview"
+  },
+  "sample.33": {
+    "zh": "一段只属于你的海岸小旅行，{name} 🌊",
+    "en": "A little coastal getaway just for you, {name} 🌊"
+  },
+  "sample.34": {
+    "zh": "温和跟进",
+    "en": "Gentle follow-up"
+  },
+  "sample.35": {
+    "zh": "关怀",
+    "en": "Care"
+  },
+  "sample.36": {
+    "zh": "嗨，{name}，希望你今天过得不错！不着急，方便时我们再聊。",
+    "en": "Hi, {name}, hope you're doing well today! No rush; let's chat when you have time."
+  },
+  "sample.37": {
+    "zh": "2 天",
+    "en": "2 days"
+  },
+  "sample.38": {
+    "zh": "英国",
+    "en": "United Kingdom"
+  },
+  "sample.39": {
+    "zh": "美国 · 太平洋",
+    "en": "United States · Pacific"
+  },
+  "sample.40": {
+    "zh": "追踪链接",
+    "en": "Tracking link"
+  },
+  "sample.41": {
+    "zh": "未知",
+    "en": "Unknown"
+  },
+  "sample.42": {
+    "zh": "免费试用链接",
+    "en": "Free trial link"
+  },
+  "sample.43": {
+    "zh": "喜欢海岸摄影和轻松聊天，通常在晚上活跃。",
+    "en": "Enjoys coastal photography and relaxed chats; usually active in the evening."
+  },
+  "sample.44": {
+    "zh": "询问过下一组棚拍内容；承诺日期前请先确认可用性。",
+    "en": "Asked about the next studio set; confirm availability before promising a date."
+  },
+  "sample.45": {
+    "zh": "喜欢最近的内容，购买后可以温和跟进。",
+    "en": "Enjoys recent content; follow up gently after a purchase."
+  },
+  "sample.46": {
+    "zh": "偏好低频消息，订阅最近已过期。",
+    "en": "Prefers infrequent messages; subscription recently expired."
+  },
+  "sample.47": {
+    "zh": "新订阅用户，推荐内容前先了解兴趣。",
+    "en": "New subscriber; learn their interests before recommending content."
+  },
+  "sample.48": {
+    "zh": "稳定的老用户，请保持较低的通知频率。",
+    "en": "Loyal long-time fan; keep notifications infrequent."
+  },
+  "sample.49": {
+    "zh": "嘿，今天过得怎么样？😊",
+    "en": "Hey! How has your day been? 😊"
+  },
+  "sample.50": {
+    "zh": "挺好的！我很喜欢你最近的旅行照片。",
+    "en": "Pretty good! I loved your recent travel photos."
+  },
+  "sample.51": {
+    "zh": "谢谢！我整理了一组海边照片。",
+    "en": "Thank you! I put together a little collection from the coast."
+  },
+  "sample.52": {
+    "zh": "海边安静的午后 🌊",
+    "en": "A quiet afternoon by the sea 🌊"
+  },
+  "sample.53": {
+    "zh": "这次旅行还有其他预览吗？",
+    "en": "Is there another preview from this trip?"
+  },
+  "sample.54": {
+    "zh": "新的棚拍内容什么时候准备好？",
+    "en": "When will the new studio set be ready?"
+  },
+  "sample.55": {
+    "zh": "那组照片太棒了！",
+    "en": "That photo set was amazing!"
+  },
+  "sample.56": {
+    "zh": "听起来不错，明天聊！",
+    "en": "Sounds good, talk tomorrow!"
+  },
+  "sample.57": {
+    "zh": "嗨！很高兴来到这里 😊",
+    "en": "Hi! Happy to be here 😊"
+  },
+  "sample.58": {
+    "zh": "谢谢！",
+    "en": "Thanks!"
+  },
+  "sample.59": {
+    "zh": "Mason 发送了 $120 打赏",
+    "en": "Mason sent a $120 tip"
+  },
+  "sample.60": {
+    "zh": "谢谢你最新的内容！",
+    "en": "Thanks for your latest content!"
+  },
+  "sample.61": {
+    "zh": "Emma 已订阅",
+    "en": "Emma subscribed"
+  },
+  "sample.62": {
+    "zh": "一位新粉丝加入了你的社群。",
+    "en": "A new fan joined your community."
+  },
+  "sample.63": {
+    "zh": "Leo 购买了你的 PPV",
+    "en": "Leo purchased your PPV"
+  },
+  "sample.64": {
+    "zh": "海岸日记 · $20",
+    "en": "Coastal journal · $20"
+  },
+  "sample.65": {
+    "zh": "{0} 个月",
+    "en": "{0} months"
+  }
+}

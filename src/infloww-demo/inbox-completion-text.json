@@ -1,0 +1,9 @@
+{
+  "inboxCompletion.navigation": { "en": "Open {0} — page navigation is not included in this demo yet.", "zh": "打开{0}，此演示暂不跳转页面。" },
+  "inboxCompletion.chatNavigation": { "en": "Open {0} in a new tab — page navigation is not included in this demo yet.", "zh": "在新页签打开 {0}，此演示暂不跳转页面。" },
+  "inboxCompletion.managePinnedLists": { "en": "Manage pinned lists", "zh": "管理固定列表" },
+  "inboxCompletion.myLists": { "en": "My lists", "zh": "我的列表" },
+  "inboxCompletion.mediaLimit": { "en": "You can add up to 40 media items.", "zh": "最多可以添加 40 项素材。" },
+  "inboxCompletion.freePreview": { "en": "Free preview", "zh": "免费预览" },
+  "inboxCompletion.removeMedia": { "en": "Remove {0}", "zh": "移除{0}" }
+}

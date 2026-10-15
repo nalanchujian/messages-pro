@@ -2,7 +2,7 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 
 import type { SetStateAction } from 'react'
 import { createRoot } from 'react-dom/client'
 import { create } from 'zustand'
-import { BookOpen, BrainCircuit, Building2, Check, ChevronDown, FileText, Lightbulb, Play, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
+import { BookOpen, BrainCircuit, Building2, Check, ChevronDown, Clock3, FileText, Image as ImageIcon, Languages, Lightbulb, MoreHorizontal, Play, Search, Send, Settings2, ShieldCheck, Sparkles, Tag, WandSparkles, X } from 'lucide-react'
 import { conversationActions, conversations, fanFacts, fanIntelligence } from './data'
 import { conversationFocus, defaultPreferences, defaultVisibleFilters, inferSmartMode } from './smartConfig'
 import type { ActivityEvent, DisplayPreferences, InboxFilter, SmartModeId } from './smartConfig'
@@ -19,9 +19,13 @@ import { buildWorkPlan } from './workPlan'
 import { presentConversation } from './conversationPresentation'
 import { DemoTour, getDemoTourSteps } from './DemoTour'
 import type { DemoTourStep } from './DemoTour'
+import { initialContentRequests, initialPpvRecords, mediaAssets, ppvFollowUpLabel, ppvStatusLabel, requestStatusLabel, restoreContentRequests, restoreHandoffNotes, restorePpvRecords, restoreReminders, scriptTemplates } from './operationalDemo'
+import type { ContentRequest, FollowUpReminder, HandoffNote, PpvRecord } from './operationalDemo'
+import { demoTranslation, inspectOutgoing, priceGuide, summarizeConversation } from './workspaceTools'
 import './styles.css'
 
 type AiMode = 'reply' | 'strategy' | 'rewrite' | 'memory'
+type ComposerTool = 'scripts' | 'vault' | 'reminder' | 'translate' | null
 type InsightView = 'work' | 'fan'
 type SettingsView = 'smart' | 'manual'
 type ManualTab = 'list' | 'chat' | 'sidebar'
@@ -41,6 +45,7 @@ type TourRestoreState = {
   pendingOnly: boolean
   handoffOnly: boolean
   valueOnly: boolean
+  ppvFollowupOnly: boolean
   evidenceReviewedId: string | null
 }
 
@@ -305,6 +310,10 @@ type SessionData = {
   drafts: Record<string, string>
   workflowEvents: WorkflowEvent[]
   savedMemories: Record<string, string[]>
+  ppvRecords: PpvRecord[]
+  reminders: FollowUpReminder[]
+  contentRequests: ContentRequest[]
+  handoffNotes: Record<string, HandoffNote>
 }
 type SessionStore = SessionData & {
   tenantId: TenantId
@@ -313,6 +322,10 @@ type SessionStore = SessionData & {
   setDrafts: (next: SetStateAction<Record<string, string>>) => void
   setWorkflowEvents: (next: SetStateAction<WorkflowEvent[]>) => void
   setSavedMemories: (next: SetStateAction<Record<string, string[]>>) => void
+  setPpvRecords: (next: SetStateAction<PpvRecord[]>) => void
+  setReminders: (next: SetStateAction<FollowUpReminder[]>) => void
+  setContentRequests: (next: SetStateAction<ContentRequest[]>) => void
+  setHandoffNotes: (next: SetStateAction<Record<string, HandoffNote>>) => void
   switchTenant: (nextId: TenantId, customDimensions: TenantDimensions) => void
 }
 
@@ -323,6 +336,8 @@ function loadSession(tenantId: TenantId, customDimensions: TenantDimensions): Se
     items: legacyItems,
     assignments: loadAssignments(tenantId, legacyItems, tenant.dimensions.collaboration),
     drafts: loadDrafts(tenantId), workflowEvents: loadWorkflowEvents(tenantId), savedMemories: loadMemories(tenantId),
+    ppvRecords: restorePpvRecords(undefined, new Set(legacyItems.map((item) => item.id))), reminders: [],
+    contentRequests: restoreContentRequests(undefined, new Set(legacyItems.map((item) => item.id))), handoffNotes: {},
   }
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(tenantKey(sessionSnapshotKey, tenantId)) ?? 'null')
@@ -339,6 +354,10 @@ function loadSession(tenantId: TenantId, customDimensions: TenantDimensions): Se
       savedMemories: snapshot.savedMemories && typeof snapshot.savedMemories === 'object' && !Array.isArray(snapshot.savedMemories)
         ? Object.fromEntries(Object.entries(snapshot.savedMemories).filter(([id, values]) => id in conversationActions && Array.isArray(values)).map(([id, values]) =>
           [id, (values as unknown[]).filter((value): value is string => typeof value === 'string')])) : legacy.savedMemories,
+      ppvRecords: restorePpvRecords(snapshot.ppvRecords, new Set(items.map((item) => item.id))),
+      reminders: restoreReminders(snapshot.reminders, new Set(items.map((item) => item.id))),
+      contentRequests: restoreContentRequests(snapshot.contentRequests, new Set(items.map((item) => item.id))),
+      handoffNotes: restoreHandoffNotes(snapshot.handoffNotes, new Set(items.map((item) => item.id))),
     }
   } catch { return legacy }
 }
@@ -347,6 +366,8 @@ function persistSession(state: Pick<SessionStore, 'tenantId' | keyof SessionData
   localStorage.setItem(tenantKey(sessionSnapshotKey, state.tenantId), JSON.stringify({
     version: 1, items: state.items, assignments: state.assignments, drafts: state.drafts,
     workflowEvents: state.workflowEvents, savedMemories: state.savedMemories,
+    ppvRecords: state.ppvRecords, reminders: state.reminders,
+    contentRequests: state.contentRequests, handoffNotes: state.handoffNotes,
   }))
 }
 
@@ -363,6 +384,10 @@ const useSessionStore = create<SessionStore>((set, get) => ({
   setDrafts: (next) => set((state) => ({ drafts: resolveUpdate(state.drafts, next) })),
   setWorkflowEvents: (next) => set((state) => ({ workflowEvents: resolveUpdate(state.workflowEvents, next) })),
   setSavedMemories: (next) => set((state) => ({ savedMemories: resolveUpdate(state.savedMemories, next) })),
+  setPpvRecords: (next) => set((state) => ({ ppvRecords: resolveUpdate(state.ppvRecords, next) })),
+  setReminders: (next) => set((state) => ({ reminders: resolveUpdate(state.reminders, next) })),
+  setContentRequests: (next) => set((state) => ({ contentRequests: resolveUpdate(state.contentRequests, next) })),
+  setHandoffNotes: (next) => set((state) => ({ handoffNotes: resolveUpdate(state.handoffNotes, next) })),
   switchTenant: (nextId, customDimensions) => {
     persistSession(get())
     set({ tenantId: nextId, ...loadSession(nextId, customDimensions) })
@@ -460,11 +485,42 @@ function App() {
   const [openFanIds, setOpenFanIds] = useState(() => [workspaceRule.landingConversationId])
   const [note, setNote] = useState(() => conversations.find((item) => item.id === workspaceRule.landingConversationId)?.note ?? conversations[0].note)
   const [showAi, setShowAi] = useState(false)
+  const [composerTool, setComposerTool] = useState<ComposerTool>(null)
+  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
+  const [ppvPrice, setPpvPrice] = useState(0)
+  const [showSendReview, setShowSendReview] = useState(false)
+  const [showMoreTools, setShowMoreTools] = useState(false)
+  const [translationLanguage, setTranslationLanguage] = useState<'zh' | 'en'>('en')
+  const [translationDraft, setTranslationDraft] = useState('')
+  const [translatedMessages, setTranslatedMessages] = useState<Record<string, boolean>>({})
+  const [showChatSearch, setShowChatSearch] = useState(false)
+  const [chatSearch, setChatSearch] = useState('')
+  const [ppvFollowupOnly, setPpvFollowupOnly] = useState(false)
+  const [requestTitle, setRequestTitle] = useState('')
+  const [requestPrice, setRequestPrice] = useState(20)
+  const [showRequestForm, setShowRequestForm] = useState(false)
+  const [quoteRequestId, setQuoteRequestId] = useState<string | null>(null)
+  const [handoffDrafts, setHandoffDrafts] = useState<Record<string, string>>({})
+  const [reminderText, setReminderText] = useState('')
+  const [reminderDelay, setReminderDelay] = useState(24)
   const [aiMode, setAiMode] = useState<AiMode>('reply')
   const savedMemories = useSessionStore((state) => state.savedMemories)
   const setSavedMemories = useSessionStore((state) => state.setSavedMemories)
+  const ppvRecords = useSessionStore((state) => state.ppvRecords)
+  const setPpvRecords = useSessionStore((state) => state.setPpvRecords)
+  const reminders = useSessionStore((state) => state.reminders)
+  const setReminders = useSessionStore((state) => state.setReminders)
+  const contentRequests = useSessionStore((state) => state.contentRequests)
+  const setContentRequests = useSessionStore((state) => state.setContentRequests)
+  const handoffNotes = useSessionStore((state) => state.handoffNotes)
+  const setHandoffNotes = useSessionStore((state) => state.setHandoffNotes)
   const [toast, setToast] = useState('')
   const active = items.find((item) => item.id === activeId) ?? items[0]
+  const activePpvRecords = ppvRecords.filter((record) => record.conversationId === active.id)
+  const activeReminders = reminders.filter((reminder) => reminder.conversationId === active.id)
+  const activeRequests = contentRequests.filter((request) => request.conversationId === active.id)
+  const chatMatches = chatSearch.trim() ? active.messages.filter((message) => message.text.toLowerCase().includes(chatSearch.trim().toLowerCase())) : []
+  const selectedMedia = mediaAssets.find((media) => media.id === selectedMediaId)
   const composition = useMemo(() => composeWorkspace({
     tenant, conversations: items, actions: conversationActions, workflows,
     intelligence: fanIntelligence, facts: fanFacts, assignments, activity,
@@ -477,6 +533,11 @@ function App() {
   const activeMemories = savedMemories[active.id] ?? []
   const activeAssignment = assignments[active.id] ?? { owner: '我', handoffPending: false, event: '会话已分配' }
   const needsEvidence = composition.decisions[active.id].needsVerification
+  const activePriceGuide = selectedMedia ? priceGuide(selectedMedia, activePpvRecords) : null
+  const sendIssues = inspectOutgoing({ text: draft, media: selectedMedia, price: ppvPrice, records: activePpvRecords, unverifiedFact: fanFacts[active.id].some((fact) => fact.kind === 'inferred'), unconfirmedDelivery: action.kind === 'fulfillment' && workflows[active.id].fulfillmentStatus !== 'delivered' })
+  const handoffDraftKey = `${tenantId}:${active.id}`
+  const handoffText = handoffDrafts[handoffDraftKey] ?? handoffNotes[active.id]?.text ?? ''
+  const followupIds = new Set(ppvRecords.filter((record) => ppvFollowUpLabel(record)).map((record) => record.conversationId))
   const handoffCount = items.filter((item) => assignments[item.id]?.handoffPending).length
   const pendingCount = items.filter((item) => isOpenTask(item.id, actionStatuses)).length
   const tenantInsight = action.kind === 'fulfillment'
@@ -497,7 +558,7 @@ function App() {
     : tenant.dimensions.tasks === 'fulfillment'
       ? [{ label: '当前付款', value: workflows[active.id].paymentStatus === 'paid' ? '已记录' : '未记录' }, { label: '交付状态', value: workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认' : workflows[active.id].fulfillmentStatus === 'reviewing' ? '核对中' : '待核对' }]
       : tenant.dimensions.tasks === 'purchase'
-        ? [{ label: 'PPV 状态', value: workflows[active.id].ppvStatus === 'purchased' ? '已购买' : '未购买' }, { label: '当前消费', value: active.spend }]
+        ? [{ label: 'PPV 状态', value: activePpvRecords[0] ? ppvStatusLabel(activePpvRecords[0].status) : '暂无记录' }, { label: '当前消费', value: active.spend }]
         : [{ label: '当前消费', value: active.spend }, { label: '已确认记忆', value: String(activeMemories.length) }]
   const smartProposal = useMemo(() => inferSmartMode(items, activity, filter, tenant, actionStatuses), [items, activity, filter, tenant, actionStatuses])
   const proposedQueues = smartProposal.queues.filter((id) => inboxFilters.some((option) => option.id === id)).slice(0, 6)
@@ -521,10 +582,11 @@ function App() {
   const recommendationIgnored = ignoredMode?.id === smartProposal.id && ignoredMode.until > Date.now()
   const scopedConversations = useMemo(() => [...items]
     .filter((item) => matchesFilter(item, filter, actionStatuses) && matchesQuery(item, query)
-      && (!handoffOnly || assignments[item.id]?.handoffPending) && (!valueOnly || isHighValue(item)))
-    .sort((a, b) => composition.decisions[b.id].priority - composition.decisions[a.id].priority || a.id.localeCompare(b.id)), [filter, items, query, actionStatuses, assignments, handoffOnly, valueOnly, composition])
+      && (!handoffOnly || assignments[item.id]?.handoffPending) && (!valueOnly || isHighValue(item))
+      && (!ppvFollowupOnly || followupIds.has(item.id)))
+    .sort((a, b) => composition.decisions[b.id].priority - composition.decisions[a.id].priority || a.id.localeCompare(b.id)), [filter, items, query, actionStatuses, assignments, handoffOnly, valueOnly, ppvFollowupOnly, ppvRecords, composition])
   const scopedPendingCount = scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending).length
-  const visibleConversations = tenant.dimensions.scale !== 'low' && filter === 'all' && pendingOnly
+  const visibleConversations = tenant.dimensions.scale !== 'low' && filter === 'all' && pendingOnly && !ppvFollowupOnly
     ? scopedConversations.filter((item) => isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending)
     : scopedConversations
   const hasNextPending = visibleConversations.some((item) => item.id !== active.id && (isOpenTask(item.id, actionStatuses) || assignments[item.id]?.handoffPending))
@@ -679,10 +741,23 @@ function App() {
     setQuery('')
     setShowAi(false)
     setPreviousConfig(null)
+    setComposerTool(null)
+    setSelectedMediaId(null)
+    setShowSendReview(false)
+    setQuoteRequestId(null)
+    setPpvFollowupOnly(false)
+    setChatSearch('')
+    setShowRequestForm(false)
   }
 
   function applyDemoTourStep(step: DemoTourStep) {
     if (step.tenantId !== tenantId) changeTenant(step.tenantId)
+    setComposerTool(null)
+    setSelectedMediaId(null)
+    setShowSendReview(false)
+    setQuoteRequestId(null)
+    setPpvFollowupOnly(false)
+    setChatSearch('')
     setActiveId(step.conversationId)
     setOpenFanIds([step.conversationId])
     setNote(conversations.find((item) => item.id === step.conversationId)?.note ?? conversations[0].note)
@@ -701,7 +776,7 @@ function App() {
   function startDemoTour() {
     if (tourStep !== null) return
     tourRestoreRef.current = { tenantId, activeId, openFanIds, note, filter, query, showAi, aiMode,
-      showCompactInsights, insightView, pendingOnly, handoffOnly, valueOnly, evidenceReviewedId }
+      showCompactInsights, insightView, pendingOnly, handoffOnly, valueOnly, ppvFollowupOnly, evidenceReviewedId }
     setShowTenantDialog(false)
     setShowSettings(false)
     setTourStartTenantId(tenantId)
@@ -727,6 +802,7 @@ function App() {
     setPendingOnly(previous.pendingOnly)
     setHandoffOnly(previous.handoffOnly)
     setValueOnly(previous.valueOnly)
+    setPpvFollowupOnly(previous.ppvFollowupOnly)
     setEvidenceReviewedId(previous.evidenceReviewedId)
     requestAnimationFrame(() => tourTriggerRef.current?.focus())
   }
@@ -762,6 +838,12 @@ function App() {
     setOpenFanIds((current) => current.includes(id) ? current : [...current, id])
     setNote(next.note)
     setShowAi(false)
+    setComposerTool(null)
+    setSelectedMediaId(null)
+    setShowSendReview(false)
+    setQuoteRequestId(null)
+    setChatSearch('')
+    setShowRequestForm(false)
     setItems((current) => current.map((item) => item.id === id ? { ...item, unread: 0 } : item))
   }
 
@@ -776,6 +858,10 @@ function App() {
         setActiveId(nextId)
         setNote(next.note)
         setShowAi(false)
+        setComposerTool(null)
+        setSelectedMediaId(null)
+        setShowSendReview(false)
+        setQuoteRequestId(null)
         setItems((current) => current.map((item) => item.id === nextId ? { ...item, unread: 0 } : item))
       }
     }
@@ -787,6 +873,7 @@ function App() {
 
   function setInboxFilter(next: InboxFilter) {
     setFilter(next)
+    setPpvFollowupOnly(false)
     if (next !== filter) recordActivity('queue', next)
   }
 
@@ -853,6 +940,16 @@ function App() {
     setOpenFanIds([workspaceRule.landingConversationId])
     setNote(conversations.find((item) => item.id === workspaceRule.landingConversationId)?.note ?? conversations[0].note)
     setSavedMemories({})
+    setPpvRecords(initialPpvRecords().filter((record) => resetItems.some((item) => item.id === record.conversationId)))
+    setReminders([])
+    setContentRequests(initialContentRequests().filter((request) => resetItems.some((item) => item.id === request.conversationId)))
+    setHandoffNotes({})
+    setHandoffDrafts({})
+    setComposerTool(null)
+    setSelectedMediaId(null)
+    setShowSendReview(false)
+    setQuoteRequestId(null)
+    setPpvFollowupOnly(false)
     setFilter('all')
     setShowAi(false)
   }
@@ -869,14 +966,76 @@ function App() {
     })
   }
 
-  function sendMessage() {
-    if (!draft.trim()) return
-    const message: Message = { id: crypto.randomUUID(), text: draft.trim(), sentAt: '现在', direction: 'outbound', status: 'sent' }
+  function commitMessage() {
+    if (!draft.trim() && !selectedMedia) return
+    const ppvId = selectedMedia ? crypto.randomUUID() : undefined
+    const text = draft.trim() || selectedMedia?.title || ''
+    const message: Message = { id: crypto.randomUUID(), text, sentAt: '现在', direction: 'outbound', status: 'sent', ...(ppvId ? { ppvId } : {}) }
+    if (selectedMedia && ppvId) {
+      setPpvRecords((current) => [{ id: ppvId, conversationId: active.id, mediaId: selectedMedia.id, caption: text, price: ppvPrice, status: 'sent', sentAt: '刚刚', source: 'demo' }, ...current])
+      setSelectedMediaId(null)
+      setComposerTool(null)
+    }
+    if (quoteRequestId) {
+      setContentRequests((current) => current.map((request) => request.id === quoteRequestId && request.conversationId === active.id ? { ...request, status: 'quoted', updatedAt: '刚刚' } : request))
+      setQuoteRequestId(null)
+    }
     setItems((current) => current.map((item) => item.id === active.id ? { ...item, messages: [...item.messages, message], preview: message.text, updatedAt: '刚刚' } : item))
     recordWorkflowEvent('message_sent')
     recordActivity('sent', conversationFocus(active.id))
     updateDraft('')
-    notify(action.kind === 'fulfillment' ? '消息已发送 · 付款请求仍待确认交付' : `消息已发送 · ${action.afterSend}`)
+    setShowSendReview(false)
+    notify(ppvId ? '演示 PPV 已发送，可在粉丝资料中模拟查看或购买' : action.kind === 'fulfillment' ? '消息已发送 · 付款请求仍待确认交付' : `消息已发送 · ${action.afterSend}`)
+  }
+
+  function sendMessage() {
+    if (!draft.trim() && !selectedMedia) return
+    if (sendIssues.length) { setComposerTool(null); setShowMoreTools(false); setShowSendReview(true); return }
+    commitMessage()
+  }
+
+  function createContentRequest() {
+    const title = requestTitle.trim()
+    if (!title) return
+    setContentRequests((current) => [{ id: crypto.randomUUID(), conversationId: active.id, title, price: requestPrice, status: 'new', owner: activeAssignment.owner, updatedAt: '刚刚', source: 'demo' }, ...current])
+    setRequestTitle('')
+    notify('已登记内容请求，下一步可准备报价')
+  }
+
+  function prepareQuote(request: ContentRequest) {
+    if (request.price === null) return
+    setQuoteRequestId(request.id)
+    updateDraft(`关于${request.title}，报价是 $${request.price}。如果你确认，我再安排下一步。`)
+    setShowCompactInsights(false)
+    notify('报价已写入草稿；发送后才会记录为已报价')
+  }
+
+  function saveHandoff() {
+    if (!handoffText.trim()) return
+    setHandoffNotes((current) => ({ ...current, [active.id]: { text: handoffText.trim(), savedAt: Date.now() } }))
+    notify('会话摘要已保存到当前租户')
+  }
+
+  function prepareTranslation() {
+    setComposerTool('translate')
+    setShowMoreTools(false)
+    setTranslationDraft(demoTranslation(draft, translationLanguage) ?? '')
+  }
+
+  function chooseMedia(id: string) {
+    const media = mediaAssets.find((asset) => asset.id === id)
+    if (!media) return
+    setSelectedMediaId(id)
+    setPpvPrice(media.suggestedPrice)
+  }
+
+  function scheduleReminder() {
+    const text = reminderText.trim()
+    if (!text) return
+    setReminders((current) => [{ id: crypto.randomUUID(), conversationId: active.id, text, dueAt: Date.now() + reminderDelay * 60 * 60 * 1000, status: 'scheduled' }, ...current])
+    setReminderText('')
+    setComposerTool(null)
+    notify('已加入当前粉丝的跟进提醒')
   }
 
   function rewriteDraft() {
@@ -924,7 +1083,7 @@ function App() {
       <p className="priority-context">{action.reason}</p>
       {(workflows[active.id].paymentStatus === 'paid' || workflows[active.id].lastOutboundAt !== null) && <div className="workflow-facts" aria-label="当前业务状态">
         {workflows[active.id].paymentStatus === 'paid' && <span>付款：已记录</span>}
-        {workflows[active.id].ppvStatus === 'purchased' && <span>PPV：已购买</span>}
+        {activePpvRecords[0] && <span>PPV：{ppvStatusLabel(activePpvRecords[0].status)}</span>}
         {workflows[active.id].lastOutboundAt !== null && <span>回复：已发送</span>}
         {action.kind === 'fulfillment' && <span className={workflows[active.id].fulfillmentStatus === 'delivered' ? 'complete' : 'open'}>交付：{workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认' : workflows[active.id].fulfillmentStatus === 'reviewing' ? '团队核对中' : '待核对'}</span>}
       </div>}
@@ -949,19 +1108,22 @@ function App() {
       <header className="inbox-header"><div className="brand-mark" aria-label="Messages Pro">M</div><div className="search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索用户或对话" aria-label="搜索用户或对话" />{query && <button onClick={() => setQuery('')} aria-label="清除搜索"><X size={15} /></button>}</div></header>
       <div className="inbox-controls">
         <div className="queue-heading"><strong>行动分类</strong><span>按当前任务筛选</span></div>
-        <div className="queue-grid" role="group" aria-label="行动队列" data-tour-highlight={currentTourStep?.highlight === 'queue'}>{visibleFilters.map((option) => <button key={option.id} className={`queue-button ${filter === option.id ? 'active' : ''}`} aria-pressed={filter === option.id} onClick={() => setInboxFilter(option.id)}><span>{option.label}</span><b>{queueCount(option.id)}</b></button>)}</div>
+        <div className="queue-grid" role="group" aria-label="行动队列" data-tour-highlight={currentTourStep?.highlight === 'queue'}>{visibleFilters.map((option) => <button key={option.id} className={`queue-button ${filter === option.id && !ppvFollowupOnly ? 'active' : ''}`} aria-pressed={filter === option.id && !ppvFollowupOnly} onClick={() => setInboxFilter(option.id)}><span>{option.label}</span><b>{queueCount(option.id)}</b></button>)}</div>
+        <button className={`ppv-followup-filter ${ppvFollowupOnly ? 'active' : ''}`} aria-pressed={ppvFollowupOnly} onClick={() => { setPpvFollowupOnly((current) => !current); setFilter('all'); setPendingOnly(false); setHandoffOnly(false); setValueOnly(false); setQuery('') }}><span>PPV 待跟进</span><b>{followupIds.size}</b><small>已查看未购买 · 已购买待回应</small></button>
         <div className="list-toolbar"><strong>会话列表</strong><span>{visibleConversations.length} 位 · 按{workspaceRule.sortLabel}排序</span></div>
         {(tenant.dimensions.scale !== 'low' || tenant.dimensions.fans !== 'low' || tenant.dimensions.collaboration === 'shifts' || tenant.dimensions.ai === 'triage') && <div className={`load-action-bar ${tenant.dimensions.scale}`} data-tour-highlight={currentTourStep?.highlight === 'load'} data-recommended-next={recommendedNext?.name ?? ''}>
           <div className="processing-context"><strong>{pendingOnly && filter === 'all' && tenant.dimensions.scale !== 'low' ? '待处理会话' : '当前处理视图'}</strong><span>{scopedPendingCount} 项待处理 · 共 {scopedConversations.length} 位{recommendedNext ? ' · 列表中已标出建议下一条' : ''}</span></div>
           <div className="load-actions">{tenant.dimensions.scale !== 'low' && filter === 'all' && <button className={pendingOnly ? 'active' : ''} onClick={() => setPendingOnly((value) => !value)}>{pendingOnly ? '查看全部' : '只看待处理'}</button>}{tenant.dimensions.fans !== 'low' && <button className={valueOnly ? 'active' : ''} onClick={() => setValueOnly((value) => !value)}>{valueOnly ? '查看全部粉丝' : '重点粉丝'}</button>}{tenant.dimensions.collaboration === 'shifts' && <button className={handoffOnly ? 'active' : ''} onClick={() => setHandoffOnly((value) => !value)}>{handoffOnly ? '全部交接' : `待交接 ${handoffCount}`}</button>}{tenant.dimensions.scale !== 'low' || tenant.dimensions.ai === 'triage' ? <button className="next-conversation" onClick={openNextPending} disabled={!hasNextPending}>下一条</button> : null}</div>
         </div>}</div>
-      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all'); setPendingOnly(false); setHandoffOnly(false); setValueOnly(false) }}>显示会话</button></div>}
+      {!visibleConversations.some((item) => item.id === active.id) && <div className="filtered-active"><span>当前聊天 {active.name} 不在筛选结果中</span><button onClick={() => { setQuery(''); setFilter('all'); setPendingOnly(false); setHandoffOnly(false); setValueOnly(false); setPpvFollowupOnly(false) }}>显示会话</button></div>}
       <div className="conversation-list">{visibleConversations.length ? visibleConversations.map((item) => {
         const itemAction = conversationActions[item.id]
         const itemStatus = actionStatus(item.id, actionStatuses)
         const row = presentConversation({ tenant, item, action: itemAction, workflow: workflows[item.id], facts: fanFacts[item.id], assignment: assignments[item.id], decision: composition.decisions[item.id], recommended: recommendedNext?.id === item.id })
+        const latestDemoPpv = ppvRecords.find((record) => record.conversationId === item.id && record.source === 'demo')
+        const followUpPpv = ppvRecords.find((record) => record.conversationId === item.id && ppvFollowUpLabel(record))
         return <button ref={item.id === active.id ? selectedConversationRef : undefined} className={`conversation row-${row.emphasis} ${row.recommended ? 'recommended' : ''} ${item.id === active.id ? 'selected' : ''}`} data-tour-highlight={currentTourStep?.highlight === 'list' && item.id === active.id} onClick={() => selectConversation(item.id)} key={item.id}>
-          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><span className="conversation-title-side">{item.unread > 0 && <b className="unread-count" aria-label={`${item.unread} 条未读`}>{item.unread}</b>}<time>{item.updatedAt}</time></span></div>{viewPreferences.listPreview && <p>{item.preview}</p>}{viewPreferences.listPriority && <><div className="conversation-meta"><span title={composition.decisions[item.id].reasons.join(' · ')}>{row.headline}</span><em className={`action-state ${itemStatus}`}>{composition.decisions[item.id].statusLabel}</em></div><div className="conversation-context" title={row.context}>{row.context}</div></>}{(row.badges.length > 0 || viewPreferences.listSla && row.urgency) && <div className="conversation-foot">{row.badges.length > 0 && <div className="conversation-signals">{row.badges.map((badge) => <span key={badge}>{badge}</span>)}</div>}{viewPreferences.listSla && row.urgency && <small className="sla-hint">{row.urgency}</small>}</div>}</div>
+          <div className="avatar">{item.avatar}{item.online && <i />}</div><div className="conversation-copy"><div className="conversation-title"><strong>{item.name}</strong><span className="conversation-title-side">{item.unread > 0 && <b className="unread-count" aria-label={`${item.unread} 条未读`}>{item.unread}</b>}<time>{item.updatedAt}</time></span></div>{viewPreferences.listPreview && <p>{item.preview}</p>}{viewPreferences.listPriority && <><div className="conversation-meta"><span title={composition.decisions[item.id].reasons.join(' · ')}>{row.headline}</span><em className={`action-state ${itemStatus}`}>{composition.decisions[item.id].statusLabel}</em></div><div className="conversation-context" title={row.context}>{row.context}</div></>}{(row.badges.length > 0 || latestDemoPpv || followUpPpv || viewPreferences.listSla && row.urgency) && <div className="conversation-foot">{row.badges.length > 0 && <div className="conversation-signals">{row.badges.map((badge) => <span key={badge}>{badge}</span>)}</div>}{followUpPpv && <span className="ppv-followup-signal">{ppvFollowUpLabel(followUpPpv)}</span>}{!followUpPpv && latestDemoPpv && <span className="demo-ppv-signal">PPV {ppvStatusLabel(latestDemoPpv.status)}</span>}{viewPreferences.listSla && row.urgency && <small className="sla-hint">{row.urgency}</small>}</div>}</div>
         </button>
       }) : <div className="empty-list"><Search size={18} /><strong>{valueOnly ? '当前没有符合条件的重点粉丝' : pendingOnly && filter === 'all' ? '当前没有待处理会话' : '没有匹配的用户'}</strong><span>{valueOnly || pendingOnly ? '可切换处理视图浏览其他会话' : '尝试调整搜索或筛选条件'}</span></div>}</div>
       <div className="inbox-settings">
@@ -971,13 +1133,20 @@ function App() {
       </div>
     </aside>
     <section className="chat-panel" aria-label="聊天模块">
-      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button ref={tourTriggerRef} className="demo-tour-trigger" onClick={startDemoTour} aria-label="一键演示" title={`从 ${tenant.name} 开始查看各租户的工作台差异`}><Play size={14} fill="currentColor" /><span>一键演示</span></button><a className="report-link chat-report-trigger" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="chat-search-trigger" onClick={() => setShowChatSearch((current) => !current)} aria-label="搜索当前会话" aria-expanded={showChatSearch} title="搜索当前会话消息"><Search size={15} /></button><button ref={tourTriggerRef} className="demo-tour-trigger" onClick={startDemoTour} aria-label="一键演示" title={`从 ${tenant.name} 开始查看各租户的工作台差异`}><Play size={14} fill="currentColor" /><span>一键演示</span></button><a className="report-link chat-report-trigger" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      {showChatSearch && <div className="chat-search-bar" role="search"><Search size={14} /><input aria-label="搜索本次聊天内容" value={chatSearch} onChange={(event) => setChatSearch(event.target.value)} placeholder="搜索当前聊天消息" /><span>{chatSearch.trim() ? `${chatMatches.length} 条结果` : '输入关键词'}</span>{chatMatches.map((message) => <button key={message.id} onClick={() => document.querySelector(`[data-message-id="${CSS.escape(message.id)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })} title={message.text}>{message.text.slice(0, 14)}</button>)}<button onClick={() => { setShowChatSearch(false); setChatSearch('') }} aria-label="关闭会话搜索"><X size={14} /></button></div>}
       {openFanIds.length > 1 && <div className="fan-tabs" role="tablist" aria-label="已打开的粉丝会话">{openFanIds.map((fanId) => {
         const fan = items.find((item) => item.id === fanId)
         if (!fan) return null
         return <div className={`fan-tab ${fanId === active.id ? 'active' : ''}`} key={fanId}><button role="tab" aria-selected={fanId === active.id} onClick={() => selectConversation(fanId)}><span className="tab-presence" data-online={fan.online} />{fan.name}{drafts[fanId]?.trim() && <i className="draft-indicator" title="有未发送草稿" />}</button><button className="close-tab" aria-label={`关闭 ${fan.name} 会话`} onClick={() => closeFanTab(fanId)}><X size={12} /></button></div>
       })}</div>}
-      <div className="message-area" ref={messageAreaRef}><div className="message-thread"><div className="date-pill">今天</div>{active.messages.map((message) => <div className={`message-row ${message.direction}`} key={message.id}><div className="bubble">{message.text}</div>{viewPreferences.chatTimestamps && <small>{message.sentAt}{message.status === 'read' ? ' · 已读' : ''}</small>}</div>)}</div></div>
+      <div className="message-area" ref={messageAreaRef}><div className="message-thread"><div className="date-pill">今天</div>{active.messages.map((message) => {
+        const record = message.ppvId ? ppvRecords.find((item) => item.id === message.ppvId) : undefined
+        const media = record ? mediaAssets.find((item) => item.id === record.mediaId) : undefined
+        const translationKey = `${tenantId}:${active.id}:${message.id}`
+        const targetLanguage = /[\u4e00-\u9fff]/.test(message.text) ? 'en' : 'zh'
+        return <div className={`message-row ${message.direction}`} data-message-id={message.id} key={message.id}><div className="bubble">{media && <div className="message-media"><ImageIcon size={17} /><span><strong>{media.title}</strong><small>PPV · ${record?.price} · {record && ppvStatusLabel(record.status)}</small></span></div>}{message.text}</div><div className="message-meta">{viewPreferences.chatTimestamps && <small>{message.sentAt}{message.status === 'read' ? ' · 已读' : ''}</small>}<button onClick={() => setTranslatedMessages((current) => ({ ...current, [translationKey]: !current[translationKey] }))} aria-label={`翻译消息 ${message.id}`}><Languages size={12} />{translatedMessages[translationKey] ? '收起译文' : '翻译'}</button></div>{translatedMessages[translationKey] && <div className="message-translation">{demoTranslation(message.text, targetLanguage) ?? '这条消息暂无演示译文，请人工核对后翻译。'}<small>演示译文 · {targetLanguage === 'zh' ? '中文' : 'English'}</small></div>}</div>
+      })}</div></div>
       <footer className="composer">
         {(viewPreferences.chatNextStep || (action.kind === 'fulfillment' && activeActionStatus !== 'done')) && <ActionTray
           action={action} workflow={workflows[active.id]} decision={composition.decisions[active.id]}
@@ -995,7 +1164,16 @@ function App() {
           {aiMode === 'rewrite' && <div className="ai-content rewrite-card"><p>当前为演示版，可插入一条符合此粉丝阶段的示例回复，再自行编辑。</p>{needsEvidence && <p className="ai-guardrail">涉及未确认偏好的示例需先核对；这里仍可插入普通回复。</p>}<button className="primary-ai-action" onClick={rewriteDraft}><WandSparkles size={15} />插入阶段示例</button></div>}
           {aiMode === 'memory' && <div className="ai-content memory-card"><p>仅从已记录的信息提取候选记忆，确认后写入粉丝画像。</p>{memoryCandidates(active).map((memory) => <div className="memory-item" key={memory.text}><span>{memory.text}<small>来源：{memory.source}</small></span><button className={activeMemories.includes(memory.text) ? 'confirmed' : ''} onClick={() => confirmMemory(memory.text)}>{activeMemories.includes(memory.text) ? <><Check size={13} />已确认</> : '确认保存'}</button></div>)}</div>}
         </section>}
-        <div className="composer-box"><textarea value={draft} onChange={(event) => updateDraft(event.target.value)} onKeyDown={(event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); sendMessage() } }} placeholder={`回复 ${active.name}…`} rows={1} aria-label={`回复 ${active.name}`} /><button onClick={sendMessage} className="send-button" aria-label="发送" disabled={!draft.trim()}><Send size={18} /></button></div>{viewPreferences.chatHelp && <p className="composer-help"><span>⌘ / Ctrl + Enter 发送</span><span>草稿自动保存 · AI 内容发送前请确认</span></p>}
+        <div className="composer-tools" role="group" aria-label="聊天工具"><button className={composerTool === 'scripts' ? 'active' : ''} onClick={() => setComposerTool(composerTool === 'scripts' ? null : 'scripts')} aria-expanded={composerTool === 'scripts'}><BookOpen size={14} />话术</button><button className={composerTool === 'vault' ? 'active' : ''} onClick={() => setComposerTool(composerTool === 'vault' ? null : 'vault')} aria-expanded={composerTool === 'vault'}><ImageIcon size={14} />素材 / PPV</button><button className={composerTool === 'reminder' ? 'active' : ''} onClick={() => setComposerTool(composerTool === 'reminder' ? null : 'reminder')} aria-expanded={composerTool === 'reminder'}><Clock3 size={14} />提醒</button><button className={showMoreTools ? 'active' : ''} onClick={() => setShowMoreTools((current) => !current)} aria-expanded={showMoreTools}><MoreHorizontal size={14} />更多</button></div>
+        {showMoreTools && <div className="more-tools-menu" role="group" aria-label="更多聊天工具"><button onClick={prepareTranslation}><Languages size={14} />翻译草稿</button><button onClick={() => { setShowSendReview(true); setShowMoreTools(false) }}><ShieldCheck size={14} />发送检查</button></div>}
+        {composerTool === 'scripts' && <section className="composer-tool-panel" aria-label="话术选择"><div className="tool-panel-heading"><strong>常用话术</strong><span>插入草稿后可编辑，不会自动发送</span></div><div className="script-grid">{scriptTemplates.map((script) => <button key={script.id} onClick={() => { updateDraft(script.text); setComposerTool(null) }}><strong>{script.title}</strong><span>{script.purpose}</span></button>)}</div></section>}
+        {composerTool === 'vault' && <section className="composer-tool-panel" aria-label="素材与 PPV"><div className="tool-panel-heading"><strong>素材库</strong><span>演示素材 · 发送前请确认价格和文案</span></div><div className="media-grid">{mediaAssets.map((media) => { const previous = activePpvRecords.find((record) => record.mediaId === media.id); return <button className={selectedMediaId === media.id ? 'selected' : ''} key={media.id} onClick={() => chooseMedia(media.id)}><ImageIcon size={16} /><span><strong>{media.title}</strong><small>{media.category} · 建议 ${media.suggestedPrice}{previous ? ` · 曾${ppvStatusLabel(previous.status)}` : ''}</small></span></button> })}</div>{selectedMedia && <div className="ppv-config"><label>PPV 价格 <span>$</span><input aria-label="PPV 价格" type="number" min="0" max="999" value={ppvPrice} onChange={(event) => setPpvPrice(Math.min(999, Math.max(0, Number(event.target.value) || 0)))} /></label><span>{selectedMedia.description}</span><button onClick={() => setSelectedMediaId(null)}>移除素材</button>{activePriceGuide && <div className="price-guide" aria-label="报价参考"><strong>报价参考 ${activePriceGuide.low}–${activePriceGuide.high}</strong><span>{activePriceGuide.basis}{activePriceGuide.average !== null ? ` · 历史均价 $${Math.round(activePriceGuide.average)}` : ''}</span></div>}{activePpvRecords.some((record) => record.mediaId === selectedMedia.id) && <p className="duplicate-warning">这位粉丝已有该素材的发送记录，请核对后再发送。</p>}</div>}</section>}
+        {composerTool === 'reminder' && <section className="composer-tool-panel" aria-label="创建跟进提醒"><div className="tool-panel-heading"><strong>安排跟进</strong><span>仅记录在当前租户的演示工作台</span></div><div className="reminder-editor"><input aria-label="提醒内容" value={reminderText} onChange={(event) => setReminderText(event.target.value)} placeholder="例如：明天确认是否看过新照片集" /><select aria-label="提醒时间" value={reminderDelay} onChange={(event) => setReminderDelay(Number(event.target.value))}><option value={2}>2 小时后</option><option value={24}>明天</option><option value={72}>3 天后</option></select><button onClick={scheduleReminder} disabled={!reminderText.trim()}>添加提醒</button></div></section>}
+        {composerTool === 'translate' && <section className="composer-tool-panel" aria-label="翻译草稿"><div className="tool-panel-heading"><strong>双向翻译</strong><span>样例译文可编辑；未覆盖的内容请人工翻译</span></div><div className="translation-editor"><select aria-label="译文语言" value={translationLanguage} onChange={(event) => { const language = event.target.value as 'zh' | 'en'; setTranslationLanguage(language); setTranslationDraft(demoTranslation(draft, language) ?? '') }}><option value="en">English</option><option value="zh">中文</option></select><button onClick={() => setTranslationDraft(demoTranslation(draft, translationLanguage) ?? '')}>生成演示译文</button><textarea aria-label="译文草稿" value={translationDraft} onChange={(event) => setTranslationDraft(event.target.value)} placeholder="暂无演示译文，可在这里输入并核对译文" rows={2} /><button className="translation-apply" disabled={!translationDraft.trim()} onClick={() => { updateDraft(translationDraft); setComposerTool(null) }}>替换发送草稿</button></div></section>}
+        {showSendReview && <section className="send-review-panel" aria-label="发送前检查"><div className="tool-panel-heading"><strong>发送前检查</strong><button onClick={() => setShowSendReview(false)} aria-label="关闭发送检查"><X size={14} /></button></div>{sendIssues.length ? <ul>{sendIssues.map((issue) => <li className={issue.severity} key={issue.code}><strong>{issue.title}</strong><span>{issue.detail}</span></li>)}</ul> : <p>未发现当前演示规则覆盖的问题。仍请人工核对内容与价格。</p>}<div className="send-review-actions"><button onClick={() => setShowSendReview(false)}>返回修改</button><button disabled={sendIssues.some((issue) => issue.severity === 'block') || (!draft.trim() && !selectedMedia)} onClick={commitMessage}>确认并发送</button></div></section>}
+        {selectedMedia && <div className="selected-media-chip"><ImageIcon size={14} /><span>{selectedMedia.title} · PPV ${ppvPrice}</span><button onClick={() => setSelectedMediaId(null)} aria-label="移除已选素材"><X size={14} /></button></div>}
+        {quoteRequestId && <div className="selected-media-chip quote-chip"><FileText size={14} /><span>报价草稿 · 发送后记录为已报价</span><button onClick={() => setQuoteRequestId(null)} aria-label="取消报价关联"><X size={14} /></button></div>}
+        <div className="composer-box"><textarea value={draft} onChange={(event) => updateDraft(event.target.value)} onKeyDown={(event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); sendMessage() } }} placeholder={selectedMedia ? `为 ${selectedMedia.title} 添加说明（可选）…` : `回复 ${active.name}…`} rows={1} aria-label={`回复 ${active.name}`} /><button onClick={sendMessage} className="send-button" aria-label="发送" disabled={!draft.trim() && !selectedMedia}><Send size={18} /></button></div>{viewPreferences.chatHelp && <p className="composer-help"><span>⌘ / Ctrl + Enter 发送</span><span>草稿自动保存 · 演示发送需人工确认</span></p>}
       </footer>
     </section>
     {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
@@ -1008,8 +1186,14 @@ function App() {
       {tenant.dimensions.data === 'partial' && <div className="data-quality-note"><ShieldCheck size={14} /><span>资料覆盖率 {Math.round(tenant.signals.dataCoverage * 100)}%；购买与偏好线索请留意来源和更新时间。</span></div>}
       {tenant.dimensions.data === 'complete' && <div className="data-quality-note complete"><ShieldCheck size={14} /><span>资料较充分，可参考已记录偏好；新推断仍需确认。</span></div>}
       {tenant.dimensions.collaboration !== 'solo' && <section className="collaboration-panel" data-tour-highlight={currentTourStep?.highlight === 'collaboration'}><div><strong>{tenant.dimensions.collaboration === 'shifts' ? '轮班交接' : '小组协作'}</strong><span>{activeAssignment.handoffPending ? '待确认交接' : `负责人：${activeAssignment.owner}`}</span></div><p>{activeAssignment.event} · {action.kind === 'fulfillment' ? '付款与交付状态需一起移交。' : `最近消息：${active.preview}`}</p><div className="collaboration-actions">{activeAssignment.owner !== '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已认领当前会话')}>认领会话</button>}{tenant.dimensions.collaboration === 'shifts' && activeAssignment.handoffPending && <button onClick={() => updateAssignment('我', false, '已确认本班次接手')}>确认交接</button>}{activeAssignment.owner === '我' && !activeAssignment.handoffPending && <button onClick={() => updateAssignment('Alex', tenant.dimensions.collaboration === 'shifts', tenant.dimensions.collaboration === 'shifts' ? '已发起交接，待下一班次确认' : '已转交 Alex')}>{tenant.dimensions.collaboration === 'shifts' ? '发起交接' : '转交 Alex'}</button>}</div></section>}
-      {profilePanels.recommendation}</>}
-      {insightView === 'fan' && <>{profilePanels.metrics}{composition.presentation.detailOrder.filter((section) => section !== 'recommendation' && section !== 'metrics').map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}</>}
+      {profilePanels.recommendation}
+      <section className="detail-section operational-section" aria-label="跟进提醒"><div className="section-title"><h3><Clock3 size={16} />跟进提醒</h3><button onClick={() => { setComposerTool('reminder'); setShowCompactInsights(false) }}>新建</button></div>{activeReminders.length ? activeReminders.map((reminder) => <div className={`reminder-item ${reminder.status}`} key={reminder.id}><div><strong>{reminder.text}</strong><small>{reminder.status === 'done' ? '已完成' : new Date(reminder.dueAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</small></div>{reminder.status === 'scheduled' && <button onClick={() => setReminders((current) => current.map((item) => item.id === reminder.id ? { ...item, status: 'done' } : item))}>完成</button>}</div>) : <p className="operational-empty">暂无提醒，可在聊天区安排后续跟进。</p>}</section>
+      <details className="detail-section operational-section work-tool-details" aria-label="内容请求"><summary><FileText size={15} />内容请求 <span>{activeRequests.filter((request) => request.status !== 'delivered').length} 项进行中</span></summary><div className="work-tool-body">{activeRequests.map((request) => {
+        const status = request.source === 'sample' && workflows[active.id].fulfillmentStatus === 'delivered' ? 'delivered' : request.status
+        return <article className="request-card" key={request.id}><div className="ppv-record-heading"><strong>{request.title}</strong><span className={`ppv-status ${status}`}>{requestStatusLabel(status)}</span></div><p>{request.price === null ? '金额来自平台付款记录' : `报价 $${request.price}`} · {request.updatedAt}</p><label>负责人 <select aria-label={`${request.title}负责人`} value={request.owner} onChange={(event) => setContentRequests((current) => current.map((item) => item.id === request.id ? { ...item, owner: event.target.value } : item))}><option value={request.owner}>{request.owner}</option>{request.owner !== '我' && <option value="我">我</option>}{request.owner !== 'Alex' && <option value="Alex">Alex</option>}</select></label><div className="record-actions">{status === 'new' && <button onClick={() => prepareQuote(request)}>准备报价</button>}{status === 'quoted' && <button onClick={() => setContentRequests((current) => current.map((item) => item.id === request.id ? { ...item, status: 'paid', updatedAt: '刚刚' } : item))}>模拟已付款</button>}{status === 'paid' && <button onClick={() => request.source === 'sample' ? completeAction() : setContentRequests((current) => current.map((item) => item.id === request.id ? { ...item, status: 'delivered', updatedAt: '刚刚' } : item))}>确认已交付</button>}</div>{status === 'paid' && <small>付款已记录，交付仍需单独确认。</small>}</article>
+      })}{showRequestForm ? <div className="request-form"><input aria-label="请求内容" value={requestTitle} onChange={(event) => setRequestTitle(event.target.value)} placeholder="请求内容，例如定制照片集" /><label>拟报价 $<input aria-label="请求报价" type="number" min="1" max="999" value={requestPrice} onChange={(event) => setRequestPrice(Math.min(999, Math.max(1, Number(event.target.value) || 1)))} /></label><div><button onClick={() => setShowRequestForm(false)}>取消</button><button disabled={!requestTitle.trim()} onClick={() => { createContentRequest(); setShowRequestForm(false) }}>登记请求</button></div></div> : <button className="add-request" onClick={() => setShowRequestForm(true)}>+ 登记新请求</button>}</div></details>
+      <details className="detail-section operational-section work-tool-details" aria-label="会话摘要与交接"><summary><BrainCircuit size={15} />会话摘要与交接 <span>{handoffNotes[active.id] ? '已保存' : '按需生成'}</span></summary><div className="work-tool-body"><p className="operational-empty">汇总现有演示消息与业务记录；保存前可编辑核对。</p><button className="add-request" onClick={() => setHandoffDrafts((current) => ({ ...current, [handoffDraftKey]: summarizeConversation({ conversation: active, workflow: workflows[active.id], ppvRecords: activePpvRecords, requests: activeRequests, owner: activeAssignment.owner }) }))}>生成会话摘要</button><textarea aria-label="交接摘要" rows={7} value={handoffText} onChange={(event) => setHandoffDrafts((current) => ({ ...current, [handoffDraftKey]: event.target.value }))} placeholder="点击生成，或手动写下交接重点" /><button className="save-handoff" disabled={!handoffText.trim()} onClick={saveHandoff}>保存交接摘要</button></div></details></>}
+      {insightView === 'fan' && <>{profilePanels.metrics}<section className="detail-section operational-section" aria-label="PPV 记录"><div className="section-title"><h3><ImageIcon size={16} />PPV 记录</h3><span className="record-label">演示数据</span></div>{activePpvRecords.length ? activePpvRecords.map((record) => { const media = mediaAssets.find((item) => item.id === record.mediaId); return <div className="ppv-record" key={record.id}><div className="ppv-record-heading"><strong>{media?.title ?? '素材'}</strong><span className={`ppv-status ${record.status}`}>{ppvStatusLabel(record.status)}</span></div><p>{record.caption}</p><small>${record.price} · {record.sentAt}{record.source === 'sample' ? ' · 初始样例' : ''}</small><div className="record-actions"><button onClick={() => { updateDraft(record.caption); notify('已复制到草稿，请核对后发送') }}>复制为草稿</button>{record.source === 'demo' && record.status === 'sent' && <button onClick={() => setPpvRecords((current) => current.map((item) => item.id === record.id ? { ...item, status: 'viewed' } : item))}>模拟已查看</button>}{record.source === 'demo' && record.status === 'viewed' && <button onClick={() => setPpvRecords((current) => current.map((item) => item.id === record.id ? { ...item, status: 'purchased' } : item))}>模拟已购买</button>}{ppvFollowUpLabel(record) && <button onClick={() => setPpvRecords((current) => current.map((item) => item.id === record.id ? { ...item, followUpDone: true } : item))}>标记已跟进</button>}</div>{ppvFollowUpLabel(record) && <small className="followup-reason">{ppvFollowUpLabel(record)} · 可从左侧 PPV 待跟进直达</small>}</div> }) : <p className="operational-empty">暂无 PPV 发送记录。</p>}</section>{composition.presentation.detailOrder.filter((section) => section !== 'recommendation' && section !== 'metrics').map((section) => <Fragment key={section}>{profilePanels[section]}</Fragment>)}</>}
     </aside>
     <dialog className="tenant-dialog" id="tenant-switch-dialog" ref={tenantDialogRef} aria-labelledby="tenant-dialog-title" onClose={() => setShowTenantDialog(false)} onClick={(event) => {
       if (event.target !== tenantDialogRef.current) return
@@ -1062,7 +1246,7 @@ function App() {
       <header className="settings-dialog-header"><div><p className="eyebrow">DEMO DATA</p><h2 id="demo-data-dialog-title">演示数据管理</h2><span>仅管理当前租户：{tenant.name}</span></div><button onClick={() => setShowDemoDataDialog(false)} aria-label="关闭演示数据管理"><X size={18} /></button></header>
       <div className="demo-data-body">
         <section className="demo-data-action"><div><span className="demo-data-scope">影响智能推荐</span><h3>清空推荐使用记录</h3><p>清除近期的队列点击、会话切换和发送记录，解除“今天忽略”的建议。</p><p className="demo-data-kept"><strong>保留</strong>聊天消息、待办、草稿和工作台配置</p></div><button onClick={() => { setActivity([]); setIgnoredMode(null); setDemoDataResult('已清空当前租户的推荐使用记录') }}>清空记录</button></section>
-        <section className="demo-data-action"><div><span className="demo-data-scope">影响聊天内容</span><h3>恢复演示会话</h3><p>将消息、待办状态、草稿和新增粉丝记忆恢复到初始样例。</p><p className="demo-data-kept"><strong>保留</strong>推荐使用记录和工作台配置</p></div><button onClick={() => { resetDemoConversations(); setDemoDataResult('已恢复当前租户的演示会话') }}>恢复会话</button></section>
+        <section className="demo-data-action"><div><span className="demo-data-scope">影响聊天内容</span><h3>恢复演示会话</h3><p>将消息、待办状态、草稿、PPV 记录、跟进提醒、内容请求和交接摘要恢复到初始样例。</p><p className="demo-data-kept"><strong>保留</strong>推荐使用记录和工作台配置</p></div><button onClick={() => { resetDemoConversations(); setDemoDataResult('已恢复当前租户的演示会话') }}>恢复会话</button></section>
         {demoDataResult && <p className="demo-data-result" role="status"><Check size={15} />{demoDataResult}</p>}
       </div>
       <footer className="demo-data-footer"><button className="smart-secondary" onClick={() => setShowDemoDataDialog(false)}>返回租户选择</button></footer>

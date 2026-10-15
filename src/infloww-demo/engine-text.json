@@ -1,0 +1,226 @@
+{
+  "engine.01": {
+    "zh": "刚刚",
+    "en": "Just now"
+  },
+  "engine.02": {
+    "zh": "{0} 分钟",
+    "en": "{0} minutes"
+  },
+  "engine.03": {
+    "zh": "{0} 小时",
+    "en": "{0} hours"
+  },
+  "engine.04": {
+    "zh": "此粉丝目前无法发送消息，请先解除限制。",
+    "en": "Messages cannot be sent to this fan. Remove the restriction first."
+  },
+  "engine.05": {
+    "zh": "请先输入消息或选择素材。",
+    "en": "Enter a message or choose media first."
+  },
+  "engine.06": {
+    "zh": "演示发送检查：请移除站外联系或付款措辞。",
+    "en": "Demo send check: remove off-platform contact or payment wording."
+  },
+  "engine.07": {
+    "zh": "消息价格须为免费，或 $3–$200。",
+    "en": "Message price must be free or between $3 and $200."
+  },
+  "engine.08": {
+    "zh": "请至少设置一项付费内容。",
+    "en": "Set at least one paid item."
+  },
+  "engine.09": {
+    "zh": "我",
+    "en": "Me"
+  },
+  "engine.10": {
+    "zh": "粉丝购买了 PPV",
+    "en": "Fan purchased a PPV"
+  },
+  "engine.11": {
+    "zh": "发送任务已处理：{0} 成功，{1} 未发送/失败。",
+    "en": "Task processed: {0} successful, {1} unsent or failed."
+  },
+  "engine.12": {
+    "zh": "跟进提醒到期",
+    "en": "Follow-up reminder due"
+  },
+  "engine.13": {
+    "zh": "提醒到期：",
+    "en": "Reminder due:"
+  },
+  "engine.14": {
+    "zh": "定时消息已处理。",
+    "en": "Scheduled message processed."
+  },
+  "engine.15": {
+    "zh": "至少保留一个创作者页签。",
+    "en": "Keep at least one creator tab open."
+  },
+  "engine.16": {
+    "zh": "此演示权限配置需要管理员修改创作者设置。",
+    "en": "This demo role requires an admin to change creator settings."
+  },
+  "engine.17": {
+    "zh": "消息已加入排程。",
+    "en": "Message scheduled."
+  },
+  "engine.18": {
+    "zh": "发送失败，可在消息旁重试。",
+    "en": "Send failed. Retry beside the message."
+  },
+  "engine.19": {
+    "zh": "消息已发送。",
+    "en": "Message sent."
+  },
+  "engine.20": {
+    "zh": "仍处于模拟故障状态。",
+    "en": "Failure simulation is still active."
+  },
+  "engine.21": {
+    "zh": "重试成功。",
+    "en": "Retry succeeded."
+  },
+  "engine.22": {
+    "zh": "当前演示角色没有清除权限。",
+    "en": "This demo role cannot clear conversations."
+  },
+  "engine.23": {
+    "zh": "选中会话及消息已清除。",
+    "en": "Selected conversations and messages cleared."
+  },
+  "engine.24": {
+    "zh": "会话已隐藏，可从在线粉丝重新打开。",
+    "en": "Conversation hidden. Reopen it from Online fans."
+  },
+  "engine.25": {
+    "zh": "当前演示角色没有分组设置权限。",
+    "en": "This demo role cannot change inbox groups."
+  },
+  "engine.26": {
+    "zh": "收件箱设置已保存。",
+    "en": "Inbox settings saved."
+  },
+  "engine.27": {
+    "zh": "消息已撤回。",
+    "en": "Message withdrawn."
+  },
+  "engine.28": {
+    "zh": "此消息已购买、已撤回或超过演示撤回时限。",
+    "en": "This message was purchased, withdrawn, or passed the demo withdrawal window."
+  },
+  "engine.29": {
+    "zh": "已复制为草稿，请核对后发送。",
+    "en": "Copied to draft. Review before sending."
+  },
+  "engine.30": {
+    "zh": "已保存",
+    "en": "Saved"
+  },
+  "engine.31": {
+    "zh": "消息已加入话术库。",
+    "en": "Message added to scripts."
+  },
+  "engine.32": {
+    "zh": "快速回复发送失败，可在会话中重试。",
+    "en": "Quick reply failed. Retry in the conversation."
+  },
+  "engine.33": {
+    "zh": "快速回复已发送。",
+    "en": "Quick reply sent."
+  },
+  "engine.34": {
+    "zh": "定时任务已创建。",
+    "en": "Timed task created."
+  },
+  "engine.35": {
+    "zh": "请选择未来的时间。",
+    "en": "Choose a future time."
+  },
+  "engine.36": {
+    "zh": "当前演示角色没有群发创建权限。",
+    "en": "This demo role cannot create mass messages."
+  },
+  "engine.37": {
+    "zh": "请先选择受众。",
+    "en": "Select recipients first."
+  },
+  "engine.38": {
+    "zh": "智能消息",
+    "en": "Smart message"
+  },
+  "engine.39": {
+    "zh": "群发草稿已保存，尚未发送。",
+    "en": "Mass-message draft saved without sending."
+  },
+  "engine.40": {
+    "zh": "群发已排程。",
+    "en": "Mass message scheduled."
+  },
+  "engine.41": {
+    "zh": "其他",
+    "en": "Other"
+  },
+  "engine.42": {
+    "zh": "本地举报记录已创建",
+    "en": "Local report recorded"
+  },
+  "engine.43": {
+    "zh": "演示举报已记录，没有提交外部平台。",
+    "en": "Demo report recorded. Nothing was sent to an external platform."
+  },
+  "engine.44": {
+    "zh": "新粉丝 ",
+    "en": "New fan "
+  },
+  "engine.45": {
+    "zh": "新加入的演示订阅用户。",
+    "en": "New demo subscriber."
+  },
+  "engine.46": {
+    "zh": "新订阅",
+    "en": "New subscription"
+  },
+  "engine.47": {
+    "zh": "新粉丝加入",
+    "en": "New fan joined"
+  },
+  "engine.48": {
+    "zh": "你好！很高兴来到这里。",
+    "en": "Hello! Happy to be here."
+  },
+  "engine.49": {
+    "zh": "嗨！很期待你的下一组内容 😊",
+    "en": "Hey! I would love to see your next collection 😊"
+  },
+  "engine.50": {
+    "zh": "此粉丝没有可购买的 PPV。",
+    "en": "This fan has no PPV available to purchase."
+  },
+  "engine.51": {
+    "zh": "收到 {0} 打赏",
+    "en": "Received a {0} tip"
+  },
+  "engine.52": {
+    "zh": "谢谢！",
+    "en": "Thanks!"
+  },
+  "engine.53": {
+    "zh": "粉丝订阅已更新",
+    "en": "Fan subscription updated"
+  },
+  "engine.54": {
+    "zh": "已订阅 ",
+    "en": "Subscribed to "
+  },
+  "engine.55": {
+    "zh": "媒体状态更新",
+    "en": "Media status updated"
+  },
+  "engine.56": {
+    "zh": "这是一条本地平台通知样例。",
+    "en": "This is a local sample platform notification."
+  }
+}

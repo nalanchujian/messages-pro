@@ -1,0 +1,24 @@
+#infloww-demo .if-script-row>button{display:flex;align-items:center;gap:16px;width:100%;padding:14px 10px;border-bottom:1px solid #eee;background:#fff;color:#333;text-align:left}
+#infloww-demo .if-script-row>button:hover,#infloww-demo .if-script-row>button:focus-visible{background:#f3f6ff}
+#infloww-demo .if-script-row.previously-sent>button{background:#edf4ff}
+#infloww-demo .if-script-sent-history{display:flex;align-items:center;gap:4px;flex:none;font-size:11px;color:#607cb4}
+#infloww-demo .if-script-hover-details{position:fixed;inset:auto;margin:0;padding:18px;width:min(484px,calc(100vw - 24px));max-height:65dvh;overflow:auto;border:0;border-radius:7px;background:#151515;color:#fff;box-shadow:0 8px 24px #0004;z-index:240;font-size:13px;line-height:1.65}
+#infloww-demo .if-script-hover-copy{margin:0 0 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+#infloww-demo .if-script-hover-copy>strong{font-weight:600;color:#fff}
+#infloww-demo .if-script-hover-copy>span{color:#999}
+#infloww-demo .if-script-hover-medias{margin-top:12px}
+#infloww-demo .if-script-hover-window{overflow:hidden;width:100%}
+#infloww-demo .if-script-hover-strip{display:flex;gap:8px;transition:transform .2s ease}
+#infloww-demo .if-script-hover-strip>button{position:relative;width:140px;height:140px;flex:none;border-radius:4px;overflow:hidden;background:#333}
+#infloww-demo .if-script-hover-strip .if-media-view{width:100%;height:100%}
+#infloww-demo .if-script-hover-strip img,#infloww-demo .if-script-hover-strip video{width:100%;height:100%;object-fit:cover}
+#infloww-demo .if-script-hover-strip audio{width:138px}
+#infloww-demo .if-script-media-state{position:absolute;inset:auto 0 0;padding:5px;background:#000b;color:#fff;font-size:10px;line-height:1.3}
+#infloww-demo .if-script-media-state.bought{color:#75e3bc}
+#infloww-demo .if-script-carousel-controls{display:flex;justify-content:flex-end;gap:14px;margin-top:8px}
+#infloww-demo .if-script-carousel-controls>button{color:#fff;display:grid;place-items:center}
+#infloww-demo .if-script-carousel-controls>button:disabled{color:#626262;cursor:not-allowed}
+#infloww-demo .if-script-hover-note{margin:12px 0 0;color:#eee;white-space:pre-wrap}
+#infloww-demo .if-script-hover-note>span{color:#aaa}
+#infloww-demo .if-more-scripts{flex:none;padding:4px 8px;color:#356aff;font-size:13px;white-space:nowrap}
+@media(max-width:760px){#infloww-demo .if-script-row>button{gap:8px}#infloww-demo .if-script-sent-history{display:none}#infloww-demo .if-more-scripts{font-size:11px;padding:4px}#infloww-demo .if-script-hover-strip>button{width:140px;height:115px}}
