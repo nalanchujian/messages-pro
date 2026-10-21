@@ -1,7 +1,7 @@
 import { displaySample, t } from './i18n'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent, ReactNode } from 'react'
-import { Image, X } from 'lucide-react'
+import { Eye, EyeOff, Image, X } from 'lucide-react'
 import type { Media } from './types'
 import { useMediaUrl } from './mediaStorage'
 
@@ -16,7 +16,7 @@ export function Modal({title,onClose,children,wide=false,width,closable=true,mas
   useEffect(()=>{ref.current?.showModal();return()=>ref.current?.close()},[])
   return <dialog ref={ref} className={`if-modal${wide?' if-modal-wide':''} ${className}`} style={width?{width:`min(${width}px, calc(100vw - 32px))`}:undefined} onCancel={e=>{e.preventDefault();e.stopPropagation();onClose()}} onClick={e=>{if(maskClosable&&e.target===e.currentTarget)onClose()}} aria-label={title}><div className="if-modal-surface">{header&&<header><h2>{title}</h2>{closable&&<IconButton label={t('ui.395')} onClick={onClose}><X size={18}/></IconButton>}</header>}<div className="if-modal-body">{children}</div></div></dialog>
 }
-export function AnchoredPopover({title,anchor,onClose,children,width=400,placement='top',className=''}:{title:string;anchor:HTMLElement|null;onClose:()=>void;children:ReactNode;width?:number;placement?:'top'|'bottom';className?:string}){
+export function AnchoredPopover({title,anchor,onClose,children,width=400,placement='top',align='start',offset=10,className=''}:{title:string;anchor:HTMLElement|null;onClose:()=>void;children:ReactNode;width?:number;placement?:'top'|'bottom';align?:'start'|'end';offset?:number;className?:string}){
   const ref=useRef<HTMLDivElement>(null)
   const [position,setPosition]=useState<CSSProperties>({visibility:'hidden'})
   useLayoutEffect(()=>{
@@ -26,16 +26,17 @@ export function AnchoredPopover({title,anchor,onClose,children,width=400,placeme
     const place=()=>{
       const rect=anchor.getBoundingClientRect(),availableWidth=Math.min(width,window.innerWidth-24)
       const height=node.getBoundingClientRect().height
-      const above=rect.top-10,below=window.innerHeight-rect.bottom-10
+      const above=rect.top-offset,below=window.innerHeight-rect.bottom-offset
       const useTop=placement==='top'?above>=Math.min(height,240)||above>below:below<Math.min(height,240)&&above>below
       const maxHeight=Math.max(100,(useTop?above:below)-12)
-      setPosition({width:availableWidth,maxHeight,left:Math.max(12,Math.min(rect.left,window.innerWidth-availableWidth-12)),top:useTop?Math.max(12,rect.top-Math.min(height,maxHeight)-10):rect.bottom+10,visibility:'visible'})
+      const left=align==='end'?rect.right-availableWidth:rect.left
+      setPosition({width:availableWidth,maxHeight,left:Math.max(12,Math.min(left,window.innerWidth-availableWidth-12)),top:useTop?Math.max(12,rect.top-Math.min(height,maxHeight)-offset):rect.bottom+offset,visibility:'visible'})
     }
     place()
     const observer=new ResizeObserver(place);observer.observe(node)
     window.addEventListener('resize',place);window.addEventListener('scroll',place,true)
     return()=>{observer.disconnect();window.removeEventListener('resize',place);window.removeEventListener('scroll',place,true);node.hidePopover()}
-  },[anchor,width,placement])
+  },[anchor,width,placement,align,offset])
   useEffect(()=>{
     const dismiss=(event:PointerEvent)=>{const node=ref.current;const modal=Array.from(document.querySelectorAll<HTMLDialogElement>('dialog[open]')).at(-1);if(modal&&node&&!modal.contains(node))return;if(!node?.contains(event.target as Node)&&!anchor?.contains(event.target as Node))onClose()}
     const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'&&!event.defaultPrevented&&ref.current&&topOverlay(ref.current)){event.preventDefault();onClose();anchor?.focus()}}
@@ -66,6 +67,8 @@ export function IconButton({label,children,onClick,disabled=false,active=false}:
 export function Avatar({name,color='#8192b4',online=false,size=36}:{name:string,color?:string,online?:boolean,size?:number}){return <span className="if-avatar" style={{width:size,height:size,background:color}}>{name.slice(0,1).toUpperCase()}{online&&<i/>}</span>}
 export function MediaView({media,compact=false}:{media:Media|undefined,compact?:boolean}){
   const url=useMediaUrl(media)
+  const [revealed,setRevealed]=useState(false)
+  useEffect(()=>{const reset=()=>setRevealed(false);window.addEventListener('infloww-sfw-enabled',reset);return()=>window.removeEventListener('infloww-sfw-enabled',reset)},[])
   if(!media)return <span className="if-media-missing">{t('ui.396')}</span>
-  return <div className={'if-media-view'+(compact?' compact':'')}>{url?(media.type==='video'?<video src={url} controls={!compact} preload="metadata"/>:media.type==='audio'?<audio src={url} controls/>:<img src={url} alt={displaySample(media.title)} loading="lazy"/>):<span className="if-media-missing"><Image size={24}/>{media.uploaded?t('ui.397'):displaySample(media.title)}</span>}</div>
+  return <div className={'if-media-view'+(compact?' compact':'')} data-revealed={revealed}>{url?(media.type==='video'?<video src={url} controls={!compact} preload="metadata"/>:media.type==='audio'?<audio src={url} controls/>:<img src={url} alt={displaySample(media.title)} loading="lazy"/>):<span className="if-media-missing"><Image size={24}/>{media.uploaded?t('ui.397'):displaySample(media.title)}</span>}{url && media.type !== 'audio' && <span className="if-sfw-eye" role="button" tabIndex={0} aria-label={t(revealed?'sfw.hideMedia':'sfw.viewMedia')} title={t(revealed?'sfw.hideMedia':'sfw.viewMedia')} onClick={event=>{event.stopPropagation();setRevealed(value=>!value)}} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();setRevealed(value=>!value)}}}>{revealed?<Eye size={16}/>:<EyeOff size={16}/>}</span>}</div>
 }

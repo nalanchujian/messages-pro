@@ -1,0 +1,20 @@
+#infloww-demo .if-voice-emotion-dialog{border-radius:11px}
+#infloww-demo .if-voice-emotion-dialog>.if-modal-surface>header{position:static;min-height:49px;padding:12px 16px;border-bottom:1px solid #e2e2e2}
+#infloww-demo .if-voice-emotion-dialog>.if-modal-surface>header h2{font-size:16px;line-height:24px;font-weight:600;color:#151515}
+#infloww-demo .if-voice-emotion-dialog>.if-modal-surface>header .if-icon-button{width:22px;height:22px;color:#999}
+#infloww-demo .if-voice-emotion-dialog>.if-modal-surface>.if-modal-body{padding:0}
+#infloww-demo .if-voice-emotions{padding:12px 8px 10px;background:#f5f5f5;max-height:calc(100dvh - 147px);overflow:auto;scrollbar-width:thin}
+#infloww-demo .if-voice-emotion-row{display:flex;align-items:center;gap:10px;min-height:50px;margin-bottom:6px;padding:0 12px;border:1px solid #dfe3e9;border-radius:6px;background:#fff}
+#infloww-demo .if-voice-emotion-row:hover{border-color:#b3c6f7}
+#infloww-demo .if-voice-emotion-choice{display:flex;align-items:center;gap:12px;align-self:stretch;flex:1;min-width:0;text-align:left;background:none;color:#222;font-size:14px}
+#infloww-demo .if-voice-emotion-choice>span{font-size:16px;line-height:1}
+#infloww-demo .if-voice-emotion-choice>strong{font-size:14px;font-weight:600}
+#infloww-demo .if-voice-emotion-choice>.if-spinning{margin-left:auto;color:#5577ff}
+#infloww-demo .if-voice-emotion-row.is-playing{border-color:#8ca9ff;background:#f8faff}
+#infloww-demo .if-voice-shortcut{display:flex;align-items:center;justify-content:center;width:42px;min-height:28px;flex:none;padding:3px 7px;border:1px solid #dcdcdc;border-radius:4px;background:#fafafa;color:#888;font-size:12px}
+#infloww-demo .if-voice-shortcut.is-binding{border-color:#5577ff;background:#eef3ff;color:#5577ff}
+#infloww-demo .if-voice-emotions>p{margin:3px 0 0;color:#999;font-size:12px;line-height:20px}
+#infloww-demo .if-voice-footer{display:flex;justify-content:flex-end;min-height:56px;padding:11px 24px;border-top:1px solid #e2e2e2;background:#fff}
+#infloww-demo .if-voice-footer>button{min-width:80px;min-height:32px;padding:5px 16px;border:1px solid #dfe3e9;border-radius:4px;background:#fff;color:#222;font-size:13px}
+#infloww-demo .if-voice-trigger{position:relative}
+#infloww-demo .if-voice-trigger .if-voice-sparkle{position:absolute;left:-4px;top:-2px}

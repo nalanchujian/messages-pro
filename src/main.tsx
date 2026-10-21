@@ -22,6 +22,7 @@ import type { DemoTourStep } from './DemoTour'
 import { initialContentRequests, initialPpvRecords, mediaAssets, ppvFollowUpLabel, ppvStatusLabel, requestStatusLabel, restoreContentRequests, restoreHandoffNotes, restorePpvRecords, restoreReminders, scriptTemplates } from './operationalDemo'
 import type { ContentRequest, FollowUpReminder, HandoffNote, PpvRecord } from './operationalDemo'
 import { demoTranslation, inspectOutgoing, priceGuide, summarizeConversation } from './workspaceTools'
+import { resolveValidationScenario } from './validationScenarios'
 import './styles.css'
 
 type AiMode = 'reply' | 'strategy' | 'rewrite' | 'memory'
@@ -84,7 +85,8 @@ const memorySettingsKey = 'messages-pro-confirmed-memories'
 const configurationModeKey = 'messages-pro-configuration-mode'
 const customDimensionsKey = 'messages-pro-custom-tenant-dimensions'
 const assignmentSettingsKey = 'messages-pro-assignments'
-const reportPdfUrl = `${import.meta.env.BASE_URL}reports/four-platform-eight-module-analysis.pdf`
+const reportUrl = `${import.meta.env.BASE_URL}research/value-playbook/`
+const validationScenario = resolveValidationScenario(window.location.search)
 const tenantKey = (key: string, tenantId: TenantId) => `${key}:${tenantId}`
 
 function defaultAssignments(items: Conversation[], collaboration: TenantDimensions['collaboration']): Record<string, Assignment> {
@@ -114,6 +116,7 @@ function loadAssignments(tenantId: TenantId, items: Conversation[], collaboratio
 }
 
 function loadSelectedTenant(): TenantId {
+  if (validationScenario) return validationScenario.tenantId
   const saved = localStorage.getItem(tenantSettingsKey)
   return saved === 'custom' || tenantProfiles.some((tenant) => tenant.id === saved) ? saved as TenantId : defaultTenantId
 }
@@ -443,6 +446,7 @@ function App() {
   const workspaceRule = useMemo(() => getTenantWorkspaceRule(tenant), [tenant])
   const [initialWorkspace] = useState(() => loadWorkspaceConfig(tenantId, customDimensions))
   const [showTenantDialog, setShowTenantDialog] = useState(false)
+  const [showScenarioInbox, setShowScenarioInbox] = useState(false)
   const [showGradingDialog, setShowGradingDialog] = useState(false)
   const [showDemoDataDialog, setShowDemoDataDialog] = useState(false)
   const [tourStep, setTourStep] = useState<number | null>(null)
@@ -461,7 +465,7 @@ function App() {
   const [showCompactInsights, setShowCompactInsights] = useState(false)
   const [insightView, setInsightView] = useState<InsightView>('work')
   const [evidenceReviewedId, setEvidenceReviewedId] = useState<string | null>(null)
-  const [activeId, setActiveId] = useState(() => workspaceRule.landingConversationId)
+  const [activeId, setActiveId] = useState(() => validationScenario?.conversationId ?? workspaceRule.landingConversationId)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<InboxFilter>('all')
   const [configurationMode, setConfigurationMode] = useState<ConfigurationMode>(initialWorkspace.mode)
@@ -482,8 +486,8 @@ function App() {
     conversationActions[item.id].kind, workflowEvents.filter((event) => event.conversationId === item.id),
   )])) as Record<string, ConversationWorkflow>, [items, workflowEvents])
   const actionStatuses = useMemo(() => Object.fromEntries(Object.entries(workflows).map(([id, state]) => [id, state.actionStatus])) as Record<string, ActionStatus>, [workflows])
-  const [openFanIds, setOpenFanIds] = useState(() => [workspaceRule.landingConversationId])
-  const [note, setNote] = useState(() => conversations.find((item) => item.id === workspaceRule.landingConversationId)?.note ?? conversations[0].note)
+  const [openFanIds, setOpenFanIds] = useState(() => [validationScenario?.conversationId ?? workspaceRule.landingConversationId])
+  const [note, setNote] = useState(() => conversations.find((item) => item.id === (validationScenario?.conversationId ?? workspaceRule.landingConversationId))?.note ?? conversations[0].note)
   const [showAi, setShowAi] = useState(false)
   const [composerTool, setComposerTool] = useState<ComposerTool>(null)
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
@@ -831,6 +835,7 @@ function App() {
   }
 
   function selectConversation(id: string) {
+    setShowScenarioInbox(false)
     const next = items.find((item) => item.id === id)
     if (!next) return
     if (id !== activeId) recordActivity('conversation', conversationFocus(id))
@@ -1103,8 +1108,8 @@ function App() {
     memory: viewPreferences.profileMemory ? <section className="detail-section" data-tour-highlight={currentTourStep?.highlight === 'memory'}><div className="section-title"><h3><BrainCircuit size={17} />团队记录</h3><span className="memory-count">新增确认 {activeMemories.length}</span></div><p className="record-label">团队备注</p><p className="profile-note">{action.kind === 'fulfillment' && workflows[active.id].fulfillmentStatus === 'delivered' ? '已确认交付。原备注记录的是交付前的待核对情况。' : note}</p>{activeMemories.map((memory) => <p className="confirmed-memory" key={memory}><Check size={13} />{memory}<small>已由操作员确认</small></p>)}</section> : null,
   }
 
-  return <main className={`app-shell workspace-${tenantId} ${tourStep !== null ? 'demo-tour-active' : ''}`}>
-    <aside className={`inbox-panel ${viewPreferences.compactList ? 'compact-list' : ''}`} aria-label="用户列表">
+  return <div className={validationScenario ? 'validation-workspace' : undefined}>{validationScenario && <aside className="validation-context"><div><strong>场景验证 · {validationScenario.title}</strong><span>{validationScenario.goal} 当前使用本地模拟数据，并保留已有进度。</span><button className="validation-inbox-toggle" aria-expanded={showScenarioInbox} aria-controls="validation-conversations" onClick={() => setShowScenarioInbox((current) => !current)}>{showScenarioInbox ? '返回当前会话' : '切换到会话列表'}</button></div><a href={reportUrl}>查看价值分析报告 →</a></aside>}<main className={`${validationScenario ? 'with-validation-context' : ''} ${showScenarioInbox ? 'validation-show-inbox' : ''} app-shell workspace-${tenantId} ${tourStep !== null ? 'demo-tour-active' : ''}`}>
+    <aside id="validation-conversations" className={`inbox-panel ${viewPreferences.compactList ? 'compact-list' : ''}`} aria-label="用户列表">
       <header className="inbox-header"><div className="brand-mark" aria-label="Messages Pro">M</div><div className="search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索用户或对话" aria-label="搜索用户或对话" />{query && <button onClick={() => setQuery('')} aria-label="清除搜索"><X size={15} /></button>}</div></header>
       <div className="inbox-controls">
         <div className="queue-heading"><strong>行动分类</strong><span>按当前任务筛选</span></div>
@@ -1133,7 +1138,7 @@ function App() {
       </div>
     </aside>
     <section className="chat-panel" aria-label="聊天模块">
-      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="chat-search-trigger" onClick={() => setShowChatSearch((current) => !current)} aria-label="搜索当前会话" aria-expanded={showChatSearch} title="搜索当前会话消息"><Search size={15} /></button><button ref={tourTriggerRef} className="demo-tour-trigger" onClick={startDemoTour} aria-label="一键演示" title={`从 ${tenant.name} 开始查看各租户的工作台差异`}><Play size={14} fill="currentColor" /><span>一键演示</span></button><a className="report-link chat-report-trigger" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
+      <header className="chat-header"><div className="chat-identity"><div className="avatar large">{active.avatar}{active.online && <i />}</div><div><h2>{active.name}</h2><p>{active.handle}{tenant.dimensions.collaboration !== 'solo' && ` · ${activeAssignment.owner}负责`}</p></div></div><div className="chat-header-meta"><button className="chat-search-trigger" onClick={() => setShowChatSearch((current) => !current)} aria-label="搜索当前会话" aria-expanded={showChatSearch} title="搜索当前会话消息"><Search size={15} /></button><button ref={tourTriggerRef} className="demo-tour-trigger" onClick={startDemoTour} aria-label="一键演示" title={`从 ${tenant.name} 开始查看各租户的工作台差异`}><Play size={14} fill="currentColor" /><span>一键演示</span></button><a className="report-link chat-report-trigger" href={reportUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开价值分析报告" title="在新窗口打开价值分析报告"><FileText size={14} /><span>分析报告</span></a><button className="compact-tenant-trigger" onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title={`切换演示租户 · ${tenant.name}`}><Building2 size={14} /><span>{tenant.name}</span></button><button className="compact-insights-trigger" onClick={() => setShowCompactInsights(true)}>会话洞察</button><span className="workspace-mode-badge">{workspaceRule.workStyle}</span><span className="header-presence">{active.online ? '在线' : '离线'}</span></div></header>
       {showChatSearch && <div className="chat-search-bar" role="search"><Search size={14} /><input aria-label="搜索本次聊天内容" value={chatSearch} onChange={(event) => setChatSearch(event.target.value)} placeholder="搜索当前聊天消息" /><span>{chatSearch.trim() ? `${chatMatches.length} 条结果` : '输入关键词'}</span>{chatMatches.map((message) => <button key={message.id} onClick={() => document.querySelector(`[data-message-id="${CSS.escape(message.id)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })} title={message.text}>{message.text.slice(0, 14)}</button>)}<button onClick={() => { setShowChatSearch(false); setChatSearch('') }} aria-label="关闭会话搜索"><X size={14} /></button></div>}
       {openFanIds.length > 1 && <div className="fan-tabs" role="tablist" aria-label="已打开的粉丝会话">{openFanIds.map((fanId) => {
         const fan = items.find((item) => item.id === fanId)
@@ -1178,7 +1183,7 @@ function App() {
     </section>
     {showCompactInsights && <button className="compact-insights-backdrop" aria-label="关闭会话洞察" onClick={() => setShowCompactInsights(false)} />}
     <aside className={`detail-panel ${showCompactInsights ? 'mobile-open' : ''}`} aria-label="会话洞察">
-      <header><h2>会话洞察</h2><div className="detail-header-actions"><a className="report-link" href={reportPdfUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开竞品调研报告 PDF" title="在新窗口打开竞品调研报告"><FileText size={14} /><span>竞品报告</span></a><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
+      <header><h2>会话洞察</h2><div className="detail-header-actions"><a className="report-link" href={reportUrl} target="_blank" rel="noopener noreferrer" aria-label="在新窗口打开价值分析报告" title="在新窗口打开价值分析报告"><FileText size={14} /><span>分析报告</span></a><button className={`tenant-switch-trigger ${showTenantDialog ? 'active' : ''}`} onClick={() => setShowTenantDialog(true)} aria-label={`切换演示租户，当前 ${tenant.name}`} aria-haspopup="dialog" aria-expanded={showTenantDialog} aria-controls="tenant-switch-dialog" title="切换演示租户，查看不同机构的工作台模式"><Building2 size={14} /><span>{tenant.name}</span><ChevronDown size={13} /></button><button className="compact-insights-close" onClick={() => setShowCompactInsights(false)} aria-label="关闭会话洞察"><X size={16} /></button></div></header>
       <div className="insight-tabs" role="tablist" aria-label="会话洞察分类"><button role="tab" aria-selected={insightView === 'work'} className={insightView === 'work' ? 'active' : ''} onClick={() => setInsightView('work')}>当前处理</button><button role="tab" aria-selected={insightView === 'fan'} className={insightView === 'fan' ? 'active' : ''} onClick={() => setInsightView('fan')}>粉丝资料</button></div>
       {insightView === 'work' && <>
       <div className="tenant-insight-brief" data-tour-highlight={currentTourStep?.highlight === 'purchase' || currentTourStep?.highlight === 'insight'}><span>{workspaceRule.insightTitle}</span><strong>{tenantInsight}</strong><div className="tenant-insight-metrics">{insightMetrics.map((metric) => <div key={metric.label}><small>{metric.label}</small><b>{metric.value}</b></div>)}</div>{tenantId === 'custom' && <div className="tenant-custom-signals"><span>{dimensionLabel('collaboration', customDimensions.collaboration)}</span><span>AI：{dimensionLabel('ai', customDimensions.ai)}</span></div>}</div>
@@ -1306,7 +1311,7 @@ function App() {
     </dialog>
     {tourStep !== null && <DemoTour steps={tourSteps} stepIndex={tourStep} onPrevious={() => moveDemoTour(tourStep - 1)} onNext={() => tourStep === tourSteps.length - 1 ? finishDemoTour() : moveDemoTour(tourStep + 1)} onSelectTenant={(id) => moveDemoTour(tourSteps.findIndex((step) => step.tenantId === id))} onClose={finishDemoTour} />}
     {toast && <div className="toast"><Check size={15} />{toast}</div>}
-  </main>
+  </main></div>
 }
 
 createRoot(document.getElementById('root')!).render(<App />)

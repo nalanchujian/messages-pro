@@ -1,5 +1,5 @@
-import { displaySample, t } from './i18n'
-import { createSeed, initialReleaseForms, initialMedia } from './seed'
+import { displaySample, getLocale, t } from './i18n'
+import { createSeed, addFanLabelExamples, initialReleaseForms, initialMedia } from './seed'
 import { emptyDraft, key } from './types'
 import { normalizeAudience, selectOnlineFans } from './audience'
 import type { Action, Campaign, DemoState, Draft, Fan, Message, Notification, Workspace } from './types'
@@ -10,7 +10,7 @@ export const displayName = (fan: Fan) => fan.name
 export function relativeTime(at: number, now = Date.now()) {
   const seconds=Math.max(0,Math.floor((now-at)/1000));
   if(seconds<60)return t('engine.01');if(seconds<3600)return t('engine.02', [Math.floor(seconds/60)]);if(seconds<86400)return t('engine.03', [Math.floor(seconds/3600)]);
-  return new Intl.DateTimeFormat('zh-CN',{month:'short',day:'numeric',timeZone:'Asia/Shanghai'}).format(at)
+  return new Intl.DateTimeFormat(getLocale()==='zh'?'zh-CN':'en-US',{month:'short',day:'numeric',timeZone:'Asia/Shanghai'}).format(at)
 }
 export const messagesFor = (s: DemoState,cid: string,fid: string) => s.messages[key(cid,fid)] ?? []
 const allowedFormIds=(s:DemoState,cid:string,ids:unknown):string[]=>Array.isArray(ids)?[...new Set<string>(ids.filter((id:unknown):id is string=>typeof id==='string'&&!!s.releaseForms?.some(form=>form.id===id&&(!form.creatorId||form.creatorId===cid)&&!['declined','failed','expired'].includes(form.status))))]:[]
@@ -44,6 +44,7 @@ export function selectFans(s:DemoState,cid:string):Fan[] {
   let fans=(s.fans[cid]??[]).filter(f=>!f.hidden&&!f.cleared)
   if(w.inboxIds.length)fans=fans.filter(f=>w.inboxIds.includes(f.inboxId))
   if(w.hideMuted)fans=fans.filter(f=>!f.muted)
+  if(w.hideCreators)fans=fans.filter(f=>!f.isCreator)
   if(w.hideAI||w.aiFilter==='hide')fans=fans.filter(f=>!f.aiAssigned)
   if(w.aiFilter==='only')fans=fans.filter(f=>f.aiAssigned)
   if(w.view==='pinned')fans=fans.filter(f=>messagesFor(s,cid,f.id).some(m=>m.pinned&&m.status!=='withdrawn'))
@@ -54,6 +55,7 @@ export function selectFans(s:DemoState,cid:string):Fan[] {
   if(w.extraFilter==='unread')fans=fans.filter(f=>f.unread)
   if(w.extraFilter==='priority')fans=fans.filter(f=>f.priority)
   if(w.extraFilter==='unread_tips')fans=fans.filter(f=>f.unread&&fanMetrics(s,cid,f.id).tips>0)
+  if(w.extraFilter==='fan_last')fans=fans.filter(f=>latestMessage(s,cid,f.id)?.direction==='inbound')
   const query=w.search.trim().toLowerCase()
   if(query)fans=fans.filter(f=>(f.name+' '+f.handle+' '+messagesFor(s,cid,f.id).map(m=>m.text).join(' ')).toLowerCase().includes(query))
   const focused=w.focus&&focusAllowed(w)
@@ -86,6 +88,7 @@ function addMessage(s:DemoState,cid:string,fid:string,draft:Draft,now:number,sou
   const fan=s.fans[cid]?.find(f=>f.id===fid)
   if(!fan)return null
   if(fan.blocked||fan.restricted){notice(s,t('engine.04'));return null}
+  if(fan.subscriptionStatus==='expired'&&!fan.creatorSubscribed){notice(s,t('subscription.required'));return null}
   if(!draft.text.trim()&&!draft.attachments.length){notice(s,t('engine.05'));return null}
   if(/(?:whatsapp|telegram|私下转账|加我微信)/i.test(draft.text)){notice(s,t('engine.06'));return null}
   if(!Number.isFinite(draft.price)||draft.price<0||draft.price>200||(draft.price>0&&draft.price<3)){notice(s,t('engine.07'));return null}
@@ -174,7 +177,7 @@ export function demoReducer(state:DemoState,action:Action):DemoState {
     case 'PATCH_DRAFT':s.drafts[k]={...(s.drafts[k]??emptyDraft()),...p};break
     case 'CLEAR_DRAFT':s.drafts[k]=emptyDraft();break
     case 'SEND':{const draft=p?.draft??s.drafts[k]??emptyDraft();if(draft.scheduledAt&&draft.scheduledAt>now){s.tasks.push({id:uid(),creatorId:cid,fanId:fid,kind:'scheduled',dueAt:draft.scheduledAt,status:'pending',draft:structuredClone(draft),text:draft.text});if(!p?.preserveDraft)s.drafts[k]=emptyDraft();notice(s,t('engine.17'))}else{const m=addMessage(s,cid,fid,draft,now,p?.source??'manual');if(m){if(!p?.preserveDraft)s.drafts[k]=emptyDraft();notice(s,m.status==='failed'?t('engine.18'):t('engine.19'))}}break}
-    case 'RETRY':if(message&&message.status==='failed'){message.status=s.simulateFailure?'failed':'sent';notice(s,s.simulateFailure?t('engine.20'):t('engine.21'))}break
+    case 'RETRY':if(message&&message.status==='failed'){message.status=s.simulateFailure?'failed':'sent';if(message.status!=='failed')s.notifications.filter(item=>item.creatorId===cid&&item.replyMessageId===message.id&&!item.repliedAt).forEach(item=>{item.unread=false;item.repliedAt=now;item.repliedBy=s.role==='admin'?'Admin':'Alex'});notice(s,s.simulateFailure?t('engine.20'):t('engine.21'))}break
     case 'MARK_READ':(s.fans[cid]??[]).filter(f=>p?.ids?.includes(f.id)).forEach(f=>{f.unread=!!p.unread});break
     case 'CLEAR_FANS':if(s.role!=='admin'){notice(s,t('engine.22'));break}(s.fans[cid]??[]).filter(f=>Array.isArray(p)&&p.includes(f.id)).forEach(f=>{f.cleared=true;f.unread=false;s.messages[key(cid,f.id)]=[];s.drafts[key(cid,f.id)]=emptyDraft();s.tasks.filter(t=>t.creatorId===cid&&t.fanId===f.id&&t.status==='pending').forEach(t=>t.status='cancelled')});fixWorkspace(s,cid);notice(s,t('engine.23'));break
     case 'HIDE_FAN':if(fan){fan.hidden=true;fixWorkspace(s,cid);notice(s,t('engine.24'))}break
@@ -182,7 +185,7 @@ export function demoReducer(state:DemoState,action:Action):DemoState {
     case 'ADD_LIST':{const c=s.creators.find(c=>c.id===cid);const name=String(p?.name??'').trim();if(c&&name&&!c.lists.some(l=>l.name===name))c.lists.push({id:uid(),name,pinned:true});break}
     case 'SET_FAN_LISTS':if(fan&&Array.isArray(p))fan.listIds=p.filter(id=>s.creators.find(c=>c.id===cid)?.lists.some(l=>l.id===id));break
     case 'MOVE_INBOX':if(s.role==='admin'&&s.creators.find(c=>c.id===cid)?.splitEnabled)(s.fans[cid]??[]).filter(f=>p?.fanIds?.includes(f.id)).forEach(f=>{f.inboxId=Math.max(1,Math.min(s.creators.find(c=>c.id===cid)!.inboxCount,Number(p.inboxId)||1))});break
-    case 'SPLIT_INBOX':{if(s.role!=='admin'){notice(s,t('engine.25'));break}const c=s.creators.find(c=>c.id===cid)!;c.splitEnabled=!!p?.enabled;const n=Math.max(2,Math.min(9,Number(p?.count)||2));if(n!==c.inboxCount){c.inboxCount=n;(s.fans[cid]??[]).forEach((f,i)=>f.inboxId=i%n+1)}w.inboxIds=[];notice(s,t('engine.26'));break}
+    case 'SPLIT_INBOX':{if(s.role!=='admin'){notice(s,t('engine.25'));break}const c=s.creators.find(c=>c.id===cid)!;const wasEnabled=c.splitEnabled;c.splitEnabled=!!p?.enabled;const n=Math.max(2,Math.min(9,Math.round(Number(p?.count)||2)));if(n!==c.inboxCount||(!wasEnabled&&c.splitEnabled)){c.inboxCount=n;(s.fans[cid]??[]).forEach((f,i)=>f.inboxId=i%n+1)}w.inboxIds=[];notice(s,t('engine.26'));break}
     case 'PIN_MESSAGE':if(message&&message.status!=='withdrawn')message.pinned=!message.pinned;break
     case 'LIKE_MESSAGE':if(message&&message.direction==='inbound')message.liked=!message.liked;break
     case 'WITHDRAW':if(message&&withdrawMessage(s,cid,fid,message,now))notice(s,t('engine.27'));else notice(s,t('engine.28'));break
@@ -191,11 +194,23 @@ export function demoReducer(state:DemoState,action:Action):DemoState {
     case 'SET_MESSAGE_TAGS':if(message&&message.direction==='outbound'&&message.status!=='withdrawn'){const tags=Array.isArray(p)?p:p?.creatorTags;if(Array.isArray(tags))message.creatorTags=[...new Set<string>(tags.filter((id:unknown)=>typeof id==='string'&&s.creators.some(creator=>creator.id===id)))].slice(0,40);if(!Array.isArray(p)&&Array.isArray(p?.releaseFormIds))message.releaseFormIds=allowedFormIds(s,cid,p.releaseFormIds)}break
     case 'ADD_SCRIPT_MESSAGE':if(message){s.scripts.push({id:uid(),title:'Saved · '+message.text,category:'Saved',text:message.text,attachments:structuredClone(message.attachments),price:message.price,creatorTags:[...message.creatorTags],releaseFormIds:allowedFormIds(s,cid,message.releaseFormIds),founder:s.role==='admin'?'Admin':'Alex',createdAt:now});notice(s,t('engine.31'))}break
     case 'ADD_MEDIA':if(p?.id&&!s.media.some(m=>m.id===p.id))s.media.push(p);break
-    case 'PATCH_MEDIA':{const media=s.media.find(media=>media.id===p?.id);if(media){if(typeof p.notes==='string')media.notes=p.notes.slice(0,1000);if(Array.isArray(p.tags))media.tags=[...new Set<string>(p.tags.filter((tag:unknown)=>typeof tag==='string'&&tag.trim()).map((tag:string)=>tag.trim()))].slice(0,20)}break}
+    case 'PATCH_MEDIA':{const media=s.media.find(media=>media.id===p?.id);if(media){if(typeof p.notes==='string')media.notes=p.notes.slice(0,1000);if(Array.isArray(p.tags))media.tags=[...new Set<string>(p.tags.filter((tag:unknown)=>typeof tag==='string'&&tag.trim()).map((tag:string)=>tag.trim()))].slice(0,20);if(typeof p.category==='string'&&p.category.trim())media.category=p.category.trim().slice(0,80);if(typeof p.price==='number'&&Number.isFinite(p.price)&&p.price>=0&&p.price<=200)media.price=Math.round(p.price*100)/100;if(Array.isArray(p.creatorTags))media.creatorTags=[...new Set<string>(p.creatorTags.filter((id:unknown):id is string=>typeof id==='string'&&s.creators.some(creator=>creator.id===id)))].slice(0,40)}break}
     case 'ADD_SCRIPT':if(p?.id)s.scripts.push(p);break
     case 'PATCH_EMOJIS':if(Array.isArray(p))s.emojis=[...new Set(p.filter(e=>typeof e==='string'))].slice(0,40);break
     case 'READ_NOTIFICATIONS':s.notifications.filter(n=>n.creatorId===cid&&(!p?.kind||n.kind===p.kind)).forEach(n=>n.unread=false);break
-    case 'NOTIFICATION_REPLY':{const n=s.notifications.find(n=>n.id===p?.notificationId&&n.creatorId===cid);if(n&&String(p?.text??'').trim()){const d=emptyDraft();d.text=p.text;const m=addMessage(s,cid,n.fanId,d,now);if(m){n.unread=false;notice(s,m.status==='failed'?t('engine.32'):t('engine.33'))}}break}
+    case 'NOTIFICATION_REPLY':{
+      const n=s.notifications.find(n=>n.id===p?.notificationId&&n.creatorId===cid)
+      const text=String(p?.text??'').trim()
+      if(!n||n.kind==='platform'||n.repliedAt||!text)break
+      const recipient=s.fans[cid]?.find(fan=>fan.id===n.fanId)
+      if(!recipient||recipient.blocked||recipient.restricted||(recipient.subscriptionStatus==='expired'&&!recipient.creatorSubscribed)){notice(s,t('engine.04'));break}
+      const previous=n.replyMessageId?messagesFor(s,cid,n.fanId).find(message=>message.id===n.replyMessageId):undefined
+      const draft=emptyDraft();draft.text=text
+      const m=previous?.status==='failed'&&previous.text===text?previous:addMessage(s,cid,n.fanId,draft,now)
+      if(previous===m&&m)m.status=s.simulateFailure?'failed':'sent'
+      if(m){n.replyMessageId=m.id;if(m.status!=='failed'){n.unread=false;n.repliedAt=now;n.repliedBy=s.role==='admin'?'Admin':'Alex'}notice(s,m.status==='failed'?t('engine.32'):t('engine.33'))}
+      break
+    }
     case 'VIEW_PPV':if(message&&message.price>0&&message.status!=='withdrawn'&&message.status!=='failed'){message.viewed=true;message.status='read'}break
     case 'PURCHASE':purchase(s,cid,fid,action.messageId??'',now);break
     case 'CREATE_TASK':{
@@ -227,14 +242,23 @@ export function demoReducer(state:DemoState,action:Action):DemoState {
   return s
 }
 
+// Feedback is a one-time UI event, not part of the saved workspace.
+export function serializeState(state:DemoState):string {
+  const {feedback: _feedback,...snapshot}=state
+  return JSON.stringify(snapshot)
+}
+
 export function restoreState(raw:unknown):DemoState|null {
   if(!raw||typeof raw!=='object')return null
   const s=raw as DemoState
   if(s.version!==1||!Array.isArray(s.creators)||!s.creators.length||!s.fans||!s.messages||!s.drafts||!s.workspaces||!Array.isArray(s.transactions)||!Array.isArray(s.notifications)||!Array.isArray(s.tasks)||!Array.isArray(s.media)||!Array.isArray(s.scripts)||!Array.isArray(s.campaigns)||!s.creators.some(c=>c.id===s.activeCreatorId))return null
   if(!s.creators.every(c=>Array.isArray(s.fans[c.id])&&s.workspaces[c.id]))return null
+  // Older snapshots persisted success/error notices; never replay them on entry.
+  delete s.feedback
+  addFanLabelExamples(s)
   s.withdrawals=Array.isArray(s.withdrawals)?s.withdrawals:[]
   s.releaseForms=Array.isArray(s.releaseForms)?s.releaseForms:initialReleaseForms()
-  for(const media of initialMedia())if(!s.media.some(item=>item.id===media.id))s.media.push(media)
+  for(const media of initialMedia()){const existing=s.media.find(item=>item.id===media.id);if(!existing)s.media.push(media);else existing.createdAt??=media.createdAt}
   s.creators.forEach(c=>{const w=s.workspaces[c.id];w.pinnedFanIds??=[];w.activePinnedFanId??=null;w.homeFanId??=w.activeFanId})
   return s
 }

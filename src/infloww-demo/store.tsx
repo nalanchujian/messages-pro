@@ -2,7 +2,7 @@ import { t } from './i18n'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { Context as ReactContext, Dispatch, ReactNode } from 'react'
 import { createSeed } from './seed'
-import { demoReducer, restoreState } from './engine'
+import { demoReducer, restoreState, serializeState } from './engine'
 import { emptyDraft, key } from './types'
 import type { Action, DemoState } from './types'
 import { previewAlarm } from './chatTools'
@@ -16,11 +16,12 @@ function useModel(){
   const [state,dispatch]=useReducer(demoReducer,undefined,initial)
   const [now,setNow]=useState(Date.now()+state.clockOffset)
   const [toast,setToast]=useState('')
+  const lastFeedbackId=useRef(state.feedback?.id)
   const completedReminders=useRef(new Set(state.tasks.filter(task=>task.status==='done').map(task=>task.id)))
   const countdownActive=state.tasks.some(task=>(task.kind==='reminder'||task.kind==='timed')&&task.status==='pending')
   const notify=useCallback((text:string)=>setToast(text),[])
-  useEffect(()=>{try{localStorage.setItem(DEMO_STORAGE_KEY,JSON.stringify(state))}catch{setToast(t('ui.402'))}},[state])
-  useEffect(()=>{if(state.feedback)setToast(state.feedback.text)},[state.feedback?.id])
+  useEffect(()=>{try{localStorage.setItem(DEMO_STORAGE_KEY,serializeState(state))}catch{setToast(t('ui.402'))}},[state])
+  useEffect(()=>{if(state.feedback&&state.feedback.id!==lastFeedbackId.current){lastFeedbackId.current=state.feedback.id;setToast(state.feedback.text)}},[state.feedback?.id])
   useEffect(()=>{if(!toast)return;const t=setTimeout(()=>setToast(''),4200);return()=>clearTimeout(t)},[toast])
   useEffect(()=>{for(const task of state.tasks){if(task.kind==='reminder'&&task.status==='done'&&!completedReminders.current.has(task.id)){completedReminders.current.add(task.id);previewAlarm(task.alarmSound??'audio1')}}},[state.tasks])
   useEffect(()=>{const tick=()=>{const at=Date.now()+state.clockOffset;setNow(at);dispatch({type:'TICK',payload:at})};tick();const t=setInterval(tick,countdownActive?1000:15000);const visible=()=>{if(!document.hidden)tick()};document.addEventListener('visibilitychange',visible);return()=>{clearInterval(t);document.removeEventListener('visibilitychange',visible)}},[state.clockOffset,countdownActive])

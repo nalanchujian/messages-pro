@@ -27,15 +27,18 @@ export type Fan = {
   country: string; timeZone: string; source: string; nickname: string; birthday: string;
   notes: string; lastSeenAt: number;
   isCreator?: boolean;
+  verified?: boolean; aiStatus?: 'active' | 'paused' | 'needs-human';
   subscriptionExpiresAt?: number;
   organizationSpendingPower?: 'insufficient' | 'low' | 'medium' | 'high';
   chargebackRisk?: 'unknown' | 'low' | 'medium' | 'high';
   salaryAmount?: number; salaryCurrency?: string; salaryCycle?: 'weekly' | 'biweekly' | 'monthly' | 'yearly'; lastPayDate?: string;
   reportedAt?: number; reportReason?: string; aiAssigned?: boolean;
+  creatorSubscribed?: boolean;
 }
 export type FanList = { id: string; name: string; pinned: boolean }
 export type Creator = {
   id: string; name: string; avatar: string; color: string; notes: string;
+  verificationStatus?: 'verified' | 'pending';
   fanNoteTemplate?: string;
   defaultNickname: string; splitEnabled: boolean; inboxCount: number; lists: FanList[];
   autoChatEnabled?: boolean;
@@ -43,10 +46,10 @@ export type Creator = {
 export type Workspace = {
   activeFanId: string | null; openFanIds: string[]; search: string;
   pinnedFanIds?: string[]; activePinnedFanId?: string | null; homeFanId?: string | null;
-  view: string; extraFilter: 'all' | 'unread' | 'priority' | 'unread_tips';
+  view: string; extraFilter: 'all' | 'unread' | 'priority' | 'unread_tips' | 'fan_last';
   sort: 'newest' | 'oldest'; inboxIds: number[]; focus: boolean;
   focusOrder: string[]; heldFanIds: string[]; listScroll: number; chatScroll: Record<string, number>;
-  hideMuted: boolean; hideAI: boolean;
+  hideMuted: boolean; hideAI: boolean; hideCreators?: boolean;
   aiFilter?: 'include' | 'only' | 'hide';
   onlineAudience?: OnlineAudienceFilter;
 }
@@ -63,6 +66,7 @@ export type Transaction = {
 export type Notification = {
   id: string; creatorId: string; fanId: string; kind: 'subscription' | 'tip' | 'purchase' | 'platform';
   title: string; text: string; at: number; unread: boolean;
+  repliedAt?: number; repliedBy?: string; replyMessageId?: string;
 }
 export type WithdrawalRecord = {
   id: string; creatorId: string; creatorName: string; fanId: string; fanName: string;

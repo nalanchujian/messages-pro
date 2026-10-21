@@ -258,5 +258,29 @@
   "sample.65": {
     "zh": "{0} 个月",
     "en": "{0} months"
+  },
+  "gifSample.happy": {
+    "en": "Happy",
+    "zh": "开心"
+  },
+  "gifSample.love": {
+    "en": "Love",
+    "zh": "喜欢"
+  },
+  "gifSample.wow": {
+    "en": "Wow",
+    "zh": "惊讶"
+  },
+  "gifSample.laugh": {
+    "en": "Laugh",
+    "zh": "大笑"
+  },
+  "gifSample.party": {
+    "en": "Party",
+    "zh": "庆祝"
+  },
+  "gifSample.cool": {
+    "en": "Cool",
+    "zh": "酷"
   }
 }

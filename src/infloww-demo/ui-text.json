@@ -828,8 +828,8 @@
     "en": "Assign this creator's fans to separate inboxes for team processing."
   },
   "ui.208": {
-    "zh": "2–9 个分组",
-    "en": "2–9 groups"
+    "zh": "最多可分为 9 个收件箱",
+    "en": "Max. number of split inboxes is 9"
   },
   "ui.209": {
     "zh": "将常用粉丝列表固定在会话分类栏。列表固定与消息 Pin 是不同操作。",

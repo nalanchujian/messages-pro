@@ -1,0 +1,40 @@
+#infloww-demo .if-schedule-message-dialog{border-radius:10px}
+#infloww-demo .if-schedule-message-dialog>.if-modal-surface>header{position:static;min-height:48px;padding:12px 16px;border:0}
+#infloww-demo .if-schedule-message-dialog>.if-modal-surface>header h2{font-size:16px;font-weight:600;line-height:24px;color:#151515}
+#infloww-demo .if-schedule-message-dialog>.if-modal-surface>.if-modal-body{padding:0}
+#infloww-demo .if-schedule-layout{display:flex;flex-direction:column;max-height:calc(100dvh - 88px);color:#171717}
+#infloww-demo .if-schedule-tabs{display:flex;align-items:stretch;justify-content:space-around;flex:none;height:49px;border-bottom:1px solid #e3e3e3;background:#f5f5f5}
+#infloww-demo .if-schedule-tabs>button{min-width:100px;border-bottom:2px solid transparent;padding:12px 16px;font-size:14px;color:#171717}
+#infloww-demo .if-schedule-tabs>button[aria-selected=true]{color:var(--if-accent);border-color:var(--if-accent)}
+#infloww-demo .if-schedule-content{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;background:#fff}
+#infloww-demo .if-schedule-calendar-header{display:flex;align-items:center;gap:2px;min-height:41px;padding:5px 10px;border-bottom:1px solid #f0f0f0}
+#infloww-demo .if-schedule-calendar-header>.if-icon-button{width:18px;height:26px;color:#555}
+#infloww-demo .if-schedule-calendar-header>div{display:flex;justify-content:center;gap:8px;flex:1;font-size:14px;font-weight:600}
+#infloww-demo .if-schedule-calendar{padding:10px 18px 8px}
+#infloww-demo .if-schedule-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));height:34px;align-items:center;text-align:center;font-size:13px}
+#infloww-demo .if-schedule-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:40px}
+#infloww-demo .if-schedule-days>button{display:flex;align-items:center;justify-content:center;min-width:0;padding:0;background:#fff;color:#171717;font-size:13px}
+#infloww-demo .if-schedule-days>button>span{display:grid;place-items:center;width:24px;height:24px;border-radius:2px}
+#infloww-demo .if-schedule-days>button:hover:not(:disabled)>span{background:#eef2ff}
+#infloww-demo .if-schedule-days>button[aria-selected=true]>span{background:#4d74ff;color:#fff}
+#infloww-demo .if-schedule-days>button:disabled{color:#d5d5d5;opacity:1;cursor:not-allowed}
+#infloww-demo .if-schedule-days>button.past{background:linear-gradient(transparent 8px,#f5f5f5 8px,#f5f5f5 32px,transparent 32px)}
+#infloww-demo .if-schedule-periods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 18px;gap:12px;min-height:284px}
+#infloww-demo .if-schedule-periods>button{padding:12px;border-radius:5px;font-size:14px}
+#infloww-demo .if-schedule-periods>button[aria-pressed=true]{color:var(--if-accent);background:#eff3ff}
+#infloww-demo .if-schedule-periods>button:disabled{color:#d5d5d5}
+#infloww-demo .if-schedule-footer{display:flex;justify-content:flex-end;align-items:center;gap:8px;min-height:57px;flex:none;padding:12px 24px;border-top:1px solid #eee;background:#fff}
+#infloww-demo .if-schedule-footer>button{min-width:80px;min-height:32px;padding:5px 12px;border:1px solid #dfe3e9;border-radius:4px;background:#fff;color:#171717;font-size:13px}
+#infloww-demo .if-schedule-footer>.if-primary{background:#4b67ff;border-color:#4b67ff;color:#fff}
+#infloww-demo .if-schedule-footer>.if-primary:disabled{background:var(--if-accent-disabled);border-color:var(--if-accent-disabled);color:#fff;opacity:1}
+#infloww-demo .if-schedule-footer>.if-schedule-remove{margin-right:auto;min-width:0;padding:5px 0;border:0;color:#bf7474}
+#infloww-demo .if-schedule-time-panel{padding:14px 18px 18px;min-height:325px}
+#infloww-demo .if-schedule-time-labels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:4px 0 12px;text-align:center;color:#999;font-size:12px}
+#infloww-demo .if-schedule-time-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:262px}
+#infloww-demo .if-schedule-time-columns>div{overflow:auto;border-right:1px solid #eee;scrollbar-width:thin}
+#infloww-demo .if-schedule-time-columns>div:last-child{border:0}
+#infloww-demo .if-schedule-time-columns button{display:block;width:100%;min-height:34px;padding:7px;text-align:center;color:#222;font-size:14px}
+#infloww-demo .if-schedule-time-columns button:hover:not(:disabled){background:#f5f7ff}
+#infloww-demo .if-schedule-time-columns button[aria-selected=true]{background:#eef3ff;color:var(--if-accent)}
+#infloww-demo .if-schedule-time-columns button:disabled{color:#d4d4d4}
+#infloww-demo .if-schedule-time-error{margin:10px 0 0;color:#cf7373;font-size:12px;text-align:center}

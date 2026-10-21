@@ -20,5 +20,5 @@
 #infloww-demo .if-script-carousel-controls>button:disabled{color:#626262;cursor:not-allowed}
 #infloww-demo .if-script-hover-note{margin:12px 0 0;color:#eee;white-space:pre-wrap}
 #infloww-demo .if-script-hover-note>span{color:#aaa}
-#infloww-demo .if-more-scripts{flex:none;padding:4px 8px;color:#356aff;font-size:13px;white-space:nowrap}
+#infloww-demo .if-more-scripts{flex:none;padding:4px 8px;color:var(--if-accent);font-size:13px;white-space:nowrap}
 @media(max-width:760px){#infloww-demo .if-script-row>button{gap:8px}#infloww-demo .if-script-sent-history{display:none}#infloww-demo .if-more-scripts{font-size:11px;padding:4px}#infloww-demo .if-script-hover-strip>button{width:140px;height:115px}}

@@ -12,9 +12,11 @@ export function initialMedia(): Media[] {
   const images: Media[] = defs.map((a,i)=>({id:a[0],title:a[1],type:'image',url:illustration(a[1],a[2],a[3],i),category:a[4],tags:[a[4],sample('sample.10')],price:a[5],creatorTags:[],notes:`Original ${a[0]} collection. Available for message bundles.`}))
   images.push(...[['city','City lights','#9787bb','#33405a'],['sunset','Sunset walk','#d69c6c','#7f596b']].map(([id,title,a,b],index):Media=>({id,title,type:'image',url:illustration(title,a,b,index),category:'Travel',tags:['Travel','Collection'],price:20,creatorTags:[],notes:`Original ${title.toLowerCase()} collection.`})))
   return images.concat([
+    {id:'audio-ambient-demo',title:'Ambient audio demo',type:'audio',url:`${base}infloww-media/ambient-demo.wav`,category:'Audio',tags:['Audio'],price:0,creatorTags:[],duration:3},
+    {id:'audio-chime-demo',title:'Chime audio demo',type:'audio',url:`${base}infloww-media/chime-demo.wav`,category:'Audio',tags:['Audio'],price:0,creatorTags:[],duration:5},
     {id:'gif-wave',title:sample('sample.11'),type:'gif',url:`${base}infloww-media/hello.gif`,category:'GIF',tags:[sample('sample.11'),sample('sample.12')],price:0,creatorTags:[]},
     {id:'gif-spark',title:sample('sample.13'),type:'gif',url:`${base}infloww-media/thanks.gif`,category:'GIF',tags:[sample('sample.13'),sample('sample.14')],price:0,creatorTags:[]},
-  ])
+  ]).concat(['happy','love','wow','laugh','party','cool'].map((name):Media => ({id:`gif-${name}`,title:sample(`gifSample.${name}`),type:'gif',url:`${base}infloww-media/${name}.gif`,category:'GIF',tags:[name,sample(`gifSample.${name}`)],price:0,creatorTags:[]}))).map((item,index) => ({ ...item, createdAt: Date.now() - index * 86400000 }))
 }
 
 export function initialReleaseForms(now=Date.now()):ReleaseForm[]{return [
@@ -40,7 +42,7 @@ export function createSeed(now = Date.now()): DemoState {
   state.scripts.find(script=>script.id==='preview')!.attachments.push({mediaId:'garden',free:false},{mediaId:'blue',free:false})
   const names=[['mason','Mason Brooks','mason.b','M'],['riley','Riley Parker','riley_p','R'],['leo','Leo Carter','leo.carter','L'],['nate','Nate Wilson','natew','N'],['emma','Emma Rivers','emma.r','E'],['alex','Alex Martin','alex_m','A']] as const
   creators.forEach((creator,ci)=>{
-    state.fans[creator.id]=names.map((n,i):Fan=>({id:n[0],name:n[1],handle:'@'+n[2],avatar:n[3],color:['#b79e87','#809dae','#b8a6bc','#91a795','#a7b3cd','#c5a796'][i],isCreator:i===1,online:[0,1,4].includes(i),unread:[1,3,4].includes(i),priority:i===0||i===1,muted:i===5,restricted:false,blocked:false,hidden:false,cleared:false,inboxId:(i%creator.inboxCount)+1,listIds:i===0?['vip']:i===4?['new']:i===2?['travel']:[],subscribedAt:now-(i===4?2:30*(i+1))*86400000,subscriptionStatus:i===3?'expired':i===4?'free':i===5?'trial':'active',subscriptionPrice:9.99,subscriptionLabel:i===4?sample('sample.37'):sample('sample.65', [i+1]),renew:i!==3&&i!==5,country:i===3?sample('sample.38'):sample('sample.39'),timeZone:i===3?'Europe/London':'America/Los_Angeles',source:['Instagram',sample('sample.40'),sample('sample.41'),sample('sample.42'),'Instagram',sample('sample.41')][i],nickname:i===0?'Mason':'',birthday:i===0?'1995-06-15':'',notes:[sample('sample.43'),sample('sample.44'),sample('sample.45'),sample('sample.46'),sample('sample.47'),sample('sample.48')][i],lastSeenAt:now-(i+1)*3600000,aiAssigned:i===5&&!!creator.autoChatEnabled}))
+    state.fans[creator.id]=names.map((n,i):Fan=>({id:n[0],name:n[1],handle:'@'+n[2],avatar:n[3],color:['#b79e87','#809dae','#b8a6bc','#91a795','#a7b3cd','#c5a796'][i],isCreator:i===1,online:[0,1,4].includes(i),unread:[1,3,4].includes(i),priority:i===0||i===1,muted:i===5,restricted:false,blocked:false,hidden:false,cleared:false,inboxId:(i%creator.inboxCount)+1,listIds:i===0?['vip']:i===4?['new']:i===2?['travel']:[],subscribedAt:now-(i===4?2:30*(i+1))*86400000,subscriptionStatus:i===3?'expired':i===4?'free':i===5?'trial':'active',subscriptionPrice:9.99,subscriptionLabel:i===4?sample('sample.37'):sample('sample.65', [i+1]),renew:i!==3&&i!==5,country:i===3?sample('sample.38'):sample('sample.39'),timeZone:i===3?'Europe/London':'America/Los_Angeles',source:['Instagram',sample('sample.40'),sample('sample.41'),sample('sample.42'),'Instagram',sample('sample.41')][i],nickname:i===0?'Mason':'',birthday:i===0?'1995-06-15':'',notes:[sample('sample.43'),sample('sample.44'),sample('sample.45'),sample('sample.46'),sample('sample.47'),sample('sample.48')][i],lastSeenAt:now-(i+1)*3600000,aiAssigned:i===5&&!!creator.autoChatEnabled,creatorSubscribed:i!==3}))
     state.fans[creator.id].forEach((fan,i)=>{
       fan.organizationSpendingPower=i===0?'high':i===1?'medium':i===2?'low':'insufficient'
       fan.chargebackRisk=i===1?'medium':i===2?'low':'unknown'
@@ -60,5 +62,31 @@ export function createSeed(now = Date.now()): DemoState {
     state.workspaces[creator.id]={activeFanId:'mason',openFanIds:['mason'],pinnedFanIds:[],activePinnedFanId:null,homeFanId:'mason',search:'',view:'all',extraFilter:'all',sort:'newest',inboxIds:[],focus:false,focusOrder:[],heldFanIds:[],listScroll:0,chatScroll:{},hideMuted:false,hideAI:false,aiFilter:'include'}
     state.notifications.push({id:creator.id+'-notification-tip',creatorId:creator.id,fanId:'mason',kind:'tip',title:sample('sample.59'),text:sample('sample.60'),at:now-2400000,unread:true},{id:creator.id+'-notification-sub',creatorId:creator.id,fanId:'emma',kind:'subscription',title:sample('sample.61'),text:sample('sample.62'),at:now-5400000,unread:true},{id:creator.id+'-notification-buy',creatorId:creator.id,fanId:'leo',kind:'purchase',title:sample('sample.63'),text:sample('sample.64'),at:now-7200000,unread:false})
   })
+  addFanLabelExamples(state, now)
   return state
+}
+
+// Additive fixtures preserve saved conversations and demonstrate each visible status.
+export function addFanLabelExamples(state: DemoState, now = Date.now()) {
+  state.creators.forEach(creator => {
+    const base = state.fans[creator.id]?.[0]
+    if (!base) return
+    const examples = [
+      { id: 'demo-verified', name: 'Serene 🤍', verified: true, aiStatus: undefined, status: 'active', age: 1 },
+      { id: 'demo-ai', name: 'Camila', verified: true, aiStatus: 'active', status: 'free', age: 2 },
+      { id: 'demo-paused', name: 'Liam Hou', verified: false, aiStatus: 'paused', status: 'active', age: 4 },
+      { id: 'demo-human', name: 'Sezai', verified: false, aiStatus: 'needs-human', status: 'active', age: 5 },
+      { id: 'demo-expired', name: 'Harris Wei', verified: false, aiStatus: 'active', status: 'expired', age: 6 },
+      { id: 'demo-cold', name: 'Custom name (Josh S)', verified: false, aiStatus: 'paused', status: 'active', age: 7 },
+    ] as const
+    examples.forEach((item, index) => {
+      if (state.fans[creator.id].some(fan => fan.id === item.id)) return
+      const fan: Fan = { ...structuredClone(base), id: item.id, name: item.name, handle: '@' + item.id.replace('demo-', ''), avatar: item.name[0], verified: item.verified, aiAssigned: !!item.aiStatus, aiStatus: item.aiStatus, online: index === 0 || index === 1, unread: index === 1, muted: index === 0, priority: false, nickname: '', notes: '', listIds: [], inboxId: index % creator.inboxCount + 1, subscribedAt: now - (index === 1 ? 2 : 90) * 86400000, subscriptionStatus: item.status, renew: index !== 3, subscriptionExpiresAt: now + (index === 4 ? -1 : 30) * 86400000 }
+      state.fans[creator.id].push(fan)
+      const draft = emptyDraft()
+      state.drafts[key(creator.id, fan.id)] = draft
+      state.messages[key(creator.id, fan.id)] = [{ id: creator.id + '-' + item.id, creatorId: creator.id, fanId: fan.id, text: 'Hi 👋', createdAt: now - item.age * 86400000, direction: 'inbound', status: 'sent', attachments: index === 1 ? [{ mediaId: 'coast', free: true }] : [], price: 0, lockedText: false, creatorTags: [], format: draft.format, liked: false, pinned: false, viewed: false, sender: fan.name, source: 'manual' }]
+      if (index === 5) state.transactions.push({ id: creator.id + '-demo-cold-tip', creatorId: creator.id, fanId: fan.id, kind: 'tip', amount: 73, at: now - 8 * 86400000 })
+    })
+  })
 }

@@ -6,11 +6,11 @@
 #infloww-demo .if-audience-number{display:flex;align-items:center;background:#fff;border:1px solid #ddd;border-radius:4px;min-height:36px;padding-left:10px;color:#777}
 #infloww-demo .if-audience-number>input{border:0!important;outline:0;min-width:0;width:100%;padding:7px 9px!important;background:transparent;color:#333;font-size:13px!important;min-height:34px}
 #infloww-demo .if-audience-exclusions{display:flex;gap:6px;flex-wrap:wrap;padding-top:12px}
-#infloww-demo .if-audience-exclusions>span{display:flex;gap:6px;align-items:center;background:#eef2ff;border-radius:4px;padding:4px 6px;font-size:12px;color:#3467ff}
+#infloww-demo .if-audience-exclusions>span{display:flex;gap:6px;align-items:center;background:#eef2ff;border-radius:4px;padding:4px 6px;font-size:12px;color:var(--if-accent)}
 #infloww-demo .if-audience-exclusions button{display:grid;place-items:center}
 #infloww-demo .if-audience-switches{display:flex;gap:24px;flex-wrap:wrap;padding-top:15px;font-size:13px;color:#444}
 #infloww-demo .if-audience-switches label{display:flex;gap:8px;align-items:center;cursor:pointer}
-#infloww-demo .if-audience-switches input,#infloww-demo .if-audience-list-options input{accent-color:#3467ff;width:15px;height:15px}
+#infloww-demo .if-audience-switches input,#infloww-demo .if-audience-list-options input{accent-color:var(--if-accent);width:15px;height:15px}
 #infloww-demo .if-audience-list-popover{padding:6px}
 #infloww-demo .if-audience-list-options{max-height:230px;overflow:auto}
 #infloww-demo .if-audience-list-options>label{display:flex;align-items:center;gap:10px;padding:11px 9px;font-size:13px;cursor:pointer}

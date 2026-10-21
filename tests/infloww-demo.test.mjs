@@ -6,13 +6,124 @@ import { createServer } from 'vite'
 const server=await createServer({configFile:false,server:{middlewareMode:true,hmr:false},appType:'custom'})
 const {createSeed}=await server.ssrLoadModule('/src/infloww-demo/seed.ts')
 const {emptyDraft,key}=await server.ssrLoadModule('/src/infloww-demo/types.ts')
-const {demoReducer:reduce,fanMetrics,fanSignals,messagesFor,selectFans,restoreState}=await server.ssrLoadModule('/src/infloww-demo/engine.ts')
+const {demoReducer:reduce,fanMetrics,fanSignals,messagesFor,selectFans,restoreState,serializeState}=await server.ssrLoadModule('/src/infloww-demo/engine.ts')
 const {setLocale,t,sourceValue,sourceLabel,countryLabel,displayScriptTitle,displayScriptCategory}=await server.ssrLoadModule('/src/infloww-demo/i18n.ts')
 const {sampleTranslation}=await server.ssrLoadModule('/src/infloww-demo/chatTools.ts')
 const {selectOnlineFans,normalizeAudience}=await server.ssrLoadModule('/src/infloww-demo/audience.ts')
-const {mediaHistory}=await server.ssrLoadModule('/src/infloww-demo/mediaActivity.ts')
+const {mediaHistory,mediaMetrics}=await server.ssrLoadModule('/src/infloww-demo/mediaActivity.ts')
+const {parseMessagePrice,purchasedPpvHistory}=await server.ssrLoadModule('/src/infloww-demo/messagePricing.ts')
+const {calendarDays,scheduleTimestamp,isPastScheduleDay}=await server.ssrLoadModule('/src/infloww-demo/scheduleCalendar.ts')
+const {sameMessageGroup,chatMediaAccess}=await server.ssrLoadModule('/src/infloww-demo/chatPresentation.ts')
 const seed=()=>createSeed(Date.now())
 const send=(s,draft,cid='harriet',fid='mason')=>reduce(s,{type:'SEND',creatorId:cid,fanId:fid,payload:{draft}})
+
+test('workspace persistence never saves or replays a previous send notification',()=>{
+  const draft={...emptyDraft(),text:'Persistence regression'}
+  const sent=send(seed(),draft)
+  assert.ok(sent.feedback)
+  const serialized=JSON.parse(serializeState(sent))
+  assert.equal(Object.hasOwn(serialized,'feedback'),false)
+  const before=messagesFor(sent,'harriet','mason').length
+  const restored=restoreState({...serialized,feedback:sent.feedback})
+  assert.ok(restored)
+  assert.equal(Object.hasOwn(restored,'feedback'),false)
+  assert.equal(messagesFor(restored,'harriet','mason').length,before)
+  const entered=reduce(restored,{type:'TICK',payload:Date.now()})
+  assert.equal(entered.feedback,undefined)
+  assert.equal(messagesFor(entered,'harriet','mason').length,before)
+  const next=send(entered,{...draft,text:'A new explicit send'})
+  assert.ok(next.feedback)
+  assert.notEqual(next.feedback.id,sent.feedback.id)
+  assert.equal(messagesFor(next,'harriet','mason').length,before+1)
+})
+
+test('chat grouping separates dates, senders, direction and withdrawn messages',()=>{
+  const s=seed(),base=messagesFor(s,'harriet','mason')[0]
+  const first={...base,createdAt:new Date(2026,9,15,23,59).getTime(),sender:'Alex',status:'sent',direction:'outbound'}
+  assert.equal(sameMessageGroup(undefined,first),false)
+  assert.equal(sameMessageGroup(first,{...first,createdAt:first.createdAt+1000}),true)
+  assert.equal(sameMessageGroup(first,{...first,createdAt:new Date(2026,9,16,0,1).getTime()}),false)
+  assert.equal(sameMessageGroup(first,{...first,sender:'Sam'}),false)
+  assert.equal(sameMessageGroup(first,{...first,direction:'inbound'}),false)
+  assert.equal(sameMessageGroup({...first,status:'withdrawn'},first),false)
+})
+
+test('incoming PPV previews exclude locked media while creators can preview their own messages',()=>{
+  const s=seed(),base=messagesFor(s,'harriet','mason')[0]
+  const message={...base,price:12,purchasedAt:undefined,lockedText:true,direction:'inbound',attachments:[{mediaId:'paid',free:false},{mediaId:'free',free:true}]}
+  const before=structuredClone(message)
+  assert.deepEqual(chatMediaAccess(message),{available:[{mediaId:'free',free:true}],locked:[{mediaId:'paid',free:false}],textLocked:true})
+  assert.deepEqual(message,before)
+  for(const available of [{...message,direction:'outbound'},{...message,purchasedAt:Date.now()},{...message,price:0}]){
+    assert.deepEqual(chatMediaAccess(available),{available:message.attachments,locked:[],textLocked:false})
+  }
+})
+
+test('vault metrics count bundles once and do not attribute purchases to free previews',()=>{
+  const s=seed(),base=messagesFor(s,'harriet','mason')[0]
+  const bundle={...base,id:'bundle-metric',direction:'outbound',status:'read',price:20,purchasedAt:Date.now(),attachments:[{mediaId:'paid',free:false},{mediaId:'preview',free:true}]}
+  const failed={...bundle,id:'failed-metric',status:'failed'}
+  const inbound={...bundle,id:'inbound-metric',direction:'inbound'}
+  assert.deepEqual(mediaMetrics([bundle,failed,inbound],['paid','preview']),{sent:1,rate:100,revenue:20})
+  assert.deepEqual(mediaMetrics([bundle],['preview']),{sent:1,rate:0,revenue:0})
+  assert.deepEqual(mediaMetrics([bundle],['missing']),{sent:0,rate:0,revenue:0})
+})
+
+test('schedule calendar uses Sunday-first six-week grids and retains leap days',()=>{
+  const days=calendarDays(2026,9)
+  assert.equal(days.length,42);assert.equal(days[0].getDay(),0)
+  assert.equal(days[0].getMonth(),8);assert.equal(days[0].getDate(),27)
+  assert.equal(days[19].getMonth(),9);assert.equal(days[19].getDate(),16)
+  assert.ok(calendarDays(2028,1).some(day=>day.getMonth()===1&&day.getDate()===29))
+})
+test('schedule time preserves midnight and noon and rejects out-of-range time fields',()=>{
+  const day=new Date(2026,9,16),now=new Date(2026,9,16,16,10).getTime()
+  assert.equal(new Date(scheduleTimestamp(day,0,0)).getHours(),0)
+  assert.equal(new Date(scheduleTimestamp(day,12,10)).getHours(),12)
+  assert.equal(new Date(scheduleTimestamp(day,23,59)).getMinutes(),59)
+  assert.ok(Number.isNaN(scheduleTimestamp(day,24,0)));assert.ok(Number.isNaN(scheduleTimestamp(day,12,60)))
+  assert.equal(isPastScheduleDay(new Date(2026,9,15),now),true)
+  assert.equal(isPastScheduleDay(day,now),false)
+  assert.equal(isPastScheduleDay(new Date(2026,9,17),now),false)
+})
+
+test('message pricing accepts free or valid cents and rejects invalid paid values',()=>{
+  assert.equal(parseMessagePrice(''),0);assert.equal(parseMessagePrice('0'),0)
+  assert.equal(parseMessagePrice('3.01'),3.01);assert.equal(parseMessagePrice('200.00'),200)
+  for(const value of ['2.99','-3','200.01','3.001','Infinity','1e2','abc'])assert.equal(parseMessagePrice(value),null)
+})
+test('pricing history excludes unpaid, inbound, failed and withdrawn messages and uses the latest purchases',()=>{
+  const s=seed(),base=messagesFor(s,'harriet','mason')[0]
+  const messages=Array.from({length:32},(_,index)=>({...base,id:`history-${index}`,price:index+3,purchasedAt:1000+index,status:'read',direction:'outbound'}))
+  messages.push({...base,id:'unpaid',price:999,purchasedAt:undefined,status:'read',direction:'outbound'},
+    {...base,id:'inbound',price:999,purchasedAt:9999,status:'read',direction:'inbound'},
+    {...base,id:'failed',price:999,purchasedAt:9999,status:'failed',direction:'outbound'},
+    {...base,id:'withdrawn',price:999,purchasedAt:9999,status:'withdrawn',direction:'outbound'})
+  const history=purchasedPpvHistory(messages)
+  assert.equal(history.items.length,30);assert.equal(history.items[0].id,'history-31');assert.equal(history.items.at(-1).id,'history-2')
+  assert.equal(history.max,34);assert.equal(history.avg,19.5)
+  assert.deepEqual(purchasedPpvHistory([]),{items:[],max:0,avg:0})
+})
+
+test('split inbox distributes fans, filters groups and supports bulk reassignment',()=>{
+  let s=seed();s.creators[0].splitEnabled=false
+  s=reduce(s,{type:'SPLIT_INBOX',creatorId:'harriet',payload:{enabled:true,count:2}})
+  assert.ok(s.fans.harriet.every((fan,index)=>fan.inboxId===index%2+1))
+  s=reduce(s,{type:'MOVE_INBOX',creatorId:'harriet',payload:{fanIds:['mason','riley'],inboxId:2}})
+  s=reduce(s,{type:'PATCH_WORKSPACE',creatorId:'harriet',payload:{inboxIds:[2]}})
+  const group=selectFans(s,'harriet');assert.ok(group.every(fan=>fan.inboxId===2));assert.ok(group.some(fan=>fan.id==='mason'));assert.ok(group.some(fan=>fan.id==='riley'))
+  s=restoreState(JSON.parse(JSON.stringify(s)));assert.equal(s.fans.harriet.find(fan=>fan.id==='mason').inboxId,2)
+})
+
+test('expired fan requires creator subscription before direct messaging',()=>{
+  let s=seed();const before=messagesFor(s,'harriet','nate').length
+  s=send(s,{...emptyDraft(),text:'Can we chat?'},'harriet','nate')
+  assert.equal(messagesFor(s,'harriet','nate').length,before)
+  s=reduce(s,{type:'PATCH_FAN',creatorId:'harriet',fanId:'nate',payload:{creatorSubscribed:true}})
+  s=send(s,{...emptyDraft(),text:'Can we chat?'},'harriet','nate')
+  assert.equal(messagesFor(s,'harriet','nate').length,before+1)
+  assert.equal(s.fans.harriet.find(fan=>fan.id==='nate').subscriptionStatus,'expired')
+})
 
 test('creator workspaces and composite drafts survive switching and serialization',()=>{
   let s=seed();s=reduce(s,{type:'PATCH_DRAFT',payload:{text:'A draft',price:20,attachments:[{mediaId:'studio',free:false}],creatorTags:['maya']}})
@@ -22,6 +133,13 @@ test('creator workspaces and composite drafts survive switching and serializatio
   s=reduce(s,{type:'SET_ACTIVE_CREATOR',payload:'harriet'})
   assert.equal(s.drafts[key('harriet','mason')].text,'A draft');assert.equal(s.drafts[key('maya','mason')].text,'B draft')
   assert.equal(s.drafts[key('harriet','mason')].attachments[0].mediaId,'studio');assert.equal(s.workspaces.harriet.listScroll,120)
+})
+test('inbox menu filters creator chats and chats last answered by fans',()=>{
+  let s=seed()
+  s=reduce(s,{type:'PATCH_WORKSPACE',creatorId:'harriet',payload:{hideCreators:true}})
+  assert.ok(selectFans(s,'harriet').every(fan=>!fan.isCreator))
+  s=reduce(s,{type:'PATCH_WORKSPACE',creatorId:'harriet',payload:{hideCreators:false,extraFilter:'fan_last'}})
+  assert.ok(selectFans(s,'harriet').every(fan=>messagesFor(s,'harriet',fan.id).at(-1)?.direction==='inbound'))
 })
 test('creator tabs reorder without changing the active creator or its workspace',()=>{
   let s=seed();const active=s.activeCreatorId
@@ -305,6 +423,8 @@ test('invalid storage is rejected and incompatible sources cannot poison state',
 })
 test('online audience combines thresholds, list exclusions, creator status and subscription status',()=>{
   const now=Date.now(),s=createSeed(now),ids=filter=>selectOnlineFans(s,'harriet',filter,now).map(fan=>fan.id)
+  // Keep this threshold fixture scoped to the original six fans.
+  s.fans.harriet.filter(fan=>fan.id.startsWith('demo-')).forEach(fan=>{fan.online=false})
   assert.deepEqual(ids({}),['mason','riley','emma'])
   assert.deepEqual(ids({minSpend:100}),['mason'])
   assert.deepEqual(ids({minTips:10}),['mason'])
@@ -442,10 +562,17 @@ test('unavailable forms cannot be sent or tagged and editing sent forms is isola
 })
 test('media information edits are scoped, normalized and restored without replacing user changes',()=>{
   let s=seed();const other=structuredClone(s.media.find(media=>media.id==='studio'))
-  s=reduce(s,{type:'PATCH_MEDIA',payload:{id:'coast',notes:'Custom media note',tags:[' Sea ','Sea','','New']}})
+  s=reduce(s,{type:'PATCH_MEDIA',payload:{id:'coast',notes:'Custom media note',tags:[' Sea ','Sea','','New'],category:' New collection ',price:19.995,creatorTags:['maya','maya','unknown']}})
   s=restoreState(JSON.parse(JSON.stringify(s)))
   assert.deepEqual(s.media.find(media=>media.id==='coast').tags,['Sea','New'])
   assert.equal(s.media.find(media=>media.id==='coast').notes,'Custom media note')
+  assert.equal(s.media.find(media=>media.id==='coast').category,'New collection')
+  assert.equal(s.media.find(media=>media.id==='coast').price,20)
+  assert.deepEqual(s.media.find(media=>media.id==='coast').creatorTags,['maya'])
+  s=reduce(s,{type:'PATCH_MEDIA',payload:{id:'coast',category:'  ',price:1000,creatorTags:['unknown']}})
+  assert.equal(s.media.find(media=>media.id==='coast').category,'New collection')
+  assert.equal(s.media.find(media=>media.id==='coast').price,20)
+  assert.deepEqual(s.media.find(media=>media.id==='coast').creatorTags,[])
   assert.deepEqual(s.media.find(media=>media.id==='studio'),other)
 })
 test('campaign validation rejects invalid PPV and schedules and excludes unavailable recipients',()=>{

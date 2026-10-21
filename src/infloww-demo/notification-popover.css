@@ -1,0 +1,53 @@
+#infloww-demo .if-notification-popover{display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:10px;background:#fff;box-shadow:0 6px 28px #20283826;color:#222;font-size:13px}
+#infloww-demo .if-notification-popover-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;min-height:44px;padding:6px 16px 0}
+#infloww-demo .if-notification-popover-header h2{font-size:16px;line-height:24px;font-weight:600}
+#infloww-demo .if-notification-popover-header .if-icon-button{color:#777;width:24px;height:28px;padding:2px}
+#infloww-demo .if-notification-category-tabs{display:flex;align-items:center;gap:16px;flex:none;min-height:44px;padding:6px 10px 10px;border-bottom:1px solid #e5e5e5}
+#infloww-demo .if-notification-category-tabs>button{position:relative;flex:none;height:28px;padding:4px 16px;border:0;border-radius:20px;background:#f5f5f5;color:#222;font-size:13px;line-height:20px;white-space:nowrap}
+#infloww-demo .if-notification-category-tabs>button[aria-selected=true]{background:var(--if-accent);color:#fff}
+#infloww-demo .if-notification-category-tabs>button:hover:not([aria-selected=true]){background:#ededed}
+#infloww-demo .if-notification-category-tabs b{position:absolute;top:-7px;right:-5px;display:grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border:2px solid #fff;border-radius:20px;background:#4bd1ad;color:#fff;font-size:11px;font-weight:400;line-height:16px}
+#infloww-demo .if-notification-feed{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#d5d5d5 transparent}
+#infloww-demo .if-notification-record{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;padding:18px 24px 16px 16px}
+#infloww-demo .if-notification-record::after{content:'';position:absolute;left:64px;right:24px;bottom:0;height:1px;background:#e5e5e5}
+#infloww-demo .if-notification-record:last-child::after{display:none}
+#infloww-demo .if-notification-fan-avatar{position:relative;display:grid;place-items:center;flex:none;width:40px;height:40px;margin-top:2px;border-radius:50%;background:#f5f5f5;color:#438fff;font-size:17px;font-weight:400}
+#infloww-demo .if-notification-fan-avatar>i{position:absolute;right:0;bottom:-1px;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#e9eeff;color:#5683ff}
+#infloww-demo .if-notification-record-content{min-width:0}
+#infloww-demo .if-notification-fan-name{display:flex;align-items:center;gap:7px;min-width:0;line-height:20px;white-space:nowrap}
+#infloww-demo .if-notification-fan-name strong{flex:none;max-width:60%;overflow:hidden;text-overflow:ellipsis;font-size:13px;font-weight:600}
+#infloww-demo .if-notification-fan-name>span{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#999;font-size:14px}
+#infloww-demo .if-notification-fan-name>svg{flex:none;color:#888}
+#infloww-demo .if-notification-fan-lists{display:flex;align-items:center;gap:6px;min-width:0;line-height:20px;font-size:12px}
+#infloww-demo .if-notification-fan-lists>svg{flex:none;color:#5191ff}
+#infloww-demo .if-notification-fan-lists>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#infloww-demo .if-notification-record-text{color:#666;font-size:13px;line-height:22px;white-space:pre-wrap;overflow-wrap:anywhere}
+#infloww-demo .if-notification-record-date{display:block;margin:4px 0 10px;color:#999;font-size:11px;line-height:16px}
+#infloww-demo .if-notification-response-row{display:flex;align-items:center;gap:10px;min-width:0;min-height:32px}
+#infloww-demo .if-notification-reply-input{display:flex;align-items:center;min-width:0;flex:1;height:32px;border:1px solid #e1e1e1;border-radius:4px;background:#fff}
+#infloww-demo .if-notification-emoji-button{display:grid;place-items:center;flex:none;width:35px;height:30px;color:#999}
+#infloww-demo .if-notification-reply-input>input{width:100%;min-width:0;height:30px;padding:4px 8px 4px 7px;border:0;outline:0;background:transparent;color:#333;font-size:13px}
+#infloww-demo .if-notification-reply-input>input::placeholder{color:#999}
+#infloww-demo .if-notification-reply-button{flex:none;min-width:64px;height:32px;padding:4px 12px;border:0;border-radius:4px;background:var(--if-accent);color:#fff;font-size:13px}
+#infloww-demo .if-notification-reply-button:disabled{background:var(--if-accent-disabled);color:#fff;opacity:1}
+#infloww-demo .if-notification-open-chat{display:grid;place-items:center;flex:none;width:32px;height:32px;margin-left:6px;padding:0;border:1px solid var(--if-accent);border-radius:4px;color:var(--if-accent);background:#fff}
+#infloww-demo .if-notification-open-chat:hover{background:var(--if-accent-soft)}
+#infloww-demo .if-notification-responded{display:flex;align-items:center;gap:5px;flex:1;min-width:0;color:#666;font-size:13px;line-height:20px}
+#infloww-demo .if-notification-responded>i{width:14px;height:14px;flex:none;border-radius:50%;background:#d8d8d8}
+#infloww-demo .if-notification-platform-actions{justify-content:flex-end}
+#infloww-demo .if-notification-feed-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:230px;padding:24px;color:#999;font-size:13px}
+#infloww-demo .if-notification-feed::-webkit-scrollbar{width:7px}
+#infloww-demo .if-notification-feed::-webkit-scrollbar-thumb{border-radius:6px;background:#d5d5d5}
+#infloww-demo .if-notifications-button>b{background:#4bd1ad}
+@media(max-width:560px){
+  #infloww-demo .if-notification-category-tabs{gap:8px;justify-content:space-between}
+  #infloww-demo .if-notification-category-tabs>button{padding:4px 10px;font-size:12px}
+  #infloww-demo .if-notification-record{grid-template-columns:32px minmax(0,1fr);padding:14px 12px;gap:8px}
+  #infloww-demo .if-notification-fan-avatar{width:32px;height:32px;font-size:14px}
+  #infloww-demo .if-notification-record::after{left:52px;right:12px}
+  #infloww-demo .if-notification-response-row{gap:6px;flex-wrap:wrap}
+  #infloww-demo .if-notification-reply-input{min-width:110px}
+  #infloww-demo .if-notification-open-chat{margin-left:0}
+  #infloww-demo .if-notification-fan-name{gap:5px}
+  #infloww-demo .if-notification-fan-name>span{font-size:12px}
+}

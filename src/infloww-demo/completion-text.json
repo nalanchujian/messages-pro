@@ -1,26 +1,842 @@
 {
-  "navigation.page": {"en":"{0} opens another page. Page navigation is not included in this demo.","zh":"{0}需要跳转到其他页面，此演示暂不跳转。"},
-  "insights.profile": {"en":"Profile","zh":"资料"},
-  "completion.invalidForms": {"en":"A selected release form is unavailable. Review the tagged forms before sending.","zh":"所选授权表单不可用，请检查标记后再发送。"},
-  "completion.invalidCampaign": {"en":"Check the message, recipients, price and scheduled time before sending.","zh":"请检查消息、收件人、价格及排程时间后再发送。"},
-  "media.history": {"en":"Sending history","zh":"发送历史"},
-  "media.historyFor": {"en":"Sending history: {0}","zh":"发送历史：{0}"},
-  "media.activity.sent": {"en":"Sent free","zh":"已免费发送"},
-  "media.activity.unpaid": {"en":"Sent for {0}","zh":"已按 {0} 发送"},
-  "media.activity.bought": {"en":"Bought for {0}","zh":"已按 {0} 购买"},
-  "media.activity.withdrawn": {"en":"Unsent for {0}","zh":"已撤回（{0}）"},
-  "media.activity.withdrawnFree": {"en":"Unsent free","zh":"已撤回免费消息"},
-  "media.unsent": {"en":"Not sent","zh":"未发送"},
-  "media.info": {"en":"Media details","zh":"素材详情"},
-  "media.infoFor": {"en":"Media details: {0}","zh":"素材详情：{0}"},
-  "media.notes": {"en":"Notes","zh":"备注"},
-  "media.tags": {"en":"Tags","zh":"标签"},
-  "media.category": {"en":"Category","zh":"分类"},
-  "media.type": {"en":"Type","zh":"类型"},
-  "media.edit": {"en":"Edit media information","zh":"编辑素材信息"},
-  "media.tagHint": {"en":"Separate tags with commas","zh":"使用逗号分隔标签"},
-  "media.saved": {"en":"Media information saved.","zh":"素材信息已保存。"},
-  "media.filter.bought": {"en":"Purchased","zh":"已购买"},
-  "media.filter.unpaid": {"en":"Sent, not purchased","zh":"已发送未购买"},
-  "media.filter.withdrawn": {"en":"Withdrawn","zh":"已撤回"}
+  "gif.close": {
+    "en": "Close GIF search",
+    "zh": "关闭 GIF 搜索"
+  },
+  "gif.search": {
+    "en": "Search GIFs",
+    "zh": "搜索 GIF"
+  },
+  "gif.placeholder": {
+    "en": "Search GIFs...",
+    "zh": "搜索 GIF…"
+  },
+  "gif.results": {
+    "en": "GIF results",
+    "zh": "GIF 搜索结果"
+  },
+  "gif.choose": {
+    "en": "Choose GIF: {0}",
+    "zh": "选择 GIF：{0}"
+  },
+  "gif.empty": {
+    "en": "No GIFs found",
+    "zh": "没有匹配的 GIF"
+  },
+  "vault.title": {
+    "en": "Vault Pro",
+    "zh": "Vault Pro"
+  },
+  "vault.all": {
+    "en": "All",
+    "zh": "全部"
+  },
+  "vault.media": {
+    "en": "Media",
+    "zh": "媒体"
+  },
+  "vault.photo": {
+    "en": "Photo",
+    "zh": "照片"
+  },
+  "vault.caption": {
+    "en": "Caption",
+    "zh": "文案"
+  },
+  "vault.allMedia": {
+    "en": "All media",
+    "zh": "全部媒体"
+  },
+  "vault.streams": {
+    "en": "Streams",
+    "zh": "直播"
+  },
+  "vault.uploads": {
+    "en": "Uploads",
+    "zh": "上传"
+  },
+  "vault.emptyCategory": {
+    "en": "empty",
+    "zh": "空"
+  },
+  "vault.sortCategories": {
+    "en": "Sort categories by name",
+    "zh": "按名称排序分类"
+  },
+  "vault.searchCategories": {
+    "en": "Search categories",
+    "zh": "搜索分类"
+  },
+  "vault.sortMedia": {
+    "en": "Sort media",
+    "zh": "媒体排序"
+  },
+  "vault.sort.recent": {
+    "en": "Recent",
+    "zh": "最近"
+  },
+  "vault.sort.oldest": {
+    "en": "Oldest",
+    "zh": "最早"
+  },
+  "vault.sort.name": {
+    "en": "Name",
+    "zh": "名称"
+  },
+  "vault.search.caption": {
+    "en": "Search media by PPV caption",
+    "zh": "按付费消息文案搜索媒体"
+  },
+  "vault.search.notes": {
+    "en": "Search media by notes",
+    "zh": "按备注搜索媒体"
+  },
+  "vault.search.tags": {
+    "en": "Search media by hashtags",
+    "zh": "按标签搜索媒体"
+  },
+  "vault.search.all": {
+    "en": "Search all media details",
+    "zh": "搜索全部媒体信息"
+  },
+  "vault.refresh": {
+    "en": "Refresh media",
+    "zh": "刷新媒体"
+  },
+  "vault.refreshed": {
+    "en": "Media refreshed",
+    "zh": "媒体已刷新"
+  },
+  "vault.sent": {
+    "en": "Messages sent",
+    "zh": "发送消息数"
+  },
+  "vault.purchaseRate": {
+    "en": "Purchase rate",
+    "zh": "购买率"
+  },
+  "vault.revenue": {
+    "en": "Revenue",
+    "zh": "收入"
+  },
+  "vault.selectMedia": {
+    "en": "Select {0}",
+    "zh": "选择 {0}"
+  },
+  "vault.deselectMedia": {
+    "en": "Deselect {0}",
+    "zh": "取消选择 {0}"
+  },
+  "schedule.title": {
+    "en": "Schedule message",
+    "zh": "排程消息"
+  },
+  "schedule.steps": {
+    "en": "Schedule date and time",
+    "zh": "排程日期与时间"
+  },
+  "schedule.time": {
+    "en": "Time",
+    "zh": "时间"
+  },
+  "schedule.period": {
+    "en": "AM / PM",
+    "zh": "上午／下午"
+  },
+  "schedule.am": {
+    "en": "AM",
+    "zh": "上午"
+  },
+  "schedule.pm": {
+    "en": "PM",
+    "zh": "下午"
+  },
+  "schedule.next": {
+    "en": "Next",
+    "zh": "下一步"
+  },
+  "schedule.save": {
+    "en": "Schedule",
+    "zh": "确认排程"
+  },
+  "schedule.futureOnly": {
+    "en": "Choose a time in the future.",
+    "zh": "请选择未来的时间。"
+  },
+  "schedule.weekday.0": {
+    "en": "Su",
+    "zh": "日"
+  },
+  "schedule.weekday.1": {
+    "en": "Mo",
+    "zh": "一"
+  },
+  "schedule.weekday.2": {
+    "en": "Tu",
+    "zh": "二"
+  },
+  "schedule.weekday.3": {
+    "en": "We",
+    "zh": "三"
+  },
+  "schedule.weekday.4": {
+    "en": "Th",
+    "zh": "四"
+  },
+  "schedule.weekday.5": {
+    "en": "Fr",
+    "zh": "五"
+  },
+  "schedule.weekday.6": {
+    "en": "Sa",
+    "zh": "六"
+  },
+  "messagePrice.price": {
+    "en": "Price",
+    "zh": "价格"
+  },
+  "messagePrice.free": {
+    "en": "Free",
+    "zh": "免费"
+  },
+  "messagePrice.minimum": {
+    "en": "Minimum $3 USD or free",
+    "zh": "最低 3 美元，或设为免费"
+  },
+  "messagePrice.invalid": {
+    "en": "Enter $3–$200, with up to two decimal places, or leave empty for free.",
+    "zh": "请输入 3–200 美元，最多两位小数；留空则为免费。"
+  },
+  "messagePrice.history": {
+    "en": "Last PPV messages purchased by fan",
+    "zh": "粉丝最近购买的付费消息"
+  },
+  "messagePrice.historyHint": {
+    "en": "The latest 30 PPV messages purchased by this fan from the current creator.",
+    "zh": "该粉丝向当前创作者购买的最近 30 条付费消息。"
+  },
+  "messagePrice.max": {
+    "en": "Max:",
+    "zh": "最高："
+  },
+  "messagePrice.avg": {
+    "en": "Avg:",
+    "zh": "平均："
+  },
+  "messagePrice.empty": {
+    "en": "No PPV purchase history",
+    "zh": "暂无付费消息购买记录"
+  },
+  "creatorTag.verified": {
+    "en": "Verified",
+    "zh": "已认证"
+  },
+  "voice.title": {
+    "en": "Choose emotion & shortcut",
+    "zh": "选择情绪与快捷键"
+  },
+  "voice.open": {
+    "en": "Generate voice",
+    "zh": "生成语音"
+  },
+  "voice.emotion.normal": {
+    "en": "Normal",
+    "zh": "正常"
+  },
+  "voice.emotion.annoyed": {
+    "en": "Annoyed",
+    "zh": "恼火"
+  },
+  "voice.emotion.disappointed": {
+    "en": "Disappointed",
+    "zh": "失望"
+  },
+  "voice.emotion.excited": {
+    "en": "Excited",
+    "zh": "兴奋"
+  },
+  "voice.emotion.flirt": {
+    "en": "Flirt",
+    "zh": "调情"
+  },
+  "voice.emotion.grateful": {
+    "en": "Grateful",
+    "zh": "感激"
+  },
+  "voice.hint": {
+    "en": "Click a row to generate a voice preview with that emotion. Click the shortcut to rebind it.",
+    "zh": "点击一行情绪生成语音预览，点击右侧快捷键可修改绑定。"
+  },
+  "voice.rebind": {
+    "en": "Rebind {0} shortcut",
+    "zh": "修改“{0}”的快捷键"
+  },
+  "voice.rebindHint": {
+    "en": "Press a letter to bind Option/Alt + that letter. Press Esc to cancel.",
+    "zh": "按字母键绑定 Option/Alt + 该字母，按 Esc 取消。"
+  },
+  "voice.empty": {
+    "en": "Type a message before generating a voice preview.",
+    "zh": "请先输入消息，再生成语音预览。"
+  },
+  "voice.unavailable": {
+    "en": "A local voice for this message's language is unavailable in this browser.",
+    "zh": "当前浏览器没有可用的本地语音来朗读这条消息。"
+  },
+  "voice.conflict": {
+    "en": "This shortcut is already assigned to another emotion. Choose a different letter.",
+    "zh": "该快捷键已被其他情绪使用，请选择其他字母。"
+  },
+  "voice.saveFailed": {
+    "en": "The shortcut could not be saved in this browser.",
+    "zh": "当前浏览器无法保存该快捷键。"
+  },
+  "timed.title": {
+    "en": "Set a timed message",
+    "zh": "设置定时消息"
+  },
+  "timed.sendAfter": {
+    "en": "Send after (1–60 minutes):",
+    "zh": "延时发送（1–60 分钟）："
+  },
+  "timed.remindAfter": {
+    "en": "Remind after (1–60 minutes):",
+    "zh": "延时提醒（1–60 分钟）："
+  },
+  "timed.minutes": {
+    "en": "minute(s)",
+    "zh": "分钟"
+  },
+  "timed.message": {
+    "en": "Message:",
+    "zh": "消息："
+  },
+  "timed.placeholder": {
+    "en": "Type a message...",
+    "zh": "输入消息…"
+  },
+  "timed.tags": {
+    "en": "Tags:",
+    "zh": "变量："
+  },
+  "timed.nameHelp": {
+    "en": "{name} is replaced with this fan's nickname or the creator's default nickname.",
+    "zh": "{name} 会替换为该粉丝的昵称或创作者设置的默认昵称。"
+  },
+  "timed.price": {
+    "en": "Message price:",
+    "zh": "消息价格："
+  },
+  "timed.ppvCount": {
+    "en": "of {0} selected as PPV",
+    "zh": "/ {0} 个已选为付费内容"
+  },
+  "timed.priceHint": {
+    "en": "Set a price from $3 to $200 and select at least one paid media item.",
+    "zh": "请设置 3–200 美元的价格，并选择至少一个付费媒体。"
+  },
+  "timed.tagCreators": {
+    "en": "Tag other Creator(s)",
+    "zh": "标记其他创作者"
+  },
+  "timed.addCreator": {
+    "en": "+ Add Creator",
+    "zh": "+ 添加创作者"
+  },
+  "library.mode": {
+    "en": "Script library view",
+    "zh": "话术库视图"
+  },
+  "library.tag": {
+    "en": "Tag",
+    "zh": "标签"
+  },
+  "library.sequence": {
+    "en": "Sequence",
+    "zh": "序列"
+  },
+  "library.search": {
+    "en": "Search script names and text",
+    "zh": "搜索话术名称和内容"
+  },
+  "library.expanded": {
+    "en": "Expanded view",
+    "zh": "展开视图"
+  },
+  "library.manage": {
+    "en": "Manage",
+    "zh": "管理"
+  },
+  "library.custom": {
+    "en": "Custom",
+    "zh": "自定义"
+  },
+  "library.sort": {
+    "en": "Sort categories alphabetically",
+    "zh": "按名称排序分类"
+  },
+  "library.searchTags": {
+    "en": "Search tags",
+    "zh": "搜索标签"
+  },
+  "library.categories": {
+    "en": "Script categories",
+    "zh": "话术分类"
+  },
+  "library.all": {
+    "en": "All scripts",
+    "zh": "全部话术"
+  },
+  "library.sent": {
+    "en": "Sent",
+    "zh": "发送量"
+  },
+  "library.conversion": {
+    "en": "Purchase rate",
+    "zh": "购买率"
+  },
+  "library.revenue": {
+    "en": "Revenue",
+    "zh": "收入"
+  },
+  "library.mockSequence": {
+    "en": "Sequence · {0}",
+    "zh": "序列 · {0}"
+  },
+  "ai.selectType": {
+    "en": "Select a response type",
+    "zh": "选择回复类型"
+  },
+  "ai.help": {
+    "en": "About AI responses",
+    "zh": "AI 回复说明"
+  },
+  "ai.close": {
+    "en": "Close AI assistant",
+    "zh": "关闭 AI 助手"
+  },
+  "ai.helpText": {
+    "en": "Choose a response type to create an editable mock draft. Review the message before sending.",
+    "zh": "选择回复类型生成可编辑的模拟草稿，检查内容后再发送。"
+  },
+  "ai.type.casual": {
+    "en": "Casual",
+    "zh": "日常聊天"
+  },
+  "ai.type.tip": {
+    "en": "Tip request",
+    "zh": "请求打赏"
+  },
+  "ai.type.reengage": {
+    "en": "Re-engage",
+    "zh": "重新互动"
+  },
+  "ai.type.flirty": {
+    "en": "Sexting",
+    "zh": "暧昧聊天"
+  },
+  "ai.response.casual": {
+    "en": "Hey {0}, how has your day been? 😊",
+    "zh": "嗨，{0}，今天过得怎么样？😊"
+  },
+  "ai.response.tip": {
+    "en": "Thanks for your support, {0}! If you enjoyed this set, a little tip would make my day 💛",
+    "zh": "谢谢你的支持，{0}！如果喜欢这组内容，一点打赏就能让我开心一整天 💛"
+  },
+  "ai.response.reengage": {
+    "en": "Hey {0}, it's been a little while! What have you been up to? ✨",
+    "zh": "嗨，{0}，好久没聊了！最近在忙些什么？✨"
+  },
+  "ai.response.flirty": {
+    "en": "You've been on my mind, {0} 😉 What would your perfect evening together look like?",
+    "zh": "我刚刚在想你，{0} 😉 你心目中两个人的完美夜晚是什么样的？"
+  },
+  "fanLabel.ai.active": {
+    "en": "AI",
+    "zh": "AI"
+  },
+  "fanLabel.ai.paused": {
+    "en": "AI paused",
+    "zh": "AI 已暂停"
+  },
+  "fanLabel.ai.needs-human": {
+    "en": "Needs human",
+    "zh": "需要人工"
+  },
+  "navigation.page": {
+    "en": "{0} opens another page. Page navigation is not included in this demo.",
+    "zh": "{0}需要跳转到其他页面，此演示暂不跳转。"
+  },
+  "insights.profile": {
+    "en": "Profile",
+    "zh": "资料"
+  },
+  "completion.invalidForms": {
+    "en": "A selected release form is unavailable. Review the tagged forms before sending.",
+    "zh": "所选授权表单不可用，请检查标记后再发送。"
+  },
+  "completion.invalidCampaign": {
+    "en": "Check the message, recipients, price and scheduled time before sending.",
+    "zh": "请检查消息、收件人、价格及排程时间后再发送。"
+  },
+  "idle.title": {
+    "en": "Idle mode",
+    "zh": "闲置模式"
+  },
+  "idle.description": {
+    "en": "Messages Pro paused after 10 minutes of inactivity. Return to refresh your workspace.",
+    "zh": "10 分钟未操作，消息工作台已暂停。返回后将刷新工作区。"
+  },
+  "idle.return": {
+    "en": "Return to Messages Pro",
+    "zh": "返回 Messages Pro"
+  },
+  "sfw.viewMedia": {
+    "en": "Media View",
+    "zh": "查看媒体"
+  },
+  "sfw.hideMedia": {
+    "en": "Hide media",
+    "zh": "隐藏媒体"
+  },
+  "subscription.notice": {
+    "en": "Please subscribe to resume messaging",
+    "zh": "请先订阅该粉丝以继续发送消息"
+  },
+  "subscription.action": {
+    "en": "Subscribe",
+    "zh": "订阅"
+  },
+  "subscription.forFan": {
+    "en": "Subscribe to {0}",
+    "zh": "订阅 {0}"
+  },
+  "subscription.done": {
+    "en": "Subscribed. You can message this fan now.",
+    "zh": "订阅成功，现在可以向该粉丝发送消息。"
+  },
+  "subscription.required": {
+    "en": "Subscribe to this expired fan before sending a message.",
+    "zh": "发送消息前请先订阅这位已过期粉丝。"
+  },
+  "media.history": {
+    "en": "Sending history",
+    "zh": "发送历史"
+  },
+  "media.historyFor": {
+    "en": "Sending history: {0}",
+    "zh": "发送历史：{0}"
+  },
+  "media.activity.sent": {
+    "en": "Sent free",
+    "zh": "已免费发送"
+  },
+  "media.activity.unpaid": {
+    "en": "Sent for {0}",
+    "zh": "已按 {0} 发送"
+  },
+  "media.activity.bought": {
+    "en": "Bought for {0}",
+    "zh": "已按 {0} 购买"
+  },
+  "media.activity.withdrawn": {
+    "en": "Unsent for {0}",
+    "zh": "已撤回（{0}）"
+  },
+  "media.activity.withdrawnFree": {
+    "en": "Unsent free",
+    "zh": "已撤回免费消息"
+  },
+  "media.unsent": {
+    "en": "Not sent",
+    "zh": "未发送"
+  },
+  "media.info": {
+    "en": "Media details",
+    "zh": "素材详情"
+  },
+  "media.infoFor": {
+    "en": "Media details: {0}",
+    "zh": "素材详情：{0}"
+  },
+  "media.notes": {
+    "en": "Notes",
+    "zh": "备注"
+  },
+  "media.tags": {
+    "en": "Tags",
+    "zh": "标签"
+  },
+  "media.category": {
+    "en": "Category",
+    "zh": "分类"
+  },
+  "media.type": {
+    "en": "Type",
+    "zh": "类型"
+  },
+  "media.edit": {
+    "en": "Edit media information",
+    "zh": "编辑素材信息"
+  },
+  "media.tagHint": {
+    "en": "Separate tags with commas",
+    "zh": "使用逗号分隔标签"
+  },
+  "media.saved": {
+    "en": "Media information saved.",
+    "zh": "素材信息已保存。"
+  },
+  "media.filter.bought": {
+    "en": "Purchased",
+    "zh": "已购买"
+  },
+  "media.filter.unpaid": {
+    "en": "Sent, not purchased",
+    "zh": "已发送未购买"
+  },
+  "media.filter.withdrawn": {
+    "en": "Withdrawn",
+    "zh": "已撤回"
+  },
+  "media.searchBy": {
+    "en": "Search by",
+    "zh": "搜索范围"
+  },
+  "media.search.all": {
+    "en": "All details",
+    "zh": "全部信息"
+  },
+  "media.search.notes": {
+    "en": "Notes",
+    "zh": "备注"
+  },
+  "media.search.tags": {
+    "en": "Hashtags",
+    "zh": "标签"
+  },
+  "media.search.caption": {
+    "en": "PPV caption",
+    "zh": "付费消息文案"
+  },
+  "media.moreFilters": {
+    "en": "More filters",
+    "zh": "更多筛选"
+  },
+  "media.duration": {
+    "en": "Duration",
+    "zh": "时长"
+  },
+  "media.duration.all": {
+    "en": "Any duration",
+    "zh": "不限时长"
+  },
+  "media.duration.short": {
+    "en": "Under 1 minute",
+    "zh": "不足 1 分钟"
+  },
+  "media.duration.medium": {
+    "en": "1–5 minutes",
+    "zh": "1–5 分钟"
+  },
+  "media.duration.long": {
+    "en": "Over 5 minutes",
+    "zh": "超过 5 分钟"
+  },
+  "media.hideViewed": {
+    "en": "Hide content viewed or unlocked by this fan",
+    "zh": "隐藏该粉丝已查看或解锁的内容"
+  },
+  "media.suggestedPrice": {
+    "en": "Suggested price",
+    "zh": "建议价格"
+  },
+  "media.coCreators": {
+    "en": "Co-creators",
+    "zh": "合作创作者"
+  },
+  "media.unsend": {
+    "en": "Unsend",
+    "zh": "撤回"
+  },
+  "media.unsendFor": {
+    "en": "Unsend PPV containing {0}",
+    "zh": "撤回包含 {0} 的付费消息"
+  },
+  "media.unsendConfirmTitle": {
+    "en": "Unsend PPV message?",
+    "zh": "撤回付费消息？"
+  },
+  "media.unsendConfirmBody": {
+    "en": "The PPV message will be permanently removed from the conversation. This action cannot be undone.",
+    "zh": "这条付费消息将从会话中永久移除，此操作无法撤销。"
+  },
+  "inbox.filter.fanLast": {
+    "en": "Last message sent by fan",
+    "zh": "粉丝发送了最后一条消息"
+  },
+  "inbox.filter.hideMuted": {
+    "en": "Hide chats with muted notifications",
+    "zh": "隐藏已静音通知的聊天"
+  },
+  "inbox.filter.hideCreators": {
+    "en": "Hide chats with creators",
+    "zh": "隐藏与创作者的聊天"
+  },
+  "campaign.menu.automated": {
+    "en": "Automated message",
+    "zh": "自动消息"
+  },
+  "campaign.menu.priority": {
+    "en": "Priority mass message",
+    "zh": "优先群发消息"
+  },
+  "campaign.menu.of": {
+    "en": "OF mass message",
+    "zh": "OF 群发消息"
+  },
+  "lists.close": {
+    "en": "Close",
+    "zh": "关闭"
+  },
+  "lists.summary": {
+    "en": "{0} users · {1} posts",
+    "zh": "{0} 位用户 · {1} 条内容"
+  },
+  "lists.summary.one": {
+    "en": "{0} user · {1} posts",
+    "zh": "{0} 位用户 · {1} 条内容"
+  },
+  "notes.add": {
+    "en": "Add notes",
+    "zh": "添加备注"
+  },
+  "notes.label": {
+    "en": "Notes",
+    "zh": "备注"
+  },
+  "notes.placeholder": {
+    "en": "Enter Notes",
+    "zh": "输入备注"
+  },
+  "notes.clear": {
+    "en": "Clear",
+    "zh": "清空"
+  },
+  "chat.more.copyChat": {
+    "en": "Copy chat link",
+    "zh": "复制聊天链接"
+  },
+  "chat.latest": {
+    "en": "Jump to latest message",
+    "zh": "回到最新消息"
+  },
+  "chat.ai": {
+    "en": "AI",
+    "zh": "AI"
+  },
+  "chat.seli": {
+    "en": "Seli",
+    "zh": "Seli"
+  },
+  "chat.seliTitle": {
+    "en": "Seli suggestions",
+    "zh": "Seli 回复建议"
+  },
+  "chat.seliRefresh": {
+    "en": "Generate again",
+    "zh": "重新生成"
+  },
+  "chat.seliUse": {
+    "en": "Use reply",
+    "zh": "使用回复"
+  },
+  "chat.seliHint": {
+    "en": "Choose a suggestion to edit in your draft.",
+    "zh": "选择一条建议放入草稿，编辑后再发送。"
+  },
+  "chat.seliLanguage": {
+    "en": "Reply in English",
+    "zh": "用中文回复"
+  },
+  "chat.notPaid": {
+    "en": "not paid",
+    "zh": "未付款"
+  },
+  "chat.paid": {
+    "en": "paid",
+    "zh": "已付款"
+  },
+  "chat.openMedia": {
+    "en": "Click to open",
+    "zh": "点击打开"
+  },
+  "chat.unlockFor": {
+    "en": "UNLOCK FOR {0}",
+    "zh": "支付 {0} 解锁"
+  },
+  "chat.checkout": {
+    "en": "Message checkout",
+    "zh": "消息支付"
+  },
+  "chat.mediaCount": {
+    "en": "{0} media items",
+    "zh": "{0} 个媒体文件"
+  },
+  "chat.showRemainingMedia": {
+    "en": "View all {0} media items",
+    "zh": "查看全部 {0} 个媒体文件"
+  },
+  "chat.sender": {
+    "en": "Sent by {0}",
+    "zh": "由 {0} 发送"
+  },
+  "chrome.unreadChats": {
+    "en": "{0} unread chats",
+    "zh": "{0} 个未读会话"
+  },
+  "chrome.unreadNotifications": {
+    "en": "{0} unread notifications",
+    "zh": "{0} 条未读通知"
+  },
+  "chat.lockedText": {
+    "en": "Locked message",
+    "zh": "付费消息"
+  },
+  "notification.tab.subscription": {
+    "en": "Subscriptions",
+    "zh": "订阅"
+  },
+  "notification.tab.tip": {
+    "en": "Tips",
+    "zh": "打赏"
+  },
+  "notification.tab.purchase": {
+    "en": "Purchases",
+    "zh": "购买"
+  },
+  "notification.tab.platform": {
+    "en": "OnlyFans",
+    "zh": "OnlyFans"
+  },
+  "notification.categories": {
+    "en": "Notification categories",
+    "zh": "通知分类"
+  },
+  "notification.unreadCount": {
+    "en": "{0} unread notifications",
+    "zh": "{0} 条未读通知"
+  },
+  "notification.dateTime": {
+    "en": "{0} at {1}",
+    "zh": "{0} {1}"
+  },
+  "notification.respondedBy": {
+    "en": "{0} responded to the notification",
+    "zh": "{0} 已回复该通知"
+  },
+  "notification.teamMember": {
+    "en": "A team member",
+    "zh": "团队成员"
+  }
 }

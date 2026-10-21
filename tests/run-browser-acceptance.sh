@@ -35,13 +35,17 @@ if [[ "$ready" != true ]]; then
   exit 1
 fi
 
-# Smoke-check the portal and every entry it links to.
-for path in "/messages-pro/" "/messages-pro/infloww/" "/messages-pro/reports/four-platform-module-comparison/index.html"; do
+# The root redirects to the report; only the report and two demos remain.
+for path in "/messages-pro/" "/messages-pro/app/" "/messages-pro/infloww/" "/messages-pro/research/value-playbook/"; do
   curl -fsS "http://127.0.0.1:$port$path" >/dev/null
 done
-hub_html="$(curl -fsS "http://127.0.0.1:$port/messages-pro/")"
-for link in "/messages-pro/app/" "/messages-pro/infloww/" "/messages-pro/reports/four-platform-module-comparison/index.html"; do
-  grep -q "href=\"$link\"" <<<"$hub_html" || { echo "Portal is missing a link to $link" >&2; exit 1; }
+report_html="$(curl -fsS "http://127.0.0.1:$port/messages-pro/research/value-playbook/")"
+for link in "/messages-pro/app/" "/messages-pro/infloww/"; do
+  grep -q "href=\"$link\"" <<<"$report_html" || { echo "Report is missing a link to $link" >&2; exit 1; }
+done
+for path in "/messages-pro/reports/four-platform-module-comparison/index.html" "/messages-pro/research/" "/messages-pro/research/onlyfans/" "/messages-pro/research/infloww/" "/messages-pro/research/value-comparison/" "/messages-pro/research/feature-inventory/" "/messages-pro/design/crm/" "/messages-pro/design/crm-proposal/" "/messages-pro/validation/"; do
+  status="$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:$port$path")"
+  [[ "$status" == 404 ]] || { echo "Removed page still resolves: $path ($status)" >&2; exit 1; }
 done
 
 "$cli" -s="$session" open "http://127.0.0.1:$port/messages-pro/app/" >/dev/null

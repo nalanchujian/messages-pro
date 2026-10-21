@@ -1,6 +1,6 @@
 # Message Pro demo interaction coverage
 
-Inventory inspected on 2026-10-15 for `/messages-pro/infloww/`. This covers the controls modeled in this demo's first-level workspace and its overlays. It is not a claim that every control in the current production Infloww product has been discovered or reproduced. All records and transactions are local mock state; the original page is separate.
+Inventory inspected on 2026-10-16 for `/messages-pro/infloww/`. This covers the controls modeled in this demo's first-level workspace and its overlays. It is not a claim that every control in the current production Infloww product has been discovered or reproduced. All records and transactions are local mock state; the original page is separate.
 
 ## Header and workspace
 
@@ -8,7 +8,8 @@ Inventory inspected on 2026-10-15 for `/messages-pro/infloww/`. This covers the 
 | --- | --- |
 | Creator tabs and Add creator | Select an existing creator, close a tab, reopen from the picker, drag to reorder or use Alt + Left/Right. Per-creator workspace and per-fan drafts are retained. |
 | Home and fan conversation tabs | Select, close and reorder the modeled tabs. Notification chat actions reuse a dedicated tab and retain the Home conversation. |
-| SFW | Persisted switch; Ctrl/Cmd + Shift + S shortcut. |
+| SFW | Persisted switch; Ctrl/Cmd + Shift + S shortcut; visible media is blurred and each item has a Media View toggle that resets when SFW is re-enabled. |
+| Idle mode | Ten minutes without mouse movement or keyboard input shows a blocking idle view. Return restores the workspace and checks scheduled work; notifications continue to update. |
 | Language | English by default, English/Chinese configuration switch; the menu dismisses outside or with Escape. User-entered message content is retained. |
 | Fullscreen and narrow layouts | Browser fullscreen toggle, mobile column navigation and a closable insights drawer. |
 | Agency bell / withdrawal alert | Bell shows the page-navigation Toast. Eligible local withdrawals create an admin alert and unread badge; alert View details opens the withdrawal snapshot dialog, nested media viewer and Go to chat action. |
@@ -24,7 +25,7 @@ Inventory inspected on 2026-10-15 for `/messages-pro/infloww/`. This covers the 
 | Conversation row and signals | Select conversation, retained draft preview, unread/mute/timer states, signal descriptions on hover/focus. |
 | Row context menu | List membership, read/unread, move inbox where enabled, hide, confirmed clear; Open in new tab shows a Toast. |
 | Single/bulk clear | Local selection, select all/deselect, confirmation before clearing conversation data. |
-| Online fans | Live eligible results; subscription status/duration, spend/tip minimums, list/creator/recent-contact exclusions, muted inclusion, reset and open conversation. Message all carries the filter into the campaign editor. |
+| Online fans | Live eligible results; subscription status/duration, spend/tip minimums, list/creator/recent-contact exclusions, muted inclusion, reset and open conversation. Expired fans who are not followed by the creator have a Subscribe action. Message all carries the filter into the campaign editor. |
 | Fan notifications | Subscription/tip/purchase/platform tabs, read state, explicit fan-scoped quick reply and dedicated conversation tab. Unavailable replies are disabled. |
 | Split inbox settings | Enable/disable and 2–9 inbox count, staged until confirmed redistribution; moving a fan uses a separate dialog. |
 | Pinned lists and fan lists | Pin/unpin list tabs; shared searchable membership picker, immediate checkbox updates, refresh and nested New list with duplicate-name checks. |
@@ -38,16 +39,17 @@ Inventory inspected on 2026-10-15 for `/messages-pro/infloww/`. This covers the 
 | Header utilities | Rename, shared lists, mute, fan notes, pinned-message overlay, filtered conversation gallery, message search with previous/next match and refresh. Fan name/profile and new-window entries show a Toast. |
 | Fan More menu | Copy profile URL, rename, lists, mock discount, hide, mute, restrict/unrestrict, block/unblock and report; relevant changes use a dialog or confirmation. |
 | Message actions | Like/unlike, reply and jump to quoted message, pin/unpin, copy text with clipboard fallback, copy draft, save script, forward draft, sent-message creator/release tags and sample translation. |
-| Paid/failed messages | Local viewed/purchased simulations and failed-delivery retry; eligible sent/read unpurchased outbound messages can be withdrawn within 60 minutes. Withdrawal keeps an original-message/media snapshot. |
+| Paid/failed messages | Local viewed/purchased simulations and failed-delivery retry; eligible sent/read unpurchased outbound messages can be withdrawn within 60 minutes. Withdrawal keeps an original-message/media snapshot. An expired fan who is not followed by the creator shows a Subscribe notice and cannot receive a new message until Subscribe is used. |
 | Media surfaces | Message, draft, script-preview, forward and gallery thumbnails open the shared indexed viewer. Previous/next controls, arrow keys and closing are available. |
 | Emoji picker/settings | Search/categories; choosing retains the picker. Settings stage favorite add/remove/reorder up to 40 until Save; Cancel discards. |
 | Scripts / slash search | Category/search list, one-second hover detail with media carousel/status/sender information, editable message preview and nested media/tags. Cancel preserves the main draft; Send uses the preview. More scripts shows a Toast. |
-| Vault / GIF | Categories, type/search/send-state filters, select all, staged selection, nested indexed viewer, sending/purchase/withdrawal history and editable local notes/tags. Add commits selected Vault media; Close discards selection. GIF uses the modeled single-GIF restrictions. |
-| Co-creators / Release forms | Staged Tag user and Release form tabs, search/filter/sort, clear and Add. Unavailable mock forms cannot be selected/sent; the draft, preview and sent-message targets remain separate. |
+| Vault / GIF | Categories, type/search/send-state filters, scoped note/hashtag/PPV-caption search, duration and viewed/unlocked filter, select all, staged selection, nested indexed viewer, sending/purchase/withdrawal history, eligible PPV unsend confirmation, and staged editing of category/co-creators/hashtags/notes/suggested price. Add commits selected Vault media; Close discards selection. Add GIF opens an inline search and horizontal animated strip above the composer; Escape/Close dismiss it, arrows browse results, and selecting a GIF fills the draft without sending. Existing GIF attachments can be replaced; incompatible paid/mixed media drafts remain blocked. Vault uses the supplied sidebar/search/type-tab/four-column card layout, date and duration badges, notes/tag overlays and scoped aggregate metrics. Seed media includes images, GIFs and two playable synthetic audio fixtures with waveforms; video filter behavior uses uploaded mock video. Selection controls appear on hover/focus, and the Add bar appears only after choosing media. |
+| Co-creators / Release forms | Tag user and Release form pill tabs, searchable/sortable card list, circular multi-selection and Verified status. Close commits the selection to its invoking draft, timed editor or sent message. Unavailable mock forms cannot be selected/sent; those targets remain separate. |
 | Upload and draft editing | Local file picker/drop for supported image/video/audio, attachment removal/free-preview state, text formatting/color, quote removal, clear draft, Enter to send and Shift + Enter newline. |
-| Price and scheduling | $0 or valid paid price, history chart, paid-text/free-media controls; calendar/hour/minute schedule with past-time checks and removal. |
-| Timed message/reminder | Two-mode menu; 1–60 minute duration, 12 local reminder sounds, independent timed-message draft, countdown/cancel and once-only due execution. |
-| Seli and translation | Local sample generation, review/edit and applying results to the draft. No external AI or translation service is called. |
+| Price and scheduling | Screenshot-based 600 px price dialog, Free placeholder, minimum-price hint, purchased-PPV-only history with Max/Avg and illustrated empty state. Save requires a changed free or valid $3–$200 amount with up to two decimals; Cancel preserves the draft. Schedule opens a screenshot-based 520 px dialog with date/time tabs, Sunday-first six-week calendar, month/year navigation and pickers, disabled past dates, Next to time selection, future-time validation and removal of an existing schedule. Cancel leaves the draft unchanged. |
+| Timed message/reminder | Clock opens one centered editor with message/reminder tabs. Default 1-minute delay; 1–60 whole minutes, independent message draft, nickname tag insertion, formatting, favorite emoji editor, nested scripts/media/creator pickers, paid-media count, 12 local reminder sounds, countdown/cancel and once-only due execution. Cancel preserves the main draft. |
+| Voice emotion and shortcuts | Six supplied emotion rows, per-emotion Option/Alt letter binding with duplicate rejection and local persistence; Escape cancels rebinding. Row click and shortcuts preview the draft with a local system voice using distinct rate/pitch settings. Empty drafts or missing local voices show a Toast. Closing or switching fan stops playback. This does not create an audio attachment or call the production voice service. |
+| AI assistant and translation | AI opens an inline response-type panel above the composer, matching the supplied screenshot. Casual, Tip request, Re-engage and Sexting insert editable local mock drafts; help and Close stay inline. Switching fan closes the panel. No external AI or translation service is called. |
 
 ## Insights
 

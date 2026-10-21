@@ -27,3 +27,21 @@ export function mediaHistory(messages: Message[], mediaId: string, withdrawals: 
 export function latestMediaActivity(messages: Message[], mediaId: string, withdrawals: WithdrawalRecord[] = []) {
   return mediaHistory(messages, mediaId, withdrawals)[0]
 }
+
+export function mediaMetrics(messages: Message[], mediaIds: string[], withdrawals: WithdrawalRecord[] = []) {
+  const ids = new Set(mediaIds)
+  const entries = new Map(messages.map(message => [message.id, message]))
+  withdrawals.forEach(record => { if (!entries.has(record.message.id)) entries.set(record.message.id, record.message) })
+  let sent = 0, paid = 0, purchased = 0, revenue = 0
+  entries.forEach(message => {
+    if (message.direction !== 'outbound' || !['sent', 'read', 'withdrawn'].includes(message.status)) return
+    const attachments = message.attachments.filter(item => ids.has(item.mediaId))
+    if (!attachments.length) return
+    sent++
+    if (message.price > 0 && attachments.some(item => !item.free)) {
+      paid++
+      if (message.purchasedAt) { purchased++; revenue += message.price }
+    }
+  })
+  return { sent, rate: paid ? purchased / paid * 100 : 0, revenue: Math.round(revenue * 100) / 100 }
+}

@@ -13,6 +13,8 @@
 
 * { box-sizing: border-box; }
 body { min-width: 0; min-height: 100vh; margin: 0; }
+.validation-workspace{height:100dvh;display:flex;flex-direction:column}.validation-context{display:flex;flex:none;align-items:center;justify-content:space-between;gap:20px;padding:12px 20px;background:#e9f2ec;border-bottom:1px solid #ccdfd2;color:#386b49;min-height:76px}.validation-context div{min-width:0}.validation-context strong{display:block;font-size:13px}.validation-context span{display:block;margin-top:5px;font-size:11px;color:#6e8575}.validation-context a{flex:none;color:#34724b;font-size:12px;text-decoration:none}.validation-inbox-toggle{display:none}.app-shell.with-validation-context{height:auto;flex:1;min-height:0}
+@media(max-width:700px){.validation-context{display:block;padding:12px 15px}.validation-context a{display:inline-block;margin-top:8px}}
 button, input, textarea, select { font: inherit; }
 button { border: 0; cursor: pointer; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
@@ -735,3 +737,5 @@ h1, h2, h3, h4 { font-family: inherit; }
   .demo-tour-content h2 { font-size: 16px; }
   .demo-tour-content p { font-size: 12px; }
 }
+
+@media(max-width:640px){.validation-inbox-toggle{display:inline-block;margin-top:9px;padding:6px 10px;border:1px solid #b9d1c0;border-radius:5px;background:#f5faf6;color:#396d48;font-size:11px}.app-shell.with-validation-context{grid-template-columns:minmax(0,1fr)}.with-validation-context>.inbox-panel{display:none}.with-validation-context.validation-show-inbox>.inbox-panel{display:flex;min-height:0}.with-validation-context.validation-show-inbox>.chat-panel{display:none}.with-validation-context .chat-header{height:auto;min-height:66px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px;gap:8px}.with-validation-context .chat-header-meta{flex-wrap:wrap}.with-validation-context .inbox-controls .queue-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}

@@ -5,6 +5,9 @@
 #infloww-demo .if-shared-media-preview footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;color:#777;font-size:12px}
 #infloww-demo .if-media-activity-button{position:absolute;left:6px;top:6px;z-index:1;display:flex;align-items:center;gap:4px;max-width:calc(100% - 12px);padding:4px 6px;border-radius:4px;background:#555b;color:#fff;font-size:11px}
 #infloww-demo .if-vault-item{position:relative}
+#infloww-demo .if-vault-media-frame{position:relative}
+#infloww-demo .if-vault-unsend{position:absolute;left:7px;bottom:7px;z-index:2;display:grid;place-items:center;width:27px;height:27px;border-radius:5px;background:#263247dc;color:#fff;box-shadow:0 2px 8px #17213536}
+#infloww-demo .if-vault-unsend:hover{background:#e26666}
 #infloww-demo .if-media-activity-button.bought{background:#159b79dd}
 #infloww-demo .if-media-activity-button.unpaid{background:#e57869e6}
 #infloww-demo .if-media-history-popover{padding:8px;max-height:320px;overflow:auto}
@@ -19,3 +22,15 @@
 #infloww-demo .if-media-info-popover dl{display:grid;grid-template-columns:70px minmax(0,1fr);gap:9px}
 #infloww-demo .if-media-info-popover dt{color:#999}
 #infloww-demo .if-media-info-popover dd{margin:0;overflow-wrap:anywhere}
+#infloww-demo .if-vault-search-row .if-icon-button{flex:none}
+#infloww-demo .if-vault-filter-popover{padding:16px;display:grid;gap:14px;color:#4c566a;font-size:13px}
+#infloww-demo .if-vault-filter-popover h3{margin:0;font-size:15px;color:#263247}
+#infloww-demo .if-vault-filter-popover .if-check-row{display:flex;align-items:flex-start;gap:9px;margin:0;line-height:1.45}
+#infloww-demo .if-media-edit-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#infloww-demo dialog.if-media-edit-dialog>.if-modal-surface>.if-modal-body,#infloww-demo dialog.if-vault-unsend-dialog>.if-modal-surface>.if-modal-body{padding:24px}
+#infloww-demo .if-media-edit-fields .if-field{margin:0}
+#infloww-demo .if-media-edit-fields .if-field:nth-child(n+3),#infloww-demo .if-media-edit-creators{grid-column:1/-1}
+#infloww-demo .if-media-edit-creators{display:flex;flex-wrap:wrap;gap:12px;margin:0;padding:12px;border:1px solid #dce2ed;border-radius:6px}
+#infloww-demo .if-media-edit-creators legend{padding:0 5px;color:#66748b;font-size:13px}
+#infloww-demo .if-media-edit-creators label{display:flex;align-items:center;gap:6px;font-size:13px}
+@media(max-width:500px){#infloww-demo .if-media-edit-fields{grid-template-columns:1fr}}

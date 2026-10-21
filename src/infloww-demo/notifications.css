@@ -1,5 +1,3 @@
-#infloww-demo .if-workspace-shell{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
-#infloww-demo .if-workspace-shell[hidden]{display:none}
 #infloww-demo .if-agency-bell{position:relative}
 @media(max-width:640px){#infloww-demo .if-header-actions>.if-agency-bell{display:inline-flex}}
 #infloww-demo .if-agency-bell>b{position:absolute;right:-3px;top:-3px;background:#ff766e;color:#fff;border-radius:9px;padding:1px 4px;font-size:9px;min-width:14px}
@@ -15,11 +13,11 @@
 #infloww-demo .if-agency-notification-body p{font-size:13px;line-height:1.7;color:#666;margin:6px 0}
 #infloww-demo .if-agency-notification-body time{font-size:12px;color:#999}
 #infloww-demo .if-agency-notification-icon{display:grid;place-items:center;position:relative;width:42px;height:42px;border-radius:10px;background:#edf2ff;color:#617be3;flex:none}
-#infloww-demo .if-agency-notification-icon>i{position:absolute;left:-5px;top:-3px;width:7px;height:7px;background:#3467ff;border-radius:50%}
+#infloww-demo .if-agency-notification-icon>i{position:absolute;left:-5px;top:-3px;width:7px;height:7px;background:var(--if-accent);border-radius:50%}
 #infloww-demo .if-withdrawal-content>p{font-size:14px;line-height:1.8;color:#555}
 #infloww-demo .if-withdrawal-message{border-radius:6px;background:#f5f6f9;padding:14px;margin-top:16px;font-size:14px;line-height:1.7}
 #infloww-demo .if-withdrawal-message>p{white-space:pre-wrap;overflow-wrap:anywhere}
-#infloww-demo .if-withdrawal-message>b{display:block;color:#3467ff;margin-top:10px}
+#infloww-demo .if-withdrawal-message>b{display:block;color:var(--if-accent);margin-top:10px}
 #infloww-demo .if-withdrawal-media{display:flex;align-items:center;gap:10px;margin-top:12px}
 #infloww-demo .if-withdrawal-media>button{width:110px;position:relative;border-radius:5px;overflow:hidden;flex:none}
 #infloww-demo .if-withdrawal-media .if-media-view{height:80px}
@@ -31,5 +29,5 @@
 #infloww-demo .if-withdrawal-alert{position:fixed;right:20px;top:60px;z-index:90;width:min(360px,calc(100vw - 40px));padding:16px 18px;border:1px solid #e2e6ee;border-radius:9px;background:#fff;color:#333;box-shadow:0 6px 28px #18254022}
 #infloww-demo .if-withdrawal-alert>header{display:flex;align-items:center;justify-content:space-between;font-size:14px}
 #infloww-demo .if-withdrawal-alert>p{font-size:12px;line-height:1.7;color:#777;margin:8px 0 12px}
-#infloww-demo .if-withdrawal-alert>button{font-size:12px;color:#3467ff}
+#infloww-demo .if-withdrawal-alert>button{font-size:12px;color:var(--if-accent)}
 @media(max-width:600px){#infloww-demo .if-agency-notifications>header{padding:16px;gap:10px;flex-wrap:wrap}#infloww-demo .if-agency-notifications h1{font-size:17px}#infloww-demo .if-agency-notification-body{padding:16px}#infloww-demo .if-agency-notification-body>article{padding:14px;gap:10px;flex-wrap:wrap}#infloww-demo .if-withdrawal-media>button{width:75px}}
