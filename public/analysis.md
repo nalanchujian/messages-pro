@@ -1,6 +1,22 @@
-# 五类经营价值：四家 Creator CRM 的当前实现
+# Onlyfans CRM 的经营价值
 
-资料核查截至 2026-10-21。5 类价值、15 个落地点、50 项平台实现，引用 44 份官方资料。
+不同平台能力对比与产品建设启示
+
+报告更新于 2026-10-22。5 类核心价值、1 类增长扩展价值，共 18 个落地点、57 项平台实现，引用 48 份官方资料。
+
+研究范围：以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。
+
+## 管理摘要（本报告分析）
+
+核心判断：Onlyfans CRM 的核心价值，是持续经营客户与内容、复制有效销售能力，并让多人、多账号的业务始终可控。
+
+**促进收入增长**：让高意向机会及时得到处理，让内容与报价匹配需求，并通过持续跟进和关系维护，争取更多成交与复购。
+
+**扩大可复用的经营能力**：让已有内容充分参与销售，让成熟经验被更多员工使用，在有限时间内承接更多有效工作。
+
+**保持规模化经营可控**：业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录掌握过程、核对归属。
+
+**产品建设启示**：围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈；对掌握渠道和预算的客户，再加强获客回报能力。
 
 每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。
 
@@ -8,11 +24,11 @@
 
 ## 1. 提高销售机会的有效转化
 
-把已经出现的兴趣，推进为合适的报价和及时的成交。
+减少机会遗漏，让更多销售机会转化为收入。
 
 
 
-分析范围：经营对象是一轮销售机会。重点是先处理谁、提供什么、何时再跟进；跨月留存放在“客户长期价值”中。
+分析范围：经营对象是一轮销售机会，包含首次购买和再次购买。重点是先处理谁、提供什么、何时再跟进；跨周期的关系维护归入“客户持续经营”。
 
 
 
@@ -164,9 +180,145 @@
 
 
 
-## 2. 提高内容资产的经营回报
+## 2. 延续客户关系，促进持续消费
 
-让已经制作的内容更容易找到、正确售卖，并知道下一步该复用什么。
+延续客户关系，促进复购、续订与回流。
+
+
+
+分析范围：经营对象是同一位粉丝跨周期的关系。重点是记住偏好、接续服务和生命周期触达；一轮具体成交的处理归入“销售机会转化”。
+
+
+
+### 2.1 让关系记忆跟着粉丝走
+
+问题（分析）：换人、换班或隔几天再聊时，偏好与承诺丢失，粉丝反复被问同样的问题。
+
+作用（分析）：在回复前恢复必要上下文，降低重复询问和不相关推荐。
+
+示例情境：晚班接手一位老粉丝：先看偏好、最近购买与上次沟通，而不是重新从头认识。
+
+主要使用者：每位经办员工
+
+
+
+#### Infloww · Fan Insights · 资料与备注模板
+
+当前实现：
+
+- 聊天侧可维护昵称、生日、所在地等资料。（[Fan Insights · Profile](https://help.infloww.com/en/articles/523936-fan-insights)）
+
+- 备注区支持自由文本和自定义模板。（[Fan Insights · Notes](https://help.infloww.com/en/articles/523936-fan-insights)）
+
+
+
+#### Supercreator · Fans CRM · AI 整理与团队备注
+
+当前实现：
+
+- Fill with AI 从对话中提取粉丝偏好和资料，填入或更新 CRM 字段。（[Fans Copilot / CRM · Fill with AI](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)）
+
+- Notes Template 可设置机构默认备注结构，供团队在粉丝资料中使用。（[Fans Copilot / CRM · Notes Template](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)）
+
+
+
+#### OnlyMonster · Advanced Fan Information · 偏好与备注
+
+当前实现：
+
+- 粉丝资料可记录生日、时区、订阅和续订状态，并查看最近回复、最近阅读等信息。（[Advanced Fan Information · General](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
+
+- Preferences 可手工记录和编辑粉丝偏好。（[Advanced Fan Information · Preferences](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
+
+
+
+#### CreatorHero · Fan Notes + Chat Summary
+
+当前实现：
+
+- Fan Notes 支持备注模板和聊天界面内编辑，资料随当前粉丝展示。（[Fan Info · Fan Notes](https://help.creatorhero.com/en/articles/10500000-fan-info)）
+
+- Summarize Chat 弹窗可选择时间范围并生成摘要，也可刷新或导出。（[Chat summary · Summarizing a Chat](https://help.creatorhero.com/en/articles/10523101-chat-summary-feature)）
+
+
+
+### 2.2 在关键生命周期节点主动经营
+
+问题（分析）：新订阅没被欢迎、即将到期未联系、买完后没有后续，关系自然冷却。
+
+作用（分析）：让时间或状态触发合适动作，把重复检查交给系统，把语境判断留给人员。
+
+示例情境：对新粉先介绍，对临期付费粉解释后续内容，对已到期老买家开展一次有理由的唤回。
+
+主要使用者：生命周期运营
+
+
+
+#### Infloww · Smart Messages · 生命周期触发
+
+当前实现：
+
+- 提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。（[Smart Messages · Smart Messages Types](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
+
+资料限定：
+
+- 一个粉丝同时符合多个类型时，只发送优先级最高的一类；官方文档给出了类型优先顺序。（[Smart Messages · FAQs](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
+
+
+
+#### Supercreator · Expired Fans Automation · 重新建立触达
+
+当前实现：
+
+- 自动关注已过期粉丝，每天约处理 100–200 人，优先关注高消费粉丝，并排除创作者账号。（[Expired Fans Automation · How does it work?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
+
+- 可在 Automation 页面启用或暂停该自动化。（[Expired Fans Automation · How do you start using the Expired Fans automation?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
+
+
+
+#### OnlyMonster · Auto Messages · 状态触发
+
+当前实现：
+
+- 提供欢迎、上线、已过期、即将过期及关闭自动续订等触发条件。（[Auto Messages · Available Triggers](https://docs.onlymonster.ai/members-features/auto-messages)）
+
+- 触发后的动作可选择发送消息，或启动 Mimic AI 会话。（[Auto Messages · Action Type](https://docs.onlymonster.ai/members-features/auto-messages)）
+
+
+
+### 2.3 持续查看粉丝增长与留存
+
+问题（分析）：只看当期收入，很难知道粉丝基盘是在积累，还是在流失。
+
+作用（分析）：持续呈现新增、活跃、保留和流失情况，为关系经营提供背景。
+
+示例情境：经营负责人查看老粉的订阅状态与购买历史，区分仍在互动、持续购买和已经沉默的人。
+
+主要使用者：经营负责人
+
+
+
+#### Infloww · Fan Reports · 新增、流失与保留
+
+当前实现：
+
+- 报告呈现新增、流失、保留和活跃粉丝，以及自动续订开启／关闭情况；导出时可选日期范围与指标。（[Fan reports · 文章开篇](https://help.infloww.com/en/articles/276167-fan-reports)）
+
+- 留存表查看粉丝在一段时间内维持订阅的情况。（[Fan reports · Understanding Fan Retention](https://help.infloww.com/en/articles/276167-fan-reports)）
+
+
+
+#### Supercreator · Creator Analytics · 订阅增长
+
+当前实现：
+
+- 订阅分析展示新增、流失和活跃订阅者及其消费，并提供与上一周期的比较。（[Creator Analytics · Subscribers and growth](https://help.supercreator.app/en/articles/8118590-creator-analytics)）
+
+
+
+## 3. 提高内容资产的经营回报
+
+提高内容复用效率，让已有素材持续创造收益。
 
 
 
@@ -174,7 +326,7 @@
 
 
 
-### 2.1 找到适合内容，并避免重复售卖
+### 3.1 找到适合内容，并避免重复售卖
 
 问题（分析）：素材越来越多，员工找不到对应内容，或把粉丝已经买过的内容再次推荐。
 
@@ -232,7 +384,7 @@
 
 
 
-### 2.2 把散落素材变成可复用的销售组合
+### 3.2 把散落素材变成可复用的销售组合
 
 问题（分析）：好内容需要反复找图、写介绍、配价格；经验留在个别员工手里。
 
@@ -284,7 +436,7 @@
 
 
 
-### 2.3 用销售反馈决定复用与制作方向
+### 3.3 用销售反馈决定复用与制作方向
 
 问题（分析）：只知道总销售额，不知道哪些内容适合继续卖，哪些只是曝光多。
 
@@ -328,149 +480,13 @@
 
 
 
-## 3. 提高客户的长期价值
+## 4. 扩大经营产能，复制有效经验
 
-让每次互动积累到下一次，把一次购买延续为可持续的关系。
+扩大有效工作量，降低对个别员工的依赖。
 
 
 
-分析范围：经营对象是同一位粉丝跨周期的关系。保留、复购和唤回分别观察，避免用一次成交替代长期价值。
-
-
-
-### 3.1 让关系记忆跟着粉丝走
-
-问题（分析）：换人、换班或隔几天再聊时，偏好与承诺丢失，粉丝反复被问同样的问题。
-
-作用（分析）：在回复前恢复必要上下文，降低重复询问和不相关推荐。
-
-示例情境：晚班接手一位老粉丝：先看偏好、最近购买与上次沟通，而不是重新从头认识。
-
-主要使用者：每位经办员工
-
-
-
-#### Infloww · Fan Insights · 资料与备注模板
-
-当前实现：
-
-- 聊天侧可维护昵称、生日、所在地等资料。（[Fan Insights · Profile](https://help.infloww.com/en/articles/523936-fan-insights)）
-
-- 备注区支持自由文本和自定义模板。（[Fan Insights · Notes](https://help.infloww.com/en/articles/523936-fan-insights)）
-
-
-
-#### Supercreator · Fans CRM · AI 整理与团队备注
-
-当前实现：
-
-- Fill with AI 从对话中提取粉丝偏好和资料，填入或更新 CRM 字段。（[Fans Copilot / CRM · Fill with AI](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)）
-
-- Notes Template 可设置机构默认备注结构，供团队在粉丝资料中使用。（[Fans Copilot / CRM · Notes Template](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)）
-
-
-
-#### OnlyMonster · Advanced Fan Information · 偏好与备注
-
-当前实现：
-
-- 粉丝资料可记录生日、时区、订阅和续订状态，并查看最近回复、最近阅读等信息。（[Advanced Fan Information · General](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
-
-- Preferences 可手工记录和编辑粉丝偏好。（[Advanced Fan Information · Preferences](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
-
-
-
-#### CreatorHero · Fan Notes + Chat Summary
-
-当前实现：
-
-- Fan Notes 支持备注模板和聊天界面内编辑，资料随当前粉丝展示。（[Fan Info · Fan Notes](https://help.creatorhero.com/en/articles/10500000-fan-info)）
-
-- Summarize Chat 弹窗可选择时间范围并生成摘要，也可刷新或导出。（[Chat summary · Summarizing a Chat](https://help.creatorhero.com/en/articles/10523101-chat-summary-feature)）
-
-
-
-### 3.2 在关键生命周期节点主动经营
-
-问题（分析）：新订阅没被欢迎、即将到期未联系、买完后没有后续，关系自然冷却。
-
-作用（分析）：让时间或状态触发合适动作，把重复检查交给系统，把语境判断留给人员。
-
-示例情境：对新粉先介绍，对临期付费粉解释后续内容，对已到期老买家开展一次有理由的唤回。
-
-主要使用者：生命周期运营
-
-
-
-#### Infloww · Smart Messages · 生命周期触发
-
-当前实现：
-
-- 提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。（[Smart Messages · Smart Messages Types](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
-
-资料限定：
-
-- 一个粉丝同时符合多个类型时，只发送优先级最高的一类；官方文档给出了类型优先顺序。（[Smart Messages · FAQs](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
-
-
-
-#### Supercreator · Expired Fans Automation · 重新建立触达
-
-当前实现：
-
-- 自动关注已过期粉丝，每天约处理 100–200 人，优先关注高消费粉丝，并排除创作者账号。（[Expired Fans Automation · How does it work?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
-
-- 可在 Automation 页面启用或暂停该自动化。（[Expired Fans Automation · How do you start using the Expired Fans automation?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
-
-
-
-#### OnlyMonster · Auto Messages · 状态触发
-
-当前实现：
-
-- 提供欢迎、上线、已过期、即将过期及关闭自动续订等触发条件。（[Auto Messages · Available Triggers](https://docs.onlymonster.ai/members-features/auto-messages)）
-
-- 触发后的动作可选择发送消息，或启动 Mimic AI 会话。（[Auto Messages · Action Type](https://docs.onlymonster.ai/members-features/auto-messages)）
-
-
-
-### 3.3 持续查看粉丝增长与留存
-
-问题（分析）：只看当期收入，很难知道粉丝基盘是在积累，还是在流失。
-
-作用（分析）：持续呈现新增、活跃、保留和流失情况，为关系经营提供背景。
-
-示例情境：经营负责人查看老粉的订阅状态与购买历史，区分仍在互动、持续购买和已经沉默的人。
-
-主要使用者：经营负责人
-
-
-
-#### Infloww · Fan Reports · 新增、流失与保留
-
-当前实现：
-
-- 报告呈现新增、流失、保留和活跃粉丝，以及自动续订开启／关闭情况；导出时可选日期范围与指标。（[Fan reports · 文章开篇](https://help.infloww.com/en/articles/276167-fan-reports)）
-
-- 留存表查看粉丝在一段时间内维持订阅的情况。（[Fan reports · Understanding Fan Retention](https://help.infloww.com/en/articles/276167-fan-reports)）
-
-
-
-#### Supercreator · Creator Analytics · 订阅增长
-
-当前实现：
-
-- 订阅分析展示新增、流失和活跃订阅者及其消费，并提供与上一周期的比较。（[Creator Analytics · Subscribers and growth](https://help.supercreator.app/en/articles/8118590-creator-analytics)）
-
-
-
-## 4. 提高团队的经营效率与扩展能力
-
-让更多员工稳定地接续工作，同时控制协作、训练与管理成本。
-
-
-
-分析范围：经营对象是人、班次和执行过程。脚本与内容资产共用，但这里衡量培训、人效、交接与管理投入。
+分析范围：经营对象是人员、经验与执行流程，关注分工、培训和可承担的工作量。账号访问、敏感操作和责任追溯归入“经营可控性”。
 
 
 
@@ -510,13 +526,11 @@
 
 
 
-#### OnlyMonster · Inboxes + Shift-Based Access
+#### OnlyMonster · Inboxes · 分组与显示范围
 
 当前实现：
 
 - Inboxes 最多支持 6 组，可自定义名称和颜色，并选择显示哪些组。（[Inboxes · Enhanced System Highlights](https://docs.onlymonster.ai/members-features/inboxes-advanced-group-chat-splitting)）
-
-- 另有按角色配置的班次访问限制：开启后，成员只在排班时段内可以访问账号。（[Shift-Based Access Control · Role-Based Access](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
 
 
 
@@ -576,25 +590,23 @@
 
 
 
-### 4.3 用可追溯事实做培训、排班与结算
+### 4.3 根据工作负荷安排人员与培训
 
-问题（分析）：主管只看总销售排名，无法区分资源差异、操作质量和归属争议。
+问题（分析）：主管只看总销售排名，难以区分人员投入、工作负荷与能力差异。
 
-作用（分析）：把经营结果连到执行过程，缩短定位问题的时间，并使用一致口径比较。
+作用（分析）：结合工时、消息与响应情况了解工作分布，为排班和培训提供依据。
 
 示例情境：员工销售下降：先看是否少了机会，再看回复和报价过程，最后讨论培训或排班。
 
-主要使用者：主管 + 财务 / 人力
+主要使用者：主管 + 培训负责人
 
 
 
-#### Infloww · Employee Reports + Message Dashboard
+#### Infloww · Employee Reports · 人员投入与工作量
 
 当前实现：
 
 - 员工报表包含销售、消息、解锁率、排班／打卡工时和响应时间等指标。（[Employee Reports · Key metrics explained](https://help.infloww.com/en/articles/262078-employee-reports)）
-
-- Message Dashboard 展示员工消息、购买状态、收入和响应时间。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
 
 
@@ -612,6 +624,124 @@
 
 
 
+#### CreatorHero · Chatter Tracking · 员工工作明细
+
+当前实现：
+
+- Chatter Tracking 的员工表展示收入、响应时间、消息和 PPV 发送／购买情况，并可进入个人详情。（[Chatter Tracking · All Chatters Table](https://help.creatorhero.com/en/articles/10426384-chatter-tracking)）
+
+
+
+## 5. 业务交给团队，经营仍然可控
+
+明确访问与操作边界，掌握执行过程和责任。
+
+
+
+分析范围：经营对象是账号、操作权限与责任。关注谁能进入、能做什么、执行后如何核对；工作速度与经验复用归入“经营产能与能力复制”。
+
+
+
+### 5.1 按工作需要授予账号访问
+
+问题（分析）：多人共用创作者账号，容易把登录凭据与长期访问权一起交给员工。
+
+作用（分析）：将账号访问配置为可授予、可限制的工作权限，减少凭据共享和非工作时段访问。
+
+示例情境：新员工只获得所负责账号的访问；启用班次限制后，下班时段无法再打开账号。
+
+主要使用者：账号负责人 + 管理员
+
+
+
+#### Supercreator · SharedLogin · 共享会话与访问控制
+
+当前实现：
+
+- 通过共享已登录会话，让员工访问获授权的账号，无需共享账号密码；管理员可随时允许或阻止账号访问。（[SharedLogin · Why use SharedLogin™?](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)）
+
+资料限定：
+
+- 新成员默认没有任何 OnlyFans 账号权限，需要在 Team Members 页面配置。（[SharedLogin · Permissions](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)）
+
+
+
+#### OnlyMonster · Shift-Based Access · 班次访问限制
+
+当前实现：
+
+- 可按角色启用班次访问限制；开启后，该角色的成员只能在排班时段访问账号。（[Shift-Based Access Control · Role-Based Access](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
+
+资料限定：
+
+- 具备 View Shifts 权限的成员可在班次临近结束时延长 15 分钟。（[Shift-Based Access Control · Shift Extension](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
+
+
+
+### 5.2 限定岗位可见数据与操作
+
+问题（分析）：聊天员工需要接待粉丝，但不一定需要查看全部收入、修改账号设置或删除内容。
+
+作用（分析）：把工作所需功能、敏感操作和数据范围分别授权，让权限与岗位责任相符。
+
+示例情境：聊天员工使用消息与素材；主管查看下属业务数据，管理员保留敏感设置权限。
+
+主要使用者：经营负责人 + 管理员
+
+
+
+#### Infloww · Role Permissions · 功能与数据范围
+
+当前实现：
+
+- 可按角色授予或限制功能页面，并设置本人、本人和下属、全部数据三类数据范围。（[Role permissions · Adjust permissions](https://help.infloww.com/en/articles/262098-role-permissions)）
+
+
+
+#### Supercreator · Roles and Permissions · 岗位权限
+
+当前实现：
+
+- 提供 Chatter、Account Manager、Supervisor、Owner 和 Analyst 五类角色，分配后可进一步调整成员权限。（[Setting Roles and Permissions · Setting Roles and Permissions](https://help.supercreator.app/en/articles/9064920-setting-roles-and-permissions)）
+
+- 可限制员工查看银行信息和账号敏感设置；启用限制后，相应功能对员工隐藏。（[Setting Roles and Permissions · Sensitive Information on OnlyFans](https://help.supercreator.app/en/articles/9064920-setting-roles-and-permissions)）
+
+
+
+#### CreatorHero · Roles · 操作权限配置
+
+当前实现：
+
+- 可创建自定义角色，分别选择 OnlyFans 和 CreatorHero 后台权限，再分配给团队成员。（[Roles · Create Custom Roles / Assign and Update Roles](https://help.creatorhero.com/en/articles/10398444-roles)）
+
+- OnlyFans 权限包括消息处理、媒体删除、银行信息访问和账号删除等操作。（[Roles · OnlyFans Permissions](https://help.creatorhero.com/en/articles/10398444-roles)）
+
+
+
+### 5.3 追溯消息执行，核对销售归属
+
+问题（分析）：业务由多人接续，管理者需要了解谁发了什么，以及交易当前归属于谁。
+
+作用（分析）：通过可查询的消息和销售记录核对执行过程，减少只凭口头说明处理问题。
+
+示例情境：出现报价或销售归属争议时，先核对消息发送者与交易记录，再按权限处理。
+
+主要使用者：主管 + 经营负责人
+
+
+
+#### Infloww · Message Dashboard · 员工消息记录
+
+当前实现：
+
+- 可查看员工发送或撤回的消息，以及购买状态、收入和响应时间；可从记录打开会话了解上下文。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
+
+资料限定：
+
+- 消息报表约每 10 分钟更新，仅包含通过 Infloww 发送的消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
+
+
+
 #### OnlyMonster · Message Tracker · 发信过程追溯
 
 当前实现：
@@ -620,29 +750,41 @@
 
 - 可将筛选后的消息记录导出为 CSV 或 XLSX。（[Message Tracker · Export](https://docs.onlymonster.ai/management-system/message-tracker)）
 
+资料限定：
+
+- Message Tracker 中的消息自发送日起保存 3 个月。（[Message Tracker · How It Works](https://docs.onlymonster.ai/management-system/message-tracker)）
 
 
-#### CreatorHero · Chatter Tracking + Sales Assignment
+
+#### CreatorHero · Sales Assignment · 销售归属核对
 
 当前实现：
 
-- Chatter Tracking 的员工表展示收入、响应时间、消息和 PPV 发送／购买情况，并可进入个人详情。（[Chatter Tracking · All Chatters Table](https://help.creatorhero.com/en/articles/10426384-chatter-tracking)）
+- 粉丝购买 PPV 后，销售自动归属于发送该消息的员工；可在 Notifications 中选择交易并重新指定员工。（[Sales Assignment · How PPV Sales Are Assigned / Reassigning a Sale](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
 
-- 在 Notifications 找到交易后，可手动重新指定销售归属的员工。（[Sales Assignment · Reassigning a Sale](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
+资料限定：
 
-
-
-## 5. 提高获客投入的回报
-
-把渠道带来的访问，追到后续消费与成本，让投放选择有依据。
+- 当前不记录重新分配的历史，只能在通知中查看当前归属。（[Sales Assignment · FAQ](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
 
 
 
-分析范围：经营对象是渠道与获客批次。客户长期价值回答“怎样养好人”，这里回答“从哪里获取人、值得花多少”。
+## 增长扩展价值
+
+获客回报作为增长扩展价值单列。对负责渠道合作和预算分配的经营者，它可以上升为核心能力；主要承担聊天销售的团队，对它的依赖较低。
 
 
 
-### 5.1 先让来源与成本可以对账
+## E. 提高获客投入的回报
+
+识别高价值获客渠道，让预算投入更有依据。
+
+
+
+分析范围：适用于负责渠道合作和预算分配的经营者。经营对象是渠道与获客批次，关注来源、成本和后续消费；这些资料不代表平台已承担完整的流量生产或投放执行。
+
+
+
+### E.1 先让来源与成本可以对账
 
 问题（分析）：只看粉丝增长，不知道哪次合作或投放带来了谁，也漏记推广成本。
 
@@ -682,7 +824,7 @@
 
 
 
-### 5.2 比较渠道带来的人，后来是否付费
+### E.2 比较渠道带来的人，后来是否付费
 
 问题（分析）：便宜的粉丝可能从不购买；旧渠道累计时间长，看起来总比新渠道赚钱。
 
@@ -726,7 +868,7 @@
 
 
 
-### 5.3 把来源人群带入接待工作流
+### E.3 把来源人群带入接待工作流
 
 问题（分析）：发现某渠道表现不好，却不清楚是人群质量差、接待不足，还是内容不匹配。
 
@@ -774,17 +916,25 @@
 
 ## 跨价值的共同基础（分析）
 
-在动作发生处提供相关信息；用反馈修正下一轮运营。这两项贯穿五类价值。
+在动作发生处提供相关信息；用反馈修正下一轮运营。AI、分组、报表和自动化是承载这些价值的能力，可同时服务多个经营目标。
 
 
 
 ## 资料说明
 
-依据截至 2026-10-21 核查的官方帮助中心与产品文档。每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。
+既有资料于 2026 年 10 月 21 日核查；经营可控性相关资料于 2026 年 10 月 22 日补充核查。每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。
 
 
 
 ## 官方资料索引
+
+- Infloww · [Role permissions](https://help.infloww.com/en/articles/262098-role-permissions)
+
+- Supercreator · [SharedLogin](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)
+
+- Supercreator · [Setting Roles and Permissions](https://help.supercreator.app/en/articles/9064920-setting-roles-and-permissions)
+
+- CreatorHero · [Roles](https://help.creatorhero.com/en/articles/10398444-roles)
 
 - Infloww · [Split Inbox](https://help.infloww.com/en/articles/262029-split-inbox)
 

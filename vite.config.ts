@@ -14,7 +14,6 @@ export default defineConfig({
         main: 'index.html',
         app: 'app/index.html',
         infloww: 'infloww/index.html',
-        valuePlaybook: 'research/value-playbook/index.html',
       },
     },
   },

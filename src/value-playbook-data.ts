@@ -2,8 +2,32 @@ import { platforms, sources as catalogSources } from './value-playbook-sources'
 import type { ProductId } from './value-playbook-sources'
 
 export { platforms }
-export const auditedAt = '2026-10-21'
-export type ValueId = 'conversion' | 'content' | 'retention' | 'team' | 'acquisition'
+export const auditedAt = '2026-10-22'
+export const frameworkScope = '以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。'
+export const growthScope = '获客回报作为增长扩展价值单列。对负责渠道合作和预算分配的经营者，它可以上升为核心能力；主要承担聊天销售的团队，对它的依赖较低。'
+export const auditNote = '既有资料于 2026 年 10 月 21 日核查；经营可控性相关资料于 2026 年 10 月 22 日补充核查。'
+export const executiveSummary = {
+  conclusion: 'Onlyfans CRM 的核心价值，是持续经营客户与内容、复制有效销售能力，并让多人、多账号的业务始终可控。',
+  perspectives: [
+    {
+      title: '促进收入增长',
+      text: '让高意向机会及时得到处理，让内容与报价匹配需求，并通过持续跟进和关系维护，争取更多成交与复购。',
+      links: [{ id: 'conversion', label: '销售机会转化' }, { id: 'retention', label: '客户持续经营' }],
+    },
+    {
+      title: '扩大可复用的经营能力',
+      text: '让已有内容充分参与销售，让成熟经验被更多员工使用，在有限时间内承接更多有效工作。',
+      links: [{ id: 'content', label: '内容资产回报' }, { id: 'team', label: '经营产能与能力复制' }],
+    },
+    {
+      title: '保持规模化经营可控',
+      text: '业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录掌握过程、核对归属。',
+      links: [{ id: 'control', label: '经营可控性' }],
+    },
+  ],
+  implication: '围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈；对掌握渠道和预算的客户，再加强获客回报能力。',
+}
+export type ValueId = 'conversion' | 'content' | 'retention' | 'team' | 'control' | 'acquisition'
 
 // Each factual statement must cite one official document and its matching section.
 // Do not compose independent features into a workflow unless the source documents it.
@@ -40,13 +64,13 @@ const c = (text: string, ref: string, section: string): EvidenceClaim => ({ text
 const s = (platform: ProductId, feature: string, claims: EvidenceClaim[], limits: EvidenceClaim[] = []): Solution =>
   ({ platform, feature, claims, limits, refs: [...new Set([...claims, ...limits].map(claim => claim.ref))] })
 
-export const values: BusinessValue[] = [
+const valueCatalog: BusinessValue[] = [
   {
     id: "conversion",
-    short: "销售转化",
+    short: "销售机会转化",
     title: "提高销售机会的有效转化",
-    thesis: "把已经出现的兴趣，推进为合适的报价和及时的成交。",
-    scope: "经营对象是一轮销售机会。重点是先处理谁、提供什么、何时再跟进；跨月留存放在“客户长期价值”中。",
+    thesis: "减少机会遗漏，让更多销售机会转化为收入。",
+    scope: "经营对象是一轮销售机会，包含首次购买和再次购买。重点是先处理谁、提供什么、何时再跟进；跨周期的关系维护归入“客户持续经营”。",
     points: [
       {
         id: "prioritize",
@@ -128,9 +152,9 @@ export const values: BusinessValue[] = [
   },
   {
     id: "content",
-    short: "内容回报",
+    short: "内容资产回报",
     title: "提高内容资产的经营回报",
-    thesis: "让已经制作的内容更容易找到、正确售卖，并知道下一步该复用什么。",
+    thesis: "提高内容复用效率，让已有素材持续创造收益。",
     scope: "经营对象是内容及内容组合。与销售转化共享报价动作，但这里关注跨粉丝、跨周期的内容收益。",
     points: [
       {
@@ -215,10 +239,10 @@ export const values: BusinessValue[] = [
   },
   {
     id: "retention",
-    short: "客户长期价值",
-    title: "提高客户的长期价值",
-    thesis: "让每次互动积累到下一次，把一次购买延续为可持续的关系。",
-    scope: "经营对象是同一位粉丝跨周期的关系。保留、复购和唤回分别观察，避免用一次成交替代长期价值。",
+    short: "客户持续经营",
+    title: "延续客户关系，促进持续消费",
+    thesis: "延续客户关系，促进复购、续订与回流。",
+    scope: "经营对象是同一位粉丝跨周期的关系。重点是记住偏好、接续服务和生命周期触达；一轮具体成交的处理归入“销售机会转化”。",
     points: [
       {
         id: "memory",
@@ -290,10 +314,10 @@ export const values: BusinessValue[] = [
   },
   {
     id: "team",
-    short: "团队效率",
-    title: "提高团队的经营效率与扩展能力",
-    thesis: "让更多员工稳定地接续工作，同时控制协作、训练与管理成本。",
-    scope: "经营对象是人、班次和执行过程。脚本与内容资产共用，但这里衡量培训、人效、交接与管理投入。",
+    short: "经营产能与能力复制",
+    title: "扩大经营产能，复制有效经验",
+    thesis: "扩大有效工作量，降低对个别员工的依赖。",
+    scope: "经营对象是人员、经验与执行流程，关注分工、培训和可承担的工作量。账号访问、敏感操作和责任追溯归入“经营可控性”。",
     points: [
       {
         id: "ownership",
@@ -313,9 +337,8 @@ export const values: BusinessValue[] = [
             c("随机把粉丝分入颜色组，原有粉丝保持在同组。", "S6", "How does it work?"),
             c("最多设置 3 个颜色组；改变组数会重新生成分组，部分粉丝会换组。", "S6", "How to use it?"),
           ]),
-          s("onlymonster", "Inboxes + Shift-Based Access", [
+          s("onlymonster", "Inboxes · 分组与显示范围", [
             c("Inboxes 最多支持 6 组，可自定义名称和颜色，并选择显示哪些组。", "O6", "Enhanced System Highlights"),
-            c("另有按角色配置的班次访问限制：开启后，成员只在排班时段内可以访问账号。", "O4", "Role-Based Access"),
           ]),
         ],
       },
@@ -349,15 +372,14 @@ export const values: BusinessValue[] = [
       },
       {
         id: "management",
-        title: "用可追溯事实做培训、排班与结算",
-        problem: "主管只看总销售排名，无法区分资源差异、操作质量和归属争议。",
-        mechanism: "把经营结果连到执行过程，缩短定位问题的时间，并使用一致口径比较。",
+        title: "根据工作负荷安排人员与培训",
+        problem: "主管只看总销售排名，难以区分人员投入、工作负荷与能力差异。",
+        mechanism: "结合工时、消息与响应情况了解工作分布，为排班和培训提供依据。",
         example: "员工销售下降：先看是否少了机会，再看回复和报价过程，最后讨论培训或排班。",
-        owner: "主管 + 财务 / 人力",
+        owner: "主管 + 培训负责人",
         solutions: [
-          s("infloww", "Employee Reports + Message Dashboard", [
+          s("infloww", "Employee Reports · 人员投入与工作量", [
             c("员工报表包含销售、消息、解锁率、排班／打卡工时和响应时间等指标。", "I4", "Key metrics explained"),
-            c("Message Dashboard 展示员工消息、购买状态、收入和响应时间。", "I3", "How to monitor employee messages"),
           ]),
           s("supercreator", "Chatter Analytics · 员工与会话明细", [
             c("Team Overview 汇总员工销售、消息、估算工时和薪酬。", "S5", "Team Overview"),
@@ -365,13 +387,84 @@ export const values: BusinessValue[] = [
           ], [
             c("Activity 的工时按有发信活动的 30 分钟区间估算，不等同于精确打卡时长。", "S5", "Activity"),
           ]),
+          s("creatorhero", "Chatter Tracking · 员工工作明细", [
+            c("Chatter Tracking 的员工表展示收入、响应时间、消息和 PPV 发送／购买情况，并可进入个人详情。", "C4", "All Chatters Table"),
+          ]),
+        ],
+      },
+    ],
+  },
+  {
+    id: "control",
+    short: "经营可控性",
+    title: "业务交给团队，经营仍然可控",
+    thesis: "明确访问与操作边界，掌握执行过程和责任。",
+    scope: "经营对象是账号、操作权限与责任。关注谁能进入、能做什么、执行后如何核对；工作速度与经验复用归入“经营产能与能力复制”。",
+    points: [
+      {
+        id: "account-access",
+        title: "按工作需要授予账号访问",
+        problem: "多人共用创作者账号，容易把登录凭据与长期访问权一起交给员工。",
+        mechanism: "将账号访问配置为可授予、可限制的工作权限，减少凭据共享和非工作时段访问。",
+        example: "新员工只获得所负责账号的访问；启用班次限制后，下班时段无法再打开账号。",
+        owner: "账号负责人 + 管理员",
+        solutions: [
+          s("supercreator", "SharedLogin · 共享会话与访问控制", [
+            c("通过共享已登录会话，让员工访问获授权的账号，无需共享账号密码；管理员可随时允许或阻止账号访问。", "S12", "Why use SharedLogin™?"),
+          ], [
+            c("新成员默认没有任何 OnlyFans 账号权限，需要在 Team Members 页面配置。", "S12", "Permissions"),
+          ]),
+          s("onlymonster", "Shift-Based Access · 班次访问限制", [
+            c("可按角色启用班次访问限制；开启后，该角色的成员只能在排班时段访问账号。", "O4", "Role-Based Access"),
+          ], [
+            c("具备 View Shifts 权限的成员可在班次临近结束时延长 15 分钟。", "O4", "Shift Extension"),
+          ]),
+        ],
+      },
+      {
+        id: "operation-permissions",
+        title: "限定岗位可见数据与操作",
+        problem: "聊天员工需要接待粉丝，但不一定需要查看全部收入、修改账号设置或删除内容。",
+        mechanism: "把工作所需功能、敏感操作和数据范围分别授权，让权限与岗位责任相符。",
+        example: "聊天员工使用消息与素材；主管查看下属业务数据，管理员保留敏感设置权限。",
+        owner: "经营负责人 + 管理员",
+        solutions: [
+          s("infloww", "Role Permissions · 功能与数据范围", [
+            c("可按角色授予或限制功能页面，并设置本人、本人和下属、全部数据三类数据范围。", "I13", "Adjust permissions"),
+          ]),
+          s("supercreator", "Roles and Permissions · 岗位权限", [
+            c("提供 Chatter、Account Manager、Supervisor、Owner 和 Analyst 五类角色，分配后可进一步调整成员权限。", "S13", "Setting Roles and Permissions"),
+            c("可限制员工查看银行信息和账号敏感设置；启用限制后，相应功能对员工隐藏。", "S13", "Sensitive Information on OnlyFans"),
+          ]),
+          s("creatorhero", "Roles · 操作权限配置", [
+            c("可创建自定义角色，分别选择 OnlyFans 和 CreatorHero 后台权限，再分配给团队成员。", "C15", "Create Custom Roles / Assign and Update Roles"),
+            c("OnlyFans 权限包括消息处理、媒体删除、银行信息访问和账号删除等操作。", "C15", "OnlyFans Permissions"),
+          ]),
+        ],
+      },
+      {
+        id: "execution-traceability",
+        title: "追溯消息执行，核对销售归属",
+        problem: "业务由多人接续，管理者需要了解谁发了什么，以及交易当前归属于谁。",
+        mechanism: "通过可查询的消息和销售记录核对执行过程，减少只凭口头说明处理问题。",
+        example: "出现报价或销售归属争议时，先核对消息发送者与交易记录，再按权限处理。",
+        owner: "主管 + 经营负责人",
+        solutions: [
+          s("infloww", "Message Dashboard · 员工消息记录", [
+            c("可查看员工发送或撤回的消息，以及购买状态、收入和响应时间；可从记录打开会话了解上下文。", "I3", "How to monitor employee messages"),
+          ], [
+            c("消息报表约每 10 分钟更新，仅包含通过 Infloww 发送的消息。", "I3", "How to monitor employee messages"),
+          ]),
           s("onlymonster", "Message Tracker · 发信过程追溯", [
             c("消息记录区分手输、粘贴、AI 助手和模板等输入来源，并显示发送者、价格及购买状态。", "O5", "Table Columns"),
             c("可将筛选后的消息记录导出为 CSV 或 XLSX。", "O5", "Export"),
+          ], [
+            c("Message Tracker 中的消息自发送日起保存 3 个月。", "O5", "How It Works"),
           ]),
-          s("creatorhero", "Chatter Tracking + Sales Assignment", [
-            c("Chatter Tracking 的员工表展示收入、响应时间、消息和 PPV 发送／购买情况，并可进入个人详情。", "C4", "All Chatters Table"),
-            c("在 Notifications 找到交易后，可手动重新指定销售归属的员工。", "C3", "Reassigning a Sale"),
+          s("creatorhero", "Sales Assignment · 销售归属核对", [
+            c("粉丝购买 PPV 后，销售自动归属于发送该消息的员工；可在 Notifications 中选择交易并重新指定员工。", "C3", "How PPV Sales Are Assigned / Reassigning a Sale"),
+          ], [
+            c("当前不记录重新分配的历史，只能在通知中查看当前归属。", "C3", "FAQ"),
           ]),
         ],
       },
@@ -381,8 +474,8 @@ export const values: BusinessValue[] = [
     id: "acquisition",
     short: "获客回报",
     title: "提高获客投入的回报",
-    thesis: "把渠道带来的访问，追到后续消费与成本，让投放选择有依据。",
-    scope: "经营对象是渠道与获客批次。客户长期价值回答“怎样养好人”，这里回答“从哪里获取人、值得花多少”。",
+    thesis: "识别高价值获客渠道，让预算投入更有依据。",
+    scope: "适用于负责渠道合作和预算分配的经营者。经营对象是渠道与获客批次，关注来源、成本和后续消费；这些资料不代表平台已承担完整的流量生产或投放执行。",
     points: [
       {
         id: "source-cost",
@@ -456,13 +549,18 @@ export const values: BusinessValue[] = [
   },
 ]
 
-const usedRefs = new Set(values.flatMap(value => value.points.flatMap(point => point.solutions.flatMap(solution => solution.refs))))
+const coreOrder: ValueId[] = ['conversion', 'retention', 'content', 'team', 'control']
+export const values = coreOrder.map(id => valueCatalog.find(value => value.id === id)!)
+export const growthValues = valueCatalog.filter(value => value.id === 'acquisition')
+export const allValues = [...values, ...growthValues]
+
+const usedRefs = new Set(allValues.flatMap(value => value.points.flatMap(point => point.solutions.flatMap(solution => solution.refs))))
 export const sources = catalogSources.filter(source => usedRefs.has(source.id))
 export const sourceMap = new Map(sources.map(source => [source.id, source]))
 
-export const pointCount = values.reduce((total, value) => total + value.points.length, 0)
-export const solutionCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.length, 0), 0)
-export const evidenceCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.reduce((count, solution) => count + solution.claims.length + solution.limits.length, 0), 0), 0)
+export const pointCount = allValues.reduce((total, value) => total + value.points.length, 0)
+export const solutionCount = allValues.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.length, 0), 0)
+export const evidenceCount = allValues.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.reduce((count, solution) => count + solution.claims.length + solution.limits.length, 0), 0), 0)
 
 const claimMarkdown = (claim: EvidenceClaim) => {
   const source = sourceMap.get(claim.ref)!
@@ -471,15 +569,24 @@ const claimMarkdown = (claim: EvidenceClaim) => {
 
 export function buildMarkdown() {
   const lines = [
-    '# 五类经营价值：四家 Creator CRM 的当前实现',
-    `资料核查截至 ${auditedAt}。5 类价值、${pointCount} 个落地点、${solutionCount} 项平台实现，引用 ${sources.length} 份官方资料。`,
+    '# Onlyfans CRM 的经营价值',
+    '不同平台能力对比与产品建设启示',
+    `报告更新于 ${auditedAt}。5 类核心价值、1 类增长扩展价值，共 ${pointCount} 个落地点、${solutionCount} 项平台实现，引用 ${sources.length} 份官方资料。`,
+    `研究范围：${frameworkScope}`,
+    '## 管理摘要（本报告分析）',
+    `核心判断：${executiveSummary.conclusion}`,
+    ...executiveSummary.perspectives.map(item => `**${item.title}**：${item.text}`),
+    `**产品建设启示**：${executiveSummary.implication}`,
     '每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。',
     '',
   ]
-  values.forEach((value, index) => {
-    lines.push(`## ${index + 1}. ${value.title}`, value.thesis, '', `分析范围：${value.scope}`, '')
+  allValues.forEach((value, index) => {
+    const isGrowth = index >= values.length
+    const label = isGrowth ? 'E' : String(index + 1)
+    if (isGrowth) lines.push('## 增长扩展价值', growthScope, '')
+    lines.push(`## ${label}. ${value.title}`, value.thesis, '', `分析范围：${value.scope}`, '')
     value.points.forEach((point, pointIndex) => {
-      lines.push(`### ${index + 1}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, '')
+      lines.push(`### ${label}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, '')
       point.solutions.forEach(solution => {
         const platform = platforms.find(item => item.id === solution.platform)!
         lines.push(`#### ${platform.name} · ${solution.feature}`, '当前实现：', ...solution.claims.map(claim => `- ${claimMarkdown(claim)}`))
@@ -488,6 +595,6 @@ export function buildMarkdown() {
       })
     })
   })
-  lines.push('## 跨价值的共同基础（分析）', '在动作发生处提供相关信息；用反馈修正下一轮运营。这两项贯穿五类价值。', '', '## 资料说明', `依据截至 ${auditedAt} 核查的官方帮助中心与产品文档。每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。`, '', '## 官方资料索引', ...sources.map(source => `- ${source.platform} · [${source.title}](${source.url})`))
+  lines.push('## 跨价值的共同基础（分析）', '在动作发生处提供相关信息；用反馈修正下一轮运营。AI、分组、报表和自动化是承载这些价值的能力，可同时服务多个经营目标。', '', '## 资料说明', `${auditNote}每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。`, '', '## 官方资料索引', ...sources.map(source => `- ${source.platform} · [${source.title}](${source.url})`))
   return lines.join('\n\n')
 }

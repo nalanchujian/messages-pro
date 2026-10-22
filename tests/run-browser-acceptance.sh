@@ -35,15 +35,16 @@ if [[ "$ready" != true ]]; then
   exit 1
 fi
 
-# The root redirects to the report; only the report and two demos remain.
-for path in "/messages-pro/" "/messages-pro/app/" "/messages-pro/infloww/" "/messages-pro/research/value-playbook/"; do
+# The root serves the report directly; only the report and two demos remain.
+for path in "/messages-pro/" "/messages-pro/app/" "/messages-pro/infloww/" "/messages-pro/analysis.md"; do
   curl -fsS "http://127.0.0.1:$port$path" >/dev/null
 done
-report_html="$(curl -fsS "http://127.0.0.1:$port/messages-pro/research/value-playbook/")"
+report_html="$(curl -fsS "http://127.0.0.1:$port/messages-pro/")"
+grep -q 'id="report"' <<<"$report_html" || { echo "The homepage must serve the report directly" >&2; exit 1; }
 for link in "/messages-pro/app/" "/messages-pro/infloww/"; do
   grep -q "href=\"$link\"" <<<"$report_html" || { echo "Report is missing a link to $link" >&2; exit 1; }
 done
-for path in "/messages-pro/reports/four-platform-module-comparison/index.html" "/messages-pro/research/" "/messages-pro/research/onlyfans/" "/messages-pro/research/infloww/" "/messages-pro/research/value-comparison/" "/messages-pro/research/feature-inventory/" "/messages-pro/design/crm/" "/messages-pro/design/crm-proposal/" "/messages-pro/validation/"; do
+for path in "/messages-pro/reports/four-platform-module-comparison/index.html" "/messages-pro/research/" "/messages-pro/research/value-playbook/" "/messages-pro/research/value-playbook/analysis.md" "/messages-pro/research/onlyfans/" "/messages-pro/research/infloww/" "/messages-pro/research/value-comparison/" "/messages-pro/research/feature-inventory/" "/messages-pro/design/crm/" "/messages-pro/design/crm-proposal/" "/messages-pro/validation/"; do
   status="$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:$port$path")"
   [[ "$status" == 404 ]] || { echo "Removed page still resolves: $path ($status)" >&2; exit 1; }
 done

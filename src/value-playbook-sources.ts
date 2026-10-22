@@ -21,6 +21,30 @@ export const platforms: { id: ProductId; name: string }[] = [
 
 export const sources = [
   {
+    "id": "I13",
+    "platform": "Infloww",
+    "title": "Role permissions",
+    "url": "https://help.infloww.com/en/articles/262098-role-permissions"
+  },
+  {
+    "id": "S12",
+    "platform": "Supercreator",
+    "title": "SharedLogin",
+    "url": "https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin"
+  },
+  {
+    "id": "S13",
+    "platform": "Supercreator",
+    "title": "Setting Roles and Permissions",
+    "url": "https://help.supercreator.app/en/articles/9064920-setting-roles-and-permissions"
+  },
+  {
+    "id": "C15",
+    "platform": "CreatorHero",
+    "title": "Roles",
+    "url": "https://help.creatorhero.com/en/articles/10398444-roles"
+  },
+  {
     "id": "I1",
     "platform": "Infloww",
     "title": "Split Inbox",

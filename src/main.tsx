@@ -85,7 +85,7 @@ const memorySettingsKey = 'messages-pro-confirmed-memories'
 const configurationModeKey = 'messages-pro-configuration-mode'
 const customDimensionsKey = 'messages-pro-custom-tenant-dimensions'
 const assignmentSettingsKey = 'messages-pro-assignments'
-const reportUrl = `${import.meta.env.BASE_URL}research/value-playbook/`
+const reportUrl = import.meta.env.BASE_URL
 const validationScenario = resolveValidationScenario(window.location.search)
 const tenantKey = (key: string, tenantId: TenantId) => `${key}:${tenantId}`
 
