@@ -40,8 +40,8 @@ function chapter(value: BusinessValue, index: number) {
   const label = String(index + 1)
   return `<section class="value-chapter" data-value-kind="core" id="value-${value.id}" aria-labelledby="heading-${value.id}">
     <header class="chapter-header"><span class="chapter-number">${numbered(index)}</span><div><p class="chapter-kicker"><span class="value-tier-badge">核心价值</span><span>${escape(value.short)}</span></p><h2 id="heading-${value.id}">${escape(value.title)}</h2><p class="chapter-thesis">${escape(value.thesis)}</p></div></header>
-    <div class="chapter-summary"><p><strong>分析范围</strong>${escape(value.scope)}</p></div>
-    <nav class="point-toc" aria-label="${escape(value.short)}的具体落地点">${value.points.map((point, pointIndex) => `<a href="#point-${point.id}"><span>${label}.${pointIndex + 1}</span>${escape(point.title)} <i aria-hidden="true">↓</i></a>`).join('')}</nav>
+    <div class="chapter-summary"><p><strong>分析范围</strong><span>${escape(value.scope)}</span></p></div>
+    <nav class="point-toc" aria-label="${escape(value.short)}的具体落地点">${value.points.map((point, pointIndex) => `<a href="#point-${point.id}"><span class="toc-index">${label}.${pointIndex + 1}</span><span class="toc-title">${escape(point.title)}</span><i aria-hidden="true">↓</i></a>`).join('')}</nav>
     ${value.points.map((point, pointIndex) => landingPoint(point, pointIndex, label)).join('')}
   </section>`
 }
