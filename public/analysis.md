@@ -18,7 +18,7 @@
 
 **产品建设启示**：围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈与团队规模。
 
-每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。
+每条当前实现及适用边界均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。
 
 
 
@@ -50,7 +50,7 @@
 
 - 按累计消费建立粉丝分层名单，可选择是否纳入已过期粉丝。（[Smart Lists · Segment by total spend](https://help.infloww.com/en/articles/262064-smart-lists)）
 
-资料限定：
+适用边界：
 
 - 名单通常每 6 小时刷新，首次生成约需 30 分钟。（[Smart Lists · Segment by total spend](https://help.infloww.com/en/articles/262064-smart-lists)）
 
@@ -82,7 +82,7 @@
 
 - 选择 1 分钟至 30 天的时间范围，生成近期有消费的粉丝名单。（[Recent spend list · Creating a Recent Spend List](https://help.creatorhero.com/en/articles/10522981-recent-spend-list)）
 
-资料限定：
+适用边界：
 
 - 订阅费不计入这一名单的消费条件。（[Recent spend list · What qualifies as a “Recent Spend”?](https://help.creatorhero.com/en/articles/10522981-recent-spend-list)）
 
@@ -160,7 +160,7 @@
 
 - Direct messages 记录的 Actions 可打开对应聊天，供员工继续处理。（[Message Dashboard · How to open a conversation](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
-资料限定：
+适用边界：
 
 - 报表约每 10 分钟更新，只记录通过 Infloww 发送的消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
@@ -174,7 +174,7 @@
 
 - PPV Follow-Ups 可设置延迟分钟数、是否包含未看消息的粉丝和跟进文案，随后自动发送。（[PPV Follow-Ups · Page Features](https://help.creatorhero.com/en/articles/10499966-ppv-follow-ups)）
 
-资料限定：
+适用边界：
 
 - 每条 PPV 对同一粉丝只跟进一次；已购买的粉丝会被排除。（[PPV Follow-Ups · FAQ](https://help.creatorhero.com/en/articles/10499966-ppv-follow-ups)）
 
@@ -260,7 +260,7 @@
 
 - 提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。（[Smart Messages · Smart Messages Types](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
 
-资料限定：
+适用边界：
 
 - 一个粉丝同时符合多个类型时，只发送优先级最高的一类；官方文档给出了类型优先顺序。（[Smart Messages · FAQs](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
 
@@ -354,7 +354,7 @@
 
 - 素材库标出对当前粉丝已发送、已购买、免费发送或发布在动态中的素材。（[Vault Copilot · What can you find in the Super Vault?](https://help.supercreator.app/en/articles/6317586-vault-copilot)）
 
-资料限定：
+适用边界：
 
 - 重复上传的素材按不同实例记录；系统不会扫描文件内容来识别重复，Super Mass 也不提供这种逐粉丝发送状态跟踪。（[Vault Copilot · FAQs](https://help.supercreator.app/en/articles/6317586-vault-copilot)）
 
@@ -368,7 +368,7 @@
 
 - PPV History 可查看发送内容、日期、价格及购买情况。（[Vault management · PPV History](https://docs.onlymonster.ai/members-features/vault-management)）
 
-资料限定：
+适用边界：
 
 - 重新上传的相同文件会生成独立记录，不会继承原素材的发送或购买标签。（[Vault management · Vault Labeling](https://docs.onlymonster.ai/members-features/vault-management)）
 
@@ -456,7 +456,7 @@
 
 - 文件夹和分类汇总发送数、解锁数、收入，并按整体发送数计算解锁率。（[Media statistics · Understanding folder and category summaries](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
 
-资料限定：
+适用边界：
 
 - 多素材打包销售时，每个素材都会记入整笔消息价格；不能把这些素材的收入直接相加当作独立交易收入。（[Media statistics · Important information about statistics](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
 
@@ -510,7 +510,7 @@
 
 - 可手动把粉丝移到其他组；修改组数也会重新分配粉丝。（[Split Inbox · Moving fans to other groups](https://help.infloww.com/en/articles/262029-split-inbox)）
 
-资料限定：
+适用边界：
 
 - 当前版本不能把员工直接绑定到分组，官方建议另行告知员工负责哪些组。（[Split Inbox · FAQs](https://help.infloww.com/en/articles/262029-split-inbox)）
 
@@ -584,7 +584,7 @@
 
 - Hero Copilot 的 Skills 可保存名称、触发条件与操作说明，并选择在机构内共享。（[Hero Copilot · Customizing Hero Copilot](https://help.creatorhero.com/en/articles/17059054-hero-copilot)）
 
-资料限定：
+适用边界：
 
 - Hero Copilot 可起草内容或保存脚本，但不会向粉丝直接发送消息、PPV 或群发消息。（[Hero Copilot · FAQs](https://help.creatorhero.com/en/articles/17059054-hero-copilot)）
 
@@ -618,7 +618,7 @@
 
 - Messages Breakdown 可通过 View Chat 查看具体对话。（[Chatter Analytics · Messages Breakdown](https://help.supercreator.app/en/articles/8118589-chatter-analytics)）
 
-资料限定：
+适用边界：
 
 - Activity 的工时按有发信活动的 30 分钟区间估算，不等同于精确打卡时长。（[Chatter Analytics · Activity](https://help.supercreator.app/en/articles/8118589-chatter-analytics)）
 
@@ -660,7 +660,7 @@
 
 - 通过共享已登录会话，让员工访问获授权的账号，无需共享账号密码；管理员可随时允许或阻止账号访问。（[SharedLogin · Why use SharedLogin™?](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)）
 
-资料限定：
+适用边界：
 
 - 新成员默认没有任何 OnlyFans 账号权限，需要在 Team Members 页面配置。（[SharedLogin · Permissions](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)）
 
@@ -672,7 +672,7 @@
 
 - 可按角色启用班次访问限制；开启后，该角色的成员只能在排班时段访问账号。（[Shift-Based Access Control · Role-Based Access](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
 
-资料限定：
+适用边界：
 
 - 具备 View Shifts 权限的成员可在班次临近结束时延长 15 分钟。（[Shift-Based Access Control · Shift Extension](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
 
@@ -736,7 +736,7 @@
 
 - 可查看员工发送或撤回的消息，以及购买状态、收入和响应时间；可从记录打开会话了解上下文。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
-资料限定：
+适用边界：
 
 - 消息报表约每 10 分钟更新，仅包含通过 Infloww 发送的消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
@@ -750,7 +750,7 @@
 
 - 可将筛选后的消息记录导出为 CSV 或 XLSX。（[Message Tracker · Export](https://docs.onlymonster.ai/management-system/message-tracker)）
 
-资料限定：
+适用边界：
 
 - Message Tracker 中的消息自发送日起保存 3 个月。（[Message Tracker · How It Works](https://docs.onlymonster.ai/management-system/message-tracker)）
 
@@ -762,7 +762,7 @@
 
 - 粉丝购买 PPV 后，销售自动归属于发送该消息的员工；可在 Notifications 中选择交易并重新指定员工。（[Sales Assignment · How PPV Sales Are Assigned / Reassigning a Sale](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
 
-资料限定：
+适用边界：
 
 - 当前不记录重新分配的历史，只能在通知中查看当前归属。（[Sales Assignment · FAQ](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
 

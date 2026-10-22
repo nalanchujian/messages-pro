@@ -22,7 +22,7 @@ function solutionRow(solution: Solution) {
   const platform = platforms.find(item => item.id === solution.platform)!
   return `<tr data-platform="${platform.id}">
     <th scope="row"><span class="platform-name ${platform.id}">${platform.name}</span><span class="row-references"><span>官方资料</span>${references(solution)}</span></th>
-    <td class="implementation-cell"><h4>${escape(solution.feature)}</h4><div class="current-implementation"><span class="cell-label">当前实现</span><ul class="implementation-claims">${solution.claims.map(evidenceClaim).join('')}</ul></div>${solution.limits.length ? `<div class="implementation-boundary"><span>资料限定</span><ul class="implementation-claims">${solution.limits.map(evidenceClaim).join('')}</ul></div>` : ''}</td>
+    <td class="implementation-cell"><h4>${escape(solution.feature)}</h4><div class="current-implementation"><span class="cell-label">当前实现</span><ul class="implementation-claims">${solution.claims.map(evidenceClaim).join('')}</ul></div>${solution.limits.length ? `<div class="implementation-boundary"><span>适用边界</span><ul class="implementation-claims">${solution.limits.map(evidenceClaim).join('')}</ul></div>` : ''}</td>
   </tr>`
 }
 
@@ -33,6 +33,7 @@ function landingPoint(point: LandingPoint, index: number, chapter: string) {
     <p class="example"><strong>场景示例</strong><span>${escape(point.example)}</span></p>
     <div class="comparison-heading"><span>当前实现 · ${point.solutions.length} 家有直接资料依据</span><p class="point-owner">主要使用者 <span>${escape(point.owner)}</span></p></div>
     <div class="table-scroll comparison-scroll" role="region" tabindex="0" aria-label="${escape(point.title)}：有官方资料依据的实现"><table class="comparison-table"><caption class="sr-only">${escape(point.title)}的当前实现及对应官方依据</caption><colgroup><col class="platform-column"/><col class="implementation-column"/></colgroup><thead><tr><th scope="col">平台 / 资料</th><th scope="col">承载功能、实现方式与官方依据</th></tr></thead><tbody>${point.solutions.map(solutionRow).join('')}</tbody></table></div>
+    <aside class="infloww-proposal" aria-label="${escape(point.title)}的 Infloww 建设建议"><p>Infloww 建设建议 <span>本页分析</span></p><div>${escape(point.inflowwProposal)}</div></aside>
   </section>`
 }
 

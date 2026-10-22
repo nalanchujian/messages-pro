@@ -49,6 +49,7 @@ export interface LandingPoint {
   mechanism: string
   example: string
   owner: string
+  inflowwProposal: string
   solutions: Solution[]
 }
 export interface BusinessValue {
@@ -78,6 +79,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把消费与行为信号转为可操作的队列，缩短高意向粉丝的等待时间。",
         example: "同一班次同时进来 30 条消息：优先处理刚购买后追问、近期活跃且有消费记录的会话。",
         owner: "班次主管 + 聊天员工",
+        inflowwProposal: "补齐实时机会优先级队列：综合近期消费、入站消息、订阅状态与等待时长排序，并让员工可直接从队列进入会话。",
         solutions: [
           s("infloww", "Smart Lists · 消费分层", [
             c("按累计消费建立粉丝分层名单，可选择是否纳入已过期粉丝。", "I6", "Segment by total spend"),
@@ -106,6 +108,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "在报价时提供购买历史与内容信息，减少盲猜，让推荐更贴近粉丝的需求与预算。",
         example: "粉丝询问一套新内容：先检查是否买过、通常买什么价格，再决定推荐哪个组合。",
         owner: "内容运营 + 聊天员工",
+        inflowwProposal: "在报价动作中补齐价格建议与异常提醒：结合该粉丝的购买区间、最高成交价和内容历史给出建议，并提示明显偏高或偏低的价格。",
         solutions: [
           s("infloww", "Fan Insights + Vault Pro", [
             c("聊天侧展示 PPV 消费总额、平均值和打赏信息，供员工查看粉丝历史消费。", "I8", "Spending behavior"),
@@ -132,6 +135,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把交易状态变成下一步行动，减少遗漏，并避免继续催促已购买者。",
         example: "一条付费消息已发出一段时间仍未购买：先区分没看见与不感兴趣，再决定是否提醒。",
         owner: "聊天员工 + 自动化配置人",
+        inflowwProposal: "补齐可配置的 PPV 自动跟进：按未看、已看未购等状态设置等待时间、文案与排除规则，已购后自动停止触达。",
         solutions: [
           s("infloww", "Message Dashboard · 人工回到会话", [
             c("消息报表可按购买状态、价格、发送者等条件筛选。", "I3", "Sorting and filtering through messages"),
@@ -163,6 +167,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把可查找性和单个粉丝的购买记忆放在选材环节，降低操作损耗与重复销售。",
         example: "粉丝想看旅行主题内容：员工按主题找素材，再核对免费发送和购买历史。",
         owner: "素材管理员 + 聊天员工",
+        inflowwProposal: "在选材界面直接呈现当前粉丝的已发送、免费发送、已购与未购状态，并可回看对应 PPV 记录，减少进入多处页面核对。",
         solutions: [
           s("infloww", "Vault Pro · 搜索与已看过滤", [
             c("可按备注、标签或历史 PPV 文案搜索素材。", "I11", "Filtering the vault by media details"),
@@ -192,6 +197,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "一次整理文本、素材和使用条件，多次在合适场景复用，减少内容上架与销售准备成本。",
         example: "把一个旅行系列整理为“介绍 → 预览 → 付费组合”，员工按对话阶段调用。",
         owner: "内容运营 + 资深销售",
+        inflowwProposal: "把话术序列升级为可售卖的内容组合：将文案、预览、媒体、建议价和适用标签打包，并允许员工按需微调后发送。",
         solutions: [
           s("infloww", "Scripts · 消息序列", [
             c("可创建话术序列，并在条件步骤内配置最多 3 个选项，发送时由员工选择。", "I2", "Creating a script sequence"),
@@ -218,6 +224,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把内容、发送与购买结果关联，区分“卖得多”和“单位机会贡献高”。",
         example: "内容负责人打开旅行系列文件夹，查看哪些素材被发送、被购买，以及对应的销售消息。",
         owner: "内容负责人 + 经营分析",
+        inflowwProposal: "补齐“内容—PPV—会话”的下钻链路，并在组合售卖时提供避免重复归因的收入口径，帮助判断真实的内容贡献。",
         solutions: [
           s("infloww", "Vault Pro · 素材统计", [
             c("素材层展示发送次数、解锁次数／比例与毛收入。", "I12", "Viewing statistics in Grid and Table views"),
@@ -250,6 +257,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "在回复前恢复必要上下文，降低重复询问和不相关推荐。",
         example: "晚班接手一位老粉丝：先看偏好、最近购买与上次沟通，而不是重新从头认识。",
         owner: "每位经办员工",
+        inflowwProposal: "补齐对话摘要与结构化偏好提取：从近期聊天中生成可编辑摘要，并建议更新偏好、承诺和风险提示，降低交接成本。",
         solutions: [
           s("infloww", "Fan Insights · 资料与备注模板", [
             c("聊天侧可维护昵称、生日、所在地等资料。", "I8", "Profile"),
@@ -276,6 +284,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "让时间或状态触发合适动作，把重复检查交给系统，把语境判断留给人员。",
         example: "对新粉先介绍，对临期付费粉解释后续内容，对已到期老买家开展一次有理由的唤回。",
         owner: "生命周期运营",
+        inflowwProposal: "补齐已过期粉丝的自动化经营：按历史消费和到期时长分层，配置唤回节奏、暂停条件与效果回看，而非只依赖单次触发消息。",
         solutions: [
           s("infloww", "Smart Messages · 生命周期触发", [
             c("提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。", "I9", "Smart Messages Types"),
@@ -299,6 +308,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "持续呈现新增、活跃、保留和流失情况，为关系经营提供背景。",
         example: "经营负责人查看老粉的订阅状态与购买历史，区分仍在互动、持续购买和已经沉默的人。",
         owner: "经营负责人",
+        inflowwProposal: "补齐订阅留存与消费的联动看板：按 cohort 对比新增、流失、留存及消费贡献，并支持下钻到具体粉丝名单以便发起行动。",
         solutions: [
           s("infloww", "Fan Reports · 新增、流失与保留", [
             c("报告呈现新增、流失、保留和活跃粉丝，以及自动续订开启／关闭情况；导出时可选日期范围与指标。", "V-I2", "文章开篇"),
@@ -325,6 +335,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "通过分组与范围过滤减少交叉处理；人员责任和班次权限需要分别明确。",
         example: "早晚班交替：明确每组由谁处理、未完事项交给谁，并检查超时会话。",
         owner: "班次主管",
+        inflowwProposal: "补齐“分组—员工—班次”的直接绑定：明确当前负责人、交接对象和超时会话，避免只靠线下告知分工。",
         solutions: [
           s("infloww", "Split Inbox · 分组与范围过滤", [
             c("收件箱最多拆成 9 组；员工按负责的组过滤，新订阅者的自动分配以长期工作量平衡为目标。", "I1", "How to use Split Inbox"),
@@ -348,6 +359,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "沉淀适用条件和下一步，把重复操作工具化，让人工集中处理判断与例外。",
         example: "把成熟员工的欢迎、需求确认、内容推荐过程拆成模板，并明确哪些情况必须转人工。",
         owner: "培训负责人 + 资深员工",
+        inflowwProposal: "补齐可复用的销售 playbook：除话术外，保存触发条件、步骤、例外处理和转人工规则；可为不同创作者配置语气与事实资料。",
         solutions: [
           s("infloww", "Scripts · 共享话术与序列", [
             c("话术和序列可在不同创作者之间共享，团队可复用同一套已整理内容。", "I2", "Sharing among creators"),
@@ -376,6 +388,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "结合工时、消息与响应情况了解工作分布，为排班和培训提供依据。",
         example: "员工销售下降：先看是否少了机会，再看回复和报价过程，最后讨论培训或排班。",
         owner: "主管 + 培训负责人",
+        inflowwProposal: "在人员指标异常处补齐会话下钻与辅导样本：从响应、发送、解锁等指标直接查看代表性对话，形成可执行的排班或培训动作。",
         solutions: [
           s("infloww", "Employee Reports · 人员投入与工作量", [
             c("员工报表包含销售、消息、解锁率、排班／打卡工时和响应时间等指标。", "I4", "Key metrics explained"),
@@ -407,6 +420,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "将账号访问配置为可授予、可限制的工作权限，减少凭据共享和非工作时段访问。",
         example: "新员工只获得所负责账号的访问；启用班次限制后，下班时段无法再打开账号。",
         owner: "账号负责人 + 管理员",
+        inflowwProposal: "优先补齐受管登录会话与账号级授权：无需共享密码即可按人授予、随时撤销访问，并支持按班次限制打开账号。",
         solutions: [
           s("supercreator", "SharedLogin · 共享会话与访问控制", [
             c("通过共享已登录会话，让员工访问获授权的账号，无需共享账号密码；管理员可随时允许或阻止账号访问。", "S12", "Why use SharedLogin™?"),
@@ -427,6 +441,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把工作所需功能、敏感操作和数据范围分别授权，让权限与岗位责任相符。",
         example: "聊天员工使用消息与素材；主管查看下属业务数据，管理员保留敏感设置权限。",
         owner: "经营负责人 + 管理员",
+        inflowwProposal: "在现有数据范围控制上补齐细粒度的敏感操作权限：按角色配置银行信息、账号设置、媒体删除和账号删除等高风险操作。",
         solutions: [
           s("infloww", "Role Permissions · 功能与数据范围", [
             c("可按角色授予或限制功能页面，并设置本人、本人和下属、全部数据三类数据范围。", "I13", "Adjust permissions"),
@@ -448,6 +463,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "通过可查询的消息和销售记录核对执行过程，减少只凭口头说明处理问题。",
         example: "出现报价或销售归属争议时，先核对消息发送者与交易记录，再按权限处理。",
         owner: "主管 + 经营负责人",
+        inflowwProposal: "补齐消息来源与归属变更审计：标明手输、模板或 AI 等发送来源，记录销售重新分配历史，并支持按条件导出核对。",
         solutions: [
           s("infloww", "Message Dashboard · 员工消息记录", [
             c("可查看员工发送或撤回的消息，以及购买状态、收入和响应时间；可从记录打开会话了解上下文。", "I3", "How to monitor employee messages"),
@@ -498,18 +514,18 @@ export function buildMarkdown() {
     `核心判断：${executiveSummary.conclusion}`,
     ...executiveSummary.perspectives.map(item => `**${item.title}**：${item.text}`),
     `**产品建设启示**：${executiveSummary.implication}`,
-    '每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。',
+    '每条当前实现及适用边界均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。',
     '',
   ]
   values.forEach((value, index) => {
     const label = String(index + 1)
     lines.push(`## ${label}. ${value.title}`, value.thesis, '', `分析范围：${value.scope}`, '')
     value.points.forEach((point, pointIndex) => {
-      lines.push(`### ${label}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, '')
+      lines.push(`### ${label}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, `Infloww 建设建议（本页分析）：${point.inflowwProposal}`, '')
       point.solutions.forEach(solution => {
         const platform = platforms.find(item => item.id === solution.platform)!
         lines.push(`#### ${platform.name} · ${solution.feature}`, '当前实现：', ...solution.claims.map(claim => `- ${claimMarkdown(claim)}`))
-        if (solution.limits.length) lines.push('资料限定：', ...solution.limits.map(claim => `- ${claimMarkdown(claim)}`))
+        if (solution.limits.length) lines.push('适用边界：', ...solution.limits.map(claim => `- ${claimMarkdown(claim)}`))
         lines.push('')
       })
     })

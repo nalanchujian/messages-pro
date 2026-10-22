@@ -106,6 +106,17 @@ th { font-weight: 600; }
 .reading-note { display: block; font-size: 12px; line-height: 1.9; color: var(--muted); margin-top: 16px; padding: 0 0 0 13px; border-left: 2px solid #b6c5d6; }
 .reading-note strong { font-weight: 600; color: #354a63; }
 .reading-note a { color: var(--accent); margin-left: 8px; text-decoration: underline; text-decoration-color: #9aadc4; text-underline-offset: 3px; white-space: nowrap; }
+
+/* Research approach: the five-step path from business context to proposals. */
+.approach { padding: 44px 0 0; }
+.approach-flow { --flow-gap: 30px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--flow-gap); margin: 0; padding: 0; list-style: none; }
+.approach-step { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 17px 17px 19px; background: var(--paper); border: 1px solid var(--line); border-top: 2px solid #203d60; border-radius: 3px; }
+.approach-step:not(:last-child)::after { content: '→' / ''; position: absolute; top: 50%; right: calc(var(--flow-gap) / -2); transform: translate(50%, -50%); color: #7390b0; font-size: 16px; font-weight: 600; line-height: 1; }
+.step-head { display: flex; align-items: baseline; gap: 8px; }
+.step-index { color: var(--accent); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.step-kind { color: var(--muted); font-size: 11px; letter-spacing: .04em; }
+.approach-step h3 { font-size: 16px; font-weight: 700; line-height: 1.55; }
+.step-text { font-size: 13px; color: #4b5c71; line-height: 1.8; text-wrap: pretty; }
 .value-tier-badge { display: inline-flex; align-items: center; flex: 0 0 auto; padding: 3px 9px; border: 1px solid #29496e; border-radius: 3px; background: #29496e; color: #fff; font-size: 11px; line-height: 1.6; font-weight: 600; letter-spacing: .04em; white-space: nowrap; }
 
 /* Fixed-width navigation beside a continuous white report. */
@@ -177,6 +188,7 @@ th { font-weight: 600; }
 .comparison-table tbody tr:last-child > * { border-bottom: 0; }
 .comparison-table tbody th { background: #f8fafc; border-right: 1px solid #e3e9f1; }
 .platform-name { display: block; font-size: 15px; font-weight: 700; color: #263b55; letter-spacing: -.015em; overflow-wrap: anywhere; }
+.platform-name.infloww { color: #5b4acb; }
 .row-references { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px; margin-top: 13px; font-size: 11px; line-height: 1.8; font-weight: 400; }
 .row-references > span { flex-basis: 100%; color: var(--muted); font-size: 11px; margin-bottom: 1px; }
 .reference { color: var(--accent); padding: 1px 3px; border-radius: 2px; font-variant-numeric: tabular-nums; }
@@ -194,6 +206,10 @@ th { font-weight: 600; }
 .implementation-boundary { display: grid; grid-template-columns: var(--detail-label-width) minmax(0,1fr); align-items: baseline; gap: var(--detail-column-gap); margin-top: 18px; padding: 13px 14px; background: #f6f8fa; border-left: 2px solid #ccd6e2; color: var(--muted); }
 .implementation-boundary > span { white-space: nowrap; font-size: 11px; font-weight: 500; }
 .implementation-boundary p { font-size: 13px; line-height: 1.85; overflow-wrap: anywhere; }
+.infloww-proposal { margin-top: 16px; padding: 17px 18px; border: 1px solid #d8d1fb; border-left: 3px solid #7868d8; border-radius: 3px; background: #faf9ff; }
+.infloww-proposal p { display: flex; align-items: baseline; gap: 9px; margin: 0 0 7px; color: #4f3cba; font-size: 13px; font-weight: 700; }
+.infloww-proposal p span { color: #716d85; font-size: 11px; font-weight: 500; }
+.infloww-proposal div { color: #3c3a4c; font-size: 14px; line-height: 1.85; overflow-wrap: anywhere; }
 
 
 /* Method, references and supporting navigation use the same document grid. */
@@ -257,6 +273,7 @@ th { font-weight: 600; }
   .overview-table tbody th a { grid-template-columns: 28px minmax(0,1fr); gap: 8px; }
   .overview-table tbody th i { display: none; }
   .chapter-header h2 { font-size: 26px; }
+  .approach-flow { --flow-gap: 18px; }
 }
 @media screen and (max-width: 980px) {
   .overview-table th:first-child { width: 36%; }
@@ -266,6 +283,8 @@ th { font-weight: 600; }
   .overview-table li { padding: 0; }
   .overview-table li + li { border-left: 0; border-top: 1px solid #e2e8f0; }
   .overview-table li a { grid-template-columns: 26px minmax(0,1fr); grid-template-rows: auto; align-items: baseline; min-height: 44px; padding: 10px 6px; gap: 8px; }
+  .approach-flow { grid-template-columns: 1fr; gap: 42px; }
+  .approach-step:not(:last-child)::after { content: '↓' / ''; top: auto; right: 50%; bottom: -21px; transform: translate(50%, 50%); }
 }
 @media screen and (max-width: 760px) {
   :root { --detail-label-width: 48px; --detail-column-gap: 10px; --callout-inset: 12px; --table-gutter: 15px; }
@@ -356,6 +375,8 @@ th { font-weight: 600; }
   .implementation-boundary { display: block; margin-top: 16px; }
   .implementation-boundary > span { display: block; margin-bottom: 6px; font-size: 11px; }
   .implementation-boundary p { font-size: 13px; }
+  .infloww-proposal { margin-top: 14px; padding: 15px; }
+  .infloww-proposal div { font-size: 13px; }
   .closing-section, .method-section, .further-reading { padding: 24px 18px; margin-top: 24px; }
   .closing-section h2 { font-size: 20px; }
   .foundation-columns { grid-template-columns: 1fr; gap: 23px; }
@@ -412,7 +433,7 @@ th { font-weight: 600; }
   .comparison-table tbody tr { display: table-row; break-inside: avoid; }
   .comparison-table tbody th, .comparison-table tbody td { display: table-cell; width: auto; padding: 12px; }
   .comparison-table h4, .platform-name { font-size: 10pt; }
-  .current-implementation p, .implementation-boundary p { font-size: 10pt; }
+  .current-implementation p, .implementation-boundary p, .infloww-proposal div { font-size: 10pt; }
   .claim-source { font-size: 8.5pt; }
   .closing-section, .method-section { padding: 24px 0; border: 0; }
   .point-header { break-after: avoid; }
