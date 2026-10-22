@@ -1,5 +1,5 @@
 import './value-playbook.css'
-import { values, growthValues, allValues, platforms, sources, sourceMap, pointCount, solutionCount, executiveSummary, frameworkScope, growthScope, auditedAt, auditNote, buildMarkdown, type BusinessValue, type LandingPoint, type Solution, type EvidenceClaim } from './value-playbook-data'
+import { values, platforms, sources, sourceMap, pointCount, solutionCount, executiveSummary, frameworkScope, auditedAt, auditNote, buildMarkdown, type BusinessValue, type LandingPoint, type Solution, type EvidenceClaim } from './value-playbook-data'
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T
 const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
@@ -21,7 +21,7 @@ function evidenceClaim(claim: EvidenceClaim) {
 function solutionRow(solution: Solution) {
   const platform = platforms.find(item => item.id === solution.platform)!
   return `<tr data-platform="${platform.id}">
-    <th scope="row"><span class="platform-mark ${platform.id}" aria-hidden="true">${platform.name.slice(0, 1)}</span><span class="platform-name ${platform.id}">${platform.name}</span><span class="row-references"><span>官方资料</span>${references(solution)}</span></th>
+    <th scope="row"><span class="platform-name ${platform.id}">${platform.name}</span><span class="row-references"><span>官方资料</span>${references(solution)}</span></th>
     <td class="implementation-cell"><h4>${escape(solution.feature)}</h4><div class="current-implementation"><span class="cell-label">当前实现</span><ul class="implementation-claims">${solution.claims.map(evidenceClaim).join('')}</ul></div>${solution.limits.length ? `<div class="implementation-boundary"><span>资料限定</span><ul class="implementation-claims">${solution.limits.map(evidenceClaim).join('')}</ul></div>` : ''}</td>
   </tr>`
 }
@@ -36,10 +36,10 @@ function landingPoint(point: LandingPoint, index: number, chapter: string) {
   </section>`
 }
 
-function chapter(value: BusinessValue, index: number, isGrowth = false) {
-  const label = isGrowth ? 'E' : String(index + 1)
-  return `<section class="value-chapter${isGrowth ? ' growth-chapter' : ''}" data-value-kind="${isGrowth ? 'growth' : 'core'}" id="value-${value.id}" aria-labelledby="heading-${value.id}">
-    <header class="chapter-header"><span class="chapter-number">${isGrowth ? 'E' : numbered(index)}</span><div><p class="chapter-kicker"><span class="value-tier-badge">${isGrowth ? '扩展价值' : '核心价值'}</span><span>${escape(value.short)}</span></p><h2 id="heading-${value.id}">${escape(value.title)}</h2><p class="chapter-thesis">${escape(value.thesis)}</p></div></header>
+function chapter(value: BusinessValue, index: number) {
+  const label = String(index + 1)
+  return `<section class="value-chapter" data-value-kind="core" id="value-${value.id}" aria-labelledby="heading-${value.id}">
+    <header class="chapter-header"><span class="chapter-number">${numbered(index)}</span><div><p class="chapter-kicker"><span class="value-tier-badge">核心价值</span><span>${escape(value.short)}</span></p><h2 id="heading-${value.id}">${escape(value.title)}</h2><p class="chapter-thesis">${escape(value.thesis)}</p></div></header>
     <div class="chapter-summary"><p><strong>分析范围</strong>${escape(value.scope)}</p></div>
     <nav class="point-toc" aria-label="${escape(value.short)}的具体落地点">${value.points.map((point, pointIndex) => `<a href="#point-${point.id}"><span>${label}.${pointIndex + 1}</span>${escape(point.title)} <i aria-hidden="true">↓</i></a>`).join('')}</nav>
     ${value.points.map((point, pointIndex) => landingPoint(point, pointIndex, label)).join('')}
@@ -47,9 +47,8 @@ function chapter(value: BusinessValue, index: number, isGrowth = false) {
 }
 
 $('framework-scope').textContent = frameworkScope
-$('growth-summary').innerHTML = `<div><p class="growth-summary-label"><span class="value-tier-badge">扩展价值</span><span>按经营场景选用</span></p><h3>获客回报</h3><p>${escape(growthScope)}</p></div><a href="#value-acquisition">查看扩展分析 <span aria-hidden="true">↗</span></a>`
 $('report-date').textContent = `更新于 ${auditedAt.replaceAll('-', '.')}`
-$('point-count').textContent = `${pointCount} 个落地点（含扩展）`
+$('point-count').textContent = `${pointCount} 个落地点`
 $('audit-note').textContent = auditNote
 $('executive-summary').innerHTML = `
   <div class="executive-conclusion"><h2 id="executive-summary-title">核心判断</h2><p>${escape(executiveSummary.conclusion)}</p></div>
@@ -57,14 +56,9 @@ $('executive-summary').innerHTML = `
   <div class="executive-implication"><h3>产品建设启示</h3><p>${escape(executiveSummary.implication)}</p></div>
 `
 $('overview-rows').innerHTML = values.map((value, index) => `<tr><th scope="row"><a href="#value-${value.id}"><span>${numbered(index)}</span><strong>${escape(value.short)}</strong><i aria-hidden="true">↗</i></a><p class="overview-description">${escape(value.thesis)}</p></th><td><ul>${value.points.map((point, pointIndex) => `<li><a href="#point-${point.id}"><span class="overview-point-index">${index + 1}.${pointIndex + 1}</span><span class="overview-point-title">${escape(point.title)}</span></a></li>`).join('')}</ul></td></tr>`).join('')
-$('chapter-links').innerHTML = [
-  { label: '核心价值', items: values, isGrowth: false },
-  { label: '扩展价值', items: growthValues, isGrowth: true },
-].map(group => `<section class="nav-section${group.isGrowth ? ' nav-section-growth' : ''}" aria-label="${group.label}"><p class="nav-section-label">${group.label}<span>${group.items.length} 项</span></p>${group.items.map((value, index) => `<div class="nav-group${group.isGrowth ? ' nav-group-growth' : ''}" data-value="${value.id}"><a class="chapter-link" href="#value-${value.id}"><span>${group.isGrowth ? '扩展' : numbered(index)}</span>${escape(value.short)}</a><div class="nav-points">${value.points.map(point => `<a href="#point-${point.id}">${escape(point.title)}</a>`).join('')}</div></div>`).join('')}</section>`).join('')
-$('report').innerHTML = `<div class="report-part-heading"><span class="value-tier-badge">核心价值</span><p>五类核心经营价值 · 按经营对象展开</p></div>`
+$('chapter-links').innerHTML = `<section class="nav-section" aria-label="核心价值"><p class="nav-section-label">核心价值<span>${values.length} 项</span></p>${values.map((value, index) => `<div class="nav-group" data-value="${value.id}"><a class="chapter-link" href="#value-${value.id}"><span>${numbered(index)}</span>${escape(value.short)}</a><div class="nav-points">${value.points.map(point => `<a href="#point-${point.id}">${escape(point.title)}</a>`).join('')}</div></div>`).join('')}</section>`
+$('report').innerHTML = `<div class="report-part-heading"><span class="value-tier-badge">核心价值</span><p>五类核心产品价值 · 按业务对象展开</p></div>`
   + values.map((value, index) => chapter(value, index)).join('')
-  + `<div class="report-part-heading growth-part-heading"><span class="value-tier-badge">扩展价值</span><p>增长扩展 · 适用于负责渠道与预算的经营者</p></div>`
-  + growthValues.map((value, index) => chapter(value, index, true)).join('')
 $('implementation-count').textContent = `${solutionCount} 项已核查实现`
 $('source-count').textContent = `${sources.length} 份`
 $('source-list').innerHTML = platforms.map(platform => `<section><h4>${platform.name}</h4><ol>${sources.filter(source => source.platform === platform.name).map(source => `<li id="source-${source.id}" value="${sourceNumbers.get(source.id)}"><a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.title)} <span aria-hidden="true">↗</span></a></li>`).join('')}</ol></section>`).join('')
@@ -74,13 +68,13 @@ const params = new URLSearchParams(location.search)
 const previousValue = params.get('value')
 if (params.has('value') || params.has('platform')) {
   const url = new URL(location.href)
-  if (!url.hash && allValues.some(value => value.id === previousValue)) url.hash = `value-${previousValue}`
+  if (!url.hash && values.some(value => value.id === previousValue)) url.hash = `value-${previousValue}`
   url.searchParams.delete('value')
   url.searchParams.delete('platform')
   history.replaceState(null, '', url)
 }
 function markReadingPosition(id: string) {
-  const active = allValues.find(value => `value-${value.id}` === id || value.points.some(point => `point-${point.id}` === id))
+  const active = values.find(value => `value-${value.id}` === id || value.points.some(point => `point-${point.id}` === id))
   $('chapter-links').querySelectorAll<HTMLElement>('.nav-group').forEach(group => {
     const isActive = group.dataset.value === active?.id
     group.classList.toggle('is-active', isActive)
@@ -120,7 +114,7 @@ $('download-analysis').addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([buildMarkdown()], { type: 'text/markdown;charset=utf-8' }))
   const link = document.createElement('a')
   link.href = url
-  link.download = 'Onlyfans CRM-五类核心价值与增长扩展.md'
+  link.download = 'Onlyfans CRM 产品价值分析.md'
   document.body.appendChild(link)
   link.click()
   link.remove()

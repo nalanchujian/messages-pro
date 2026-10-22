@@ -4,7 +4,6 @@ import type { ProductId } from './value-playbook-sources'
 export { platforms }
 export const auditedAt = '2026-10-22'
 export const frameworkScope = '以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。'
-export const growthScope = '获客回报作为增长扩展价值单列。对负责渠道合作和预算分配的经营者，它可以上升为核心能力；主要承担聊天销售的团队，对它的依赖较低。'
 export const auditNote = '既有资料于 2026 年 10 月 21 日核查；经营可控性相关资料于 2026 年 10 月 22 日补充核查。'
 export const executiveSummary = {
   conclusion: 'Onlyfans CRM 的核心价值，是持续经营客户与内容、复制有效销售能力，并让多人、多账号的业务始终可控。',
@@ -25,9 +24,9 @@ export const executiveSummary = {
       links: [{ id: 'control', label: '经营可控性' }],
     },
   ],
-  implication: '围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈；对掌握渠道和预算的客户，再加强获客回报能力。',
+  implication: '围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈与团队规模。',
 }
-export type ValueId = 'conversion' | 'content' | 'retention' | 'team' | 'control' | 'acquisition'
+export type ValueId = 'conversion' | 'content' | 'retention' | 'team' | 'control'
 
 // Each factual statement must cite one official document and its matching section.
 // Do not compose independent features into a workflow unless the source documents it.
@@ -470,97 +469,19 @@ const valueCatalog: BusinessValue[] = [
       },
     ],
   },
-  {
-    id: "acquisition",
-    short: "获客回报",
-    title: "提高获客投入的回报",
-    thesis: "识别高价值获客渠道，让预算投入更有依据。",
-    scope: "适用于负责渠道合作和预算分配的经营者。经营对象是渠道与获客批次，关注来源、成本和后续消费；这些资料不代表平台已承担完整的流量生产或投放执行。",
-    points: [
-      {
-        id: "source-cost",
-        title: "先让来源与成本可以对账",
-        problem: "只看粉丝增长，不知道哪次合作或投放带来了谁，也漏记推广成本。",
-        mechanism: "统一链接、活动和费用口径，让获客选择从曝光量进入成本与收入比较。",
-        example: "两位推广伙伴各带来 100 个粉丝，用独立链接和真实费用区分是否值得继续合作。",
-        owner: "增长运营 + 财务",
-        solutions: [
-          s("infloww", "Tracking Links · 推广费用与收入", [
-            c("追踪链接支持手工录入推广费用，并据此计算 ROI。", "V-I1", "Promo costs"),
-          ], [
-            c("收入采用滚动归因：粉丝通过新链接重新订阅后，未来收入转归最近的链接。", "V-I1", "Attribution"),
-          ]),
-          s("supercreator", "Creator Analytics · Campaigns", [
-            c("Campaigns 展示推广活动的点击、领取订阅和收入；可录入活动成本并计算 ROI。", "V-S1", "Campaigns"),
-          ]),
-          s("creatorhero", "Detailed Tracking Links · 成本与利润", [
-            c("单条链接详情中可填写推广费用，查看利润和 ROI。", "V-C2", "Promotion Costs & ROI Calculation"),
-          ]),
-        ],
-      },
-      {
-        id: "cohort",
-        title: "比较渠道带来的人，后来是否付费",
-        problem: "便宜的粉丝可能从不购买；旧渠道累计时间长，看起来总比新渠道赚钱。",
-        mechanism: "把来源与后续消费联系起来；比较时需要区分累计收入、固定观察期和不同归因口径。",
-        example: "渠道 A 首周增长快，渠道 B 粉丝少但持续购买；统一获客周和后续 30 天再比较。",
-        owner: "增长分析 + 经营负责人",
-        solutions: [
-          s("infloww", "Tracking Link Details · 来源粉丝消费", [
-            c("进入链接详情可查看各粉丝在订阅、帖子、消息、直播和打赏上的消费明细。", "V-I1", "Tracking link detail page"),
-          ], [
-            c("追踪链接总览的时间过滤按链接创建时间筛选。", "V-I1", "Dashboard overview"),
-          ]),
-          s("onlymonster", "Traffic Metrics · 订阅批次与收入期间", [
-            c("Detailed 模式可分别筛选链接创建日期、粉丝订阅日期和收入日期；后两项最多选择 180 天范围。", "V-O1", "Filter System"),
-            c("收入归因可选择 Rolling 或 Double；前者把后续收入移到最新来源，后者保留早期来源的累计归因。", "V-O1", "Earnings Attribution"),
-          ]),
-          s("creatorhero", "Detailed Tracking Links · 渠道粉丝构成", [
-            c("链接详情展示总收入、最近 30 天收入、平均消费和续订活跃粉丝。", "V-C2", "Performance Metrics"),
-            c("Fan Engagement Graph 区分仅订阅、曾回复、购买一次和购买多次等人群。", "V-C2", "Fan Engagement Graph"),
-          ]),
-        ],
-      },
-      {
-        id: "channel-action",
-        title: "把来源人群带入接待工作流",
-        problem: "发现某渠道表现不好，却不清楚是人群质量差、接待不足，还是内容不匹配。",
-        mechanism: "将链接来源转成可使用的粉丝名单，为差异化接待准备受众。",
-        example: "从某个推广链接带来的新粉生成名单，在接待时使用与该渠道内容相匹配的介绍。",
-        owner: "增长运营 + 生命周期运营",
-        solutions: [
-          s("infloww", "Tracking Links · 来源自动入名单", [
-            c("为追踪链接选择或新建名单后，经该链接订阅的粉丝会自动加入指定名单。", "V-I1", "Organize fans by source using lists"),
-          ]),
-          s("onlymonster", "Dynamic Fan Lists · 来源筛选与名单同步", [
-            c("Subscribed from link 条件纳入经指定追踪链接在最近 90 天订阅的粉丝。", "O2", "Available Filters"),
-            c("名单支持同步到 OnlyFans Collections，用于 OnlyFans 原生消息及 OnlyMonster 群发。", "O2", "Dynamic Fan Lists"),
-          ], [
-            c("Subscribed from link 不能与其他筛选条件组合。", "O2", "Important Notes"),
-          ]),
-          s("creatorhero", "Tracking Links · 生成来源名单", [
-            c("点击 Create OnlyFans List，把通过该链接订阅的粉丝生成一个可自定义名称的 OnlyFans 名单。", "V-C1", "Create OnlyFans List"),
-          ], [
-            c("这是创建当时的名单快照；之后从同一链接加入的粉丝不会自动追加。", "V-C1", "Create OnlyFans List"),
-          ]),
-        ],
-      },
-    ],
-  },
+
 ]
 
 const coreOrder: ValueId[] = ['conversion', 'retention', 'content', 'team', 'control']
 export const values = coreOrder.map(id => valueCatalog.find(value => value.id === id)!)
-export const growthValues = valueCatalog.filter(value => value.id === 'acquisition')
-export const allValues = [...values, ...growthValues]
 
-const usedRefs = new Set(allValues.flatMap(value => value.points.flatMap(point => point.solutions.flatMap(solution => solution.refs))))
+const usedRefs = new Set(values.flatMap(value => value.points.flatMap(point => point.solutions.flatMap(solution => solution.refs))))
 export const sources = catalogSources.filter(source => usedRefs.has(source.id))
 export const sourceMap = new Map(sources.map(source => [source.id, source]))
 
-export const pointCount = allValues.reduce((total, value) => total + value.points.length, 0)
-export const solutionCount = allValues.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.length, 0), 0)
-export const evidenceCount = allValues.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.reduce((count, solution) => count + solution.claims.length + solution.limits.length, 0), 0), 0)
+export const pointCount = values.reduce((total, value) => total + value.points.length, 0)
+export const solutionCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.length, 0), 0)
+export const evidenceCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.reduce((count, solution) => count + solution.claims.length + solution.limits.length, 0), 0), 0)
 
 const claimMarkdown = (claim: EvidenceClaim) => {
   const source = sourceMap.get(claim.ref)!
@@ -569,9 +490,9 @@ const claimMarkdown = (claim: EvidenceClaim) => {
 
 export function buildMarkdown() {
   const lines = [
-    '# Onlyfans CRM 的经营价值',
+    '# Onlyfans CRM 产品价值分析',
     '不同平台能力对比与产品建设启示',
-    `报告更新于 ${auditedAt}。5 类核心价值、1 类增长扩展价值，共 ${pointCount} 个落地点、${solutionCount} 项平台实现，引用 ${sources.length} 份官方资料。`,
+    `报告更新于 ${auditedAt}。5 类核心产品价值，共 ${pointCount} 个落地点、${solutionCount} 项平台实现，引用 ${sources.length} 份官方资料。`,
     `研究范围：${frameworkScope}`,
     '## 管理摘要（本报告分析）',
     `核心判断：${executiveSummary.conclusion}`,
@@ -580,10 +501,8 @@ export function buildMarkdown() {
     '每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。',
     '',
   ]
-  allValues.forEach((value, index) => {
-    const isGrowth = index >= values.length
-    const label = isGrowth ? 'E' : String(index + 1)
-    if (isGrowth) lines.push('## 增长扩展价值', growthScope, '')
+  values.forEach((value, index) => {
+    const label = String(index + 1)
     lines.push(`## ${label}. ${value.title}`, value.thesis, '', `分析范围：${value.scope}`, '')
     value.points.forEach((point, pointIndex) => {
       lines.push(`### ${label}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, '')

@@ -1,8 +1,8 @@
-# Onlyfans CRM 的经营价值
+# Onlyfans CRM 产品价值分析
 
 不同平台能力对比与产品建设启示
 
-报告更新于 2026-10-22。5 类核心价值、1 类增长扩展价值，共 18 个落地点、57 项平台实现，引用 48 份官方资料。
+报告更新于 2026-10-22。5 类核心产品价值，共 15 个落地点、48 项平台实现，引用 44 份官方资料。
 
 研究范围：以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。
 
@@ -16,7 +16,7 @@
 
 **保持规模化经营可控**：业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录掌握过程、核对归属。
 
-**产品建设启示**：围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈；对掌握渠道和预算的客户，再加强获客回报能力。
+**产品建设启示**：围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈与团队规模。
 
 每条当前实现及资料限定均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。
 
@@ -768,152 +768,6 @@
 
 
 
-## 增长扩展价值
-
-获客回报作为增长扩展价值单列。对负责渠道合作和预算分配的经营者，它可以上升为核心能力；主要承担聊天销售的团队，对它的依赖较低。
-
-
-
-## E. 提高获客投入的回报
-
-识别高价值获客渠道，让预算投入更有依据。
-
-
-
-分析范围：适用于负责渠道合作和预算分配的经营者。经营对象是渠道与获客批次，关注来源、成本和后续消费；这些资料不代表平台已承担完整的流量生产或投放执行。
-
-
-
-### E.1 先让来源与成本可以对账
-
-问题（分析）：只看粉丝增长，不知道哪次合作或投放带来了谁，也漏记推广成本。
-
-作用（分析）：统一链接、活动和费用口径，让获客选择从曝光量进入成本与收入比较。
-
-示例情境：两位推广伙伴各带来 100 个粉丝，用独立链接和真实费用区分是否值得继续合作。
-
-主要使用者：增长运营 + 财务
-
-
-
-#### Infloww · Tracking Links · 推广费用与收入
-
-当前实现：
-
-- 追踪链接支持手工录入推广费用，并据此计算 ROI。（[Tracking links · Promo costs](https://help.infloww.com/en/articles/262075-tracking-links)）
-
-资料限定：
-
-- 收入采用滚动归因：粉丝通过新链接重新订阅后，未来收入转归最近的链接。（[Tracking links · Attribution](https://help.infloww.com/en/articles/262075-tracking-links)）
-
-
-
-#### Supercreator · Creator Analytics · Campaigns
-
-当前实现：
-
-- Campaigns 展示推广活动的点击、领取订阅和收入；可录入活动成本并计算 ROI。（[Creator Analytics · Campaigns](https://help.supercreator.app/en/articles/8118590-creator-analytics)）
-
-
-
-#### CreatorHero · Detailed Tracking Links · 成本与利润
-
-当前实现：
-
-- 单条链接详情中可填写推广费用，查看利润和 ROI。（[Detailed Tracking Links · Promotion Costs & ROI Calculation](https://help.creatorhero.com/en/articles/10495959-detailed-tracking-links)）
-
-
-
-### E.2 比较渠道带来的人，后来是否付费
-
-问题（分析）：便宜的粉丝可能从不购买；旧渠道累计时间长，看起来总比新渠道赚钱。
-
-作用（分析）：把来源与后续消费联系起来；比较时需要区分累计收入、固定观察期和不同归因口径。
-
-示例情境：渠道 A 首周增长快，渠道 B 粉丝少但持续购买；统一获客周和后续 30 天再比较。
-
-主要使用者：增长分析 + 经营负责人
-
-
-
-#### Infloww · Tracking Link Details · 来源粉丝消费
-
-当前实现：
-
-- 进入链接详情可查看各粉丝在订阅、帖子、消息、直播和打赏上的消费明细。（[Tracking links · Tracking link detail page](https://help.infloww.com/en/articles/262075-tracking-links)）
-
-资料限定：
-
-- 追踪链接总览的时间过滤按链接创建时间筛选。（[Tracking links · Dashboard overview](https://help.infloww.com/en/articles/262075-tracking-links)）
-
-
-
-#### OnlyMonster · Traffic Metrics · 订阅批次与收入期间
-
-当前实现：
-
-- Detailed 模式可分别筛选链接创建日期、粉丝订阅日期和收入日期；后两项最多选择 180 天范围。（[Traffic Metrics · 当前版本 · Filter System](https://docs.onlymonster.ai/management-system/traffic-metrics)）
-
-- 收入归因可选择 Rolling 或 Double；前者把后续收入移到最新来源，后者保留早期来源的累计归因。（[Traffic Metrics · 当前版本 · Earnings Attribution](https://docs.onlymonster.ai/management-system/traffic-metrics)）
-
-
-
-#### CreatorHero · Detailed Tracking Links · 渠道粉丝构成
-
-当前实现：
-
-- 链接详情展示总收入、最近 30 天收入、平均消费和续订活跃粉丝。（[Detailed Tracking Links · Performance Metrics](https://help.creatorhero.com/en/articles/10495959-detailed-tracking-links)）
-
-- Fan Engagement Graph 区分仅订阅、曾回复、购买一次和购买多次等人群。（[Detailed Tracking Links · Fan Engagement Graph](https://help.creatorhero.com/en/articles/10495959-detailed-tracking-links)）
-
-
-
-### E.3 把来源人群带入接待工作流
-
-问题（分析）：发现某渠道表现不好，却不清楚是人群质量差、接待不足，还是内容不匹配。
-
-作用（分析）：将链接来源转成可使用的粉丝名单，为差异化接待准备受众。
-
-示例情境：从某个推广链接带来的新粉生成名单，在接待时使用与该渠道内容相匹配的介绍。
-
-主要使用者：增长运营 + 生命周期运营
-
-
-
-#### Infloww · Tracking Links · 来源自动入名单
-
-当前实现：
-
-- 为追踪链接选择或新建名单后，经该链接订阅的粉丝会自动加入指定名单。（[Tracking links · Organize fans by source using lists](https://help.infloww.com/en/articles/262075-tracking-links)）
-
-
-
-#### OnlyMonster · Dynamic Fan Lists · 来源筛选与名单同步
-
-当前实现：
-
-- Subscribed from link 条件纳入经指定追踪链接在最近 90 天订阅的粉丝。（[Dynamic Fan Lists · Available Filters](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)）
-
-- 名单支持同步到 OnlyFans Collections，用于 OnlyFans 原生消息及 OnlyMonster 群发。（[Dynamic Fan Lists · Dynamic Fan Lists](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)）
-
-资料限定：
-
-- Subscribed from link 不能与其他筛选条件组合。（[Dynamic Fan Lists · Important Notes](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)）
-
-
-
-#### CreatorHero · Tracking Links · 生成来源名单
-
-当前实现：
-
-- 点击 Create OnlyFans List，把通过该链接订阅的粉丝生成一个可自定义名称的 OnlyFans 名单。（[Tracking Links · Create OnlyFans List](https://help.creatorhero.com/en/articles/10495787-tracking-links)）
-
-资料限定：
-
-- 这是创建当时的名单快照；之后从同一链接加入的粉丝不会自动追加。（[Tracking Links · Create OnlyFans List](https://help.creatorhero.com/en/articles/10495787-tracking-links)）
-
-
-
 ## 跨价值的共同基础（分析）
 
 在动作发生处提供相关信息；用反馈修正下一轮运营。AI、分组、报表和自动化是承载这些价值的能力，可同时服务多个经营目标。
@@ -1010,16 +864,8 @@
 
 - CreatorHero · [Chat summary](https://help.creatorhero.com/en/articles/10523101-chat-summary-feature)
 
-- Infloww · [Tracking links](https://help.infloww.com/en/articles/262075-tracking-links)
-
 - Infloww · [Fan reports](https://help.infloww.com/en/articles/276167-fan-reports)
 
 - Supercreator · [Creator Analytics](https://help.supercreator.app/en/articles/8118590-creator-analytics)
 
 - Supercreator · [Expired Fans Automation](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)
-
-- OnlyMonster · [Traffic Metrics · 当前版本](https://docs.onlymonster.ai/management-system/traffic-metrics)
-
-- CreatorHero · [Tracking Links](https://help.creatorhero.com/en/articles/10495787-tracking-links)
-
-- CreatorHero · [Detailed Tracking Links](https://help.creatorhero.com/en/articles/10495959-detailed-tracking-links)

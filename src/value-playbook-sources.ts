@@ -267,12 +267,6 @@ export const sources = [
     "url": "https://help.creatorhero.com/en/articles/10523101-chat-summary-feature"
   },
   {
-    "id": "V-I1",
-    "platform": "Infloww",
-    "title": "Tracking links",
-    "url": "https://help.infloww.com/en/articles/262075-tracking-links"
-  },
-  {
     "id": "V-I2",
     "platform": "Infloww",
     "title": "Fan reports",
@@ -290,22 +284,4 @@ export const sources = [
     "title": "Expired Fans Automation",
     "url": "https://help.supercreator.app/en/articles/6316382-expired-fans-automation"
   },
-  {
-    "id": "V-O1",
-    "platform": "OnlyMonster",
-    "title": "Traffic Metrics · 当前版本",
-    "url": "https://docs.onlymonster.ai/management-system/traffic-metrics"
-  },
-  {
-    "id": "V-C1",
-    "platform": "CreatorHero",
-    "title": "Tracking Links",
-    "url": "https://help.creatorhero.com/en/articles/10495787-tracking-links"
-  },
-  {
-    "id": "V-C2",
-    "platform": "CreatorHero",
-    "title": "Detailed Tracking Links",
-    "url": "https://help.creatorhero.com/en/articles/10495959-detailed-tracking-links"
-  }
 ]
