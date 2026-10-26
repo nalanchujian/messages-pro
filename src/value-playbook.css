@@ -62,16 +62,6 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px s
 .executive-perspectives nav { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 12px; color: var(--accent); }
 .executive-perspectives nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .executive-perspectives nav span { font-size: 10px; margin-left: 3px; }
-.executive-implication { display: grid; grid-template-columns: 84px minmax(0, 1fr); align-items: baseline; gap: 20px; padding: 18px 20px; margin-top: 26px; background: #edf3f8; border-left: 3px solid #7390b0; }
-.executive-implication h3 { font-size: 13px; font-weight: 700; line-height: 1.9; }
-.executive-implication p { font-size: 14px; line-height: 1.85; color: #3e5169; }
-.report-meta { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-.report-meta p { display: flex; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
-.report-meta p span { white-space: nowrap; }
-.meta-date { color: #3c4d63; }
-#download-analysis { display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-height: 42px; border: 1px solid #bdcddd; border-radius: 4px; color: #25466d; background: #fff; padding: 9px 19px; font-size: 13px; font-weight: 500; white-space: nowrap; }
-#download-analysis span { font-size: 19px; line-height: 1; }
-#download-analysis:hover { background: #edf3f8; border-color: #7390b0; }
 
 /* Report outline: one aligned index, with no hidden reading content. */
 .overview { padding: 44px 0 40px; }
@@ -138,7 +128,6 @@ th { font-weight: 600; }
 .nav-points a { font-size: 12px; line-height: 1.8; color: var(--muted); position: relative; }
 .nav-points a[aria-current] { color: #274b73; font-weight: 600; }
 .nav-points a[aria-current]::before { content: ''; width: 5px; height: 5px; position: absolute; left: -18px; top: 9px; background: var(--accent); }
-.nav-sources { margin: 20px 12px 0; padding-block: 17px; border-top: 1px solid #ced8e5; display: flex; justify-content: space-between; color: #506078; font-size: 12px; }
 .report-content { min-width: 0; }
 .report-part-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; color: #455c76; font-size: 13px; }
 .value-chapter { padding: 32px 32px 40px; border: 1px solid var(--line); border-top: 3px solid #395b80; background: var(--paper); scroll-margin-top: 24px; }
@@ -206,31 +195,24 @@ th { font-weight: 600; }
 .implementation-boundary { display: grid; grid-template-columns: var(--detail-label-width) minmax(0,1fr); align-items: baseline; gap: var(--detail-column-gap); margin-top: 18px; padding: 13px 14px; background: #f6f8fa; border-left: 2px solid #ccd6e2; color: var(--muted); }
 .implementation-boundary > span { white-space: nowrap; font-size: 11px; font-weight: 500; }
 .implementation-boundary p { font-size: 13px; line-height: 1.85; overflow-wrap: anywhere; }
-.infloww-proposal { margin-top: 16px; padding: 17px 18px; border: 1px solid #d8d1fb; border-left: 3px solid #7868d8; border-radius: 3px; background: #faf9ff; }
-.infloww-proposal p { display: flex; align-items: baseline; gap: 9px; margin: 0 0 7px; color: #4f3cba; font-size: 13px; font-weight: 700; }
-.infloww-proposal p span { color: #716d85; font-size: 11px; font-weight: 500; }
+.infloww-proposal { --assessment-accent: #1d4ed8; --assessment-bg: #eff6ff; --assessment-line: #93b4f5; margin-top: 18px; padding: 20px; border: 1px solid var(--assessment-line); border-left: 5px solid var(--assessment-accent); border-radius: 6px; background: var(--assessment-bg); }
+.infloww-proposal[data-assessment-status="Infloww 已覆盖核心能力"] { --assessment-accent: #166534; --assessment-bg: #ecfdf3; --assessment-line: #86cfa2; }
+.infloww-proposal[data-assessment-status="Infloww 提供管理数据"] { --assessment-accent: #0f766e; --assessment-bg: #effcf9; --assessment-line: #71c9bb; }
+.infloww-proposal[data-assessment-status="竞品有可借鉴增量"] { --assessment-accent: #1d4ed8; --assessment-bg: #eff6ff; --assessment-line: #93b4f5; }
+.infloww-proposal[data-assessment-status="关键差异待验证"] { --assessment-accent: #b45309; --assessment-bg: #fff7e6; --assessment-line: #edbc65; }
+.assessment-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 0 0 14px; }
+.assessment-title { color: #26364c; font-size: 13px; font-weight: 700; }
+.assessment-status { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 6px 11px; border: 1px solid var(--assessment-accent); border-radius: 5px; background: var(--assessment-accent); color: #fff; font-size: 12px; font-weight: 700; line-height: 1.5; }
+.assessment-icon { flex: 0 0 auto; font-size: 16px; line-height: 1; }
 .infloww-proposal div { color: #3c3a4c; font-size: 14px; line-height: 1.85; overflow-wrap: anywhere; }
+.assessment-sources { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+.assessment-sources > span { color: #716d85; }
+.assessment-sources a { color: var(--assessment-accent); text-decoration: underline; text-underline-offset: 3px; }
 
-
-/* Method, references and supporting navigation use the same document grid. */
-.closing-section { padding: 30px 32px; margin-top: 36px; border: 1px solid var(--line); background: var(--paper); }
-.closing-section h2 { font-size: 23px; font-weight: 600; line-height: 1.6; margin: 12px 0 24px; }
-.foundation-columns { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 30px; }
-.foundation-columns > article { min-width: 0; }
-.foundation-columns h3 { font-size: 15px; font-weight: 600; margin-bottom: 9px; }
-.foundation-columns p { color: var(--muted); font-size: 14px; line-height: 1.9; }
-.method-section { padding: 30px 32px; margin-top: 24px; border: 1px solid var(--line); background: var(--paper); scroll-margin-top: 24px; }
-.method-section h2 { font-size: 23px; font-weight: 600; }
-.method-list { padding-left: 19px; margin: 19px 0 29px; color: var(--muted); }
-.method-list li { font-size: 14px; line-height: 1.9; padding-left: 4px; }
-.method-list li + li { margin-top: 12px; }
-.method-list strong { color: #3c4f68; font-weight: 600; }
-.sources-heading { display: flex; align-items: baseline; gap: 12px; font-size: 18px; font-weight: 600; }
-.sources-heading span { font-size: 12px; color: var(--muted); font-weight: 400; }
-.source-guide { font-size: 13px; color: var(--muted); margin-top: 9px; }
-#source-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 28px 32px; margin-top: 24px; }
+.source-index { margin-top: 44px; scroll-margin-top: 24px; }
+#source-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 28px 32px; padding: 30px 32px; border: 1px solid var(--line); background: var(--paper); }
 #source-list > section { min-width: 0; }
-#source-list h4 { font-size: 14px; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+#source-list h3 { font-size: 14px; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 #source-list ol { padding-left: 27px; margin: 12px 0 0; }
 #source-list li { padding: 5px 0 5px 4px; font-size: 13px; color: #405a7b; scroll-margin-top: 24px; }
 #source-list li::marker { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -238,12 +220,8 @@ th { font-weight: 600; }
 #source-list a { overflow-wrap: anywhere; }
 #source-list a:hover { text-decoration: underline; text-underline-offset: 3px; }
 #source-list a span { font-size: 10px; color: var(--muted); }
-.further-reading { display: flex; justify-content: space-between; align-items: center; gap: 22px; border: 1px solid var(--line); padding: 24px 32px; margin-top: 24px; background: var(--paper); }
-.further-reading p { font-size: 12px; color: var(--muted); }
-.further-reading h2 { font-size: 19px; font-weight: 600; line-height: 1.7; margin-top: 3px; }
-.further-reading nav { display: flex; flex-wrap: wrap; gap: 12px; }
-.further-reading nav a { display: flex; gap: 15px; align-items: center; font-size: 12px; color: var(--accent); white-space: nowrap; border: 1px solid #ccd8e7; border-radius: 3px; padding: 8px 13px; }
-.further-reading nav a:hover { background: var(--accent-soft); border-color: #9eb3cc; }
+
+
 .site-footer { display: flex; justify-content: space-between; gap: 20px; padding-block: 25px; margin-top: 10px; font-size: 12px; color: var(--muted); }
 .site-footer > a { flex: none; }
 .noscript { padding: 25px; background: var(--soft); }
@@ -255,7 +233,7 @@ th { font-weight: 600; }
   .report-layout { display: block; padding-top: 0; }
   .report-sidebar { position: sticky; top: 0; z-index: 10; padding: 0 24px; background: #f3f5f8; border: 1px solid var(--line); border-bottom: 0; }
   .chapter-nav { max-height: none; overflow: visible; }
-  .nav-heading, .nav-sources, .nav-group.is-active .nav-points { display: none; }
+  .nav-heading, .nav-group.is-active .nav-points { display: none; }
   #chapter-links { display: flex; gap: 24px; overflow-x: auto; scrollbar-width: none; }
   #chapter-links::-webkit-scrollbar { display: none; }
   .nav-group { margin: 0; flex: 1 0 auto; }
@@ -265,7 +243,6 @@ th { font-weight: 600; }
   .chapter-link[aria-current] { border-bottom-color: var(--accent); background: none; }
   .chapter-link:hover { background: none; }
   .report-content { padding: 0; }
-  .report-part-heading { padding-top: 18px; }
   .overview-table th, .overview-table td { padding-inline: 17px; }
   .overview-table tbody td { padding-inline: 8px; }
   .overview-table li { padding-inline: 6px; }
@@ -288,6 +265,9 @@ th { font-weight: 600; }
 }
 @media screen and (max-width: 760px) {
   :root { --detail-label-width: 48px; --detail-column-gap: 10px; --callout-inset: 12px; --table-gutter: 15px; }
+  .approach { padding-top: 36px; }
+  .approach-flow { gap: 38px; }
+  .approach-step:not(:last-child)::after { bottom: -19px; }
   html { scroll-padding-top: 75px; }
   .page-width { width: calc(100% - 32px); }
   .site-header { min-height: 70px; flex-wrap: wrap; gap: 5px 15px; padding-block: 15px; }
@@ -312,11 +292,6 @@ th { font-weight: 600; }
   .executive-perspectives article + article::before { display: none; }
   .executive-perspectives h3 { font-size: 17px; }
   .executive-perspectives nav { margin-top: 9px; }
-  .executive-implication { grid-template-columns: 1fr; gap: 6px; padding: 14px; margin-top: 22px; }
-  .report-meta { display: grid; gap: 20px; margin-top: 23px; padding-top: 18px; }
-  .report-meta p { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 16px; font-size: 11px; }
-  .report-meta .meta-date { grid-column: 1 / -1; }
-  #download-analysis { justify-self: start; font-size: 12px; min-height: 40px; padding: 8px 16px; }
   .overview { padding: 27px 0 23px; }
   .section-heading { display: block; margin-bottom: 14px; }
   .section-heading h2 { font-size: 23px; }
@@ -377,17 +352,8 @@ th { font-weight: 600; }
   .implementation-boundary p { font-size: 13px; }
   .infloww-proposal { margin-top: 14px; padding: 15px; }
   .infloww-proposal div { font-size: 13px; }
-  .closing-section, .method-section, .further-reading { padding: 24px 18px; margin-top: 24px; }
-  .closing-section h2 { font-size: 20px; }
-  .foundation-columns { grid-template-columns: 1fr; gap: 23px; }
-  .foundation-columns h3 { font-size: 15px; }
-  .foundation-columns p { font-size: 14px; }
-  .method-section h2 { font-size: 20px; }
-  .method-list li { font-size: 13px; }
-  #source-list { grid-template-columns: 1fr; gap: 24px; }
-  .source-guide { font-size: 12px; }
-  .further-reading { flex-wrap: wrap; gap: 17px; }
-  .further-reading h2 { font-size: 18px; }
+  .source-index { margin-top: 27px; }
+  #source-list { grid-template-columns: 1fr; gap: 24px; padding: 24px 18px; }
   .site-footer { font-size: 11px; gap: 15px; }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -400,10 +366,12 @@ th { font-weight: 600; }
   html { scroll-padding: 0; scroll-behavior: auto; }
   body { background: white; color: #111; font-size: 11pt; }
   .page-width { width: 100%; }
-  .site-header, .report-sidebar, #download-analysis, .point-toc, .site-footer, .further-reading, .skip-link { display: none; }
+  .site-header, .report-sidebar, .point-toc, .site-footer, .skip-link { display: none; }
   .report-part-heading { display: none; }
   .value-tier-badge { background: white; color: #203b5b; }
   .overview-table thead th { background: white; color: #203b5b; border-bottom: 2px solid #203b5b; }
+  .approach-step { border-top-width: 2px; }
+  .approach-flow { gap: 6mm; }
   .report-layout { display: block; }
   .report-header { padding: 18px 0 22px; border: 0; border-top: 2px solid #203d60; }
   .report-header h1 { font-size: 30pt; }
@@ -414,8 +382,8 @@ th { font-weight: 600; }
   .executive-conclusion > p { font-size: 12pt; color: #1d2c40; }
   .executive-perspectives { --perspective-gap: 28px; }
   .executive-perspectives h3 { font-size: 11pt; }
-  .perspective-text, .executive-implication p { font-size: 10pt; }
-  .executive-perspectives article, .executive-conclusion, .executive-implication { break-inside: avoid; }
+  .perspective-text { font-size: 10pt; }
+  .executive-perspectives article, .executive-conclusion { break-inside: avoid; }
   .report-content { padding: 0; border: 0; }
   .value-chapter { padding: 20px 0; border: 0; break-before: page; }
   .value-chapter + .value-chapter { margin-top: 0; }
@@ -435,8 +403,8 @@ th { font-weight: 600; }
   .comparison-table h4, .platform-name { font-size: 10pt; }
   .current-implementation p, .implementation-boundary p, .infloww-proposal div { font-size: 10pt; }
   .claim-source { font-size: 8.5pt; }
-  .closing-section, .method-section { padding: 24px 0; border: 0; }
+  .source-index { padding: 24px 0; border: 0; }
   .point-header { break-after: avoid; }
-  .foundation-columns, #source-list { grid-template-columns: 1fr 1fr; }
+  #source-list { grid-template-columns: 1fr 1fr; }
   a { text-decoration: none; }
 }

@@ -1,10 +1,14 @@
 # Onlyfans CRM 产品价值分析
 
-不同平台能力对比与产品建设启示
+平台能力对比与 Infloww 优化方向
 
-报告更新于 2026-10-22。5 类核心产品价值，共 15 个落地点、48 项平台实现，引用 44 份官方资料。
+报告更新于 2026-10-26。5 类核心产品价值、15 个落地点、52 项同维度平台实现，引用 49 份官方资料。
 
-研究范围：以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。
+研究范围：聚焦团队运营多个 OnlyFans 创作者账号的场景，围绕聊天销售、粉丝关系、内容复用、团队协作与权限管理，对比四家平台的公开官方资料。
+
+## 报告思路（五步分析路径）
+
+界定经营场景 → 建立价值框架 → 拆解具体落地点 → 对照平台实现 → 评估优化方向。
 
 ## 管理摘要（本报告分析）
 
@@ -14,9 +18,8 @@
 
 **扩大可复用的经营能力**：让已有内容充分参与销售，让成熟经验被更多员工使用，在有限时间内承接更多有效工作。
 
-**保持规模化经营可控**：业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录掌握过程、核对归属。
+**保持规模化经营可控**：业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录核对发信责任。
 
-**产品建设启示**：围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈与团队规模。
 
 每条当前实现及适用边界均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。
 
@@ -42,17 +45,25 @@
 
 主要使用者：班次主管 + 聊天员工
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：收件箱按最新／最早排序，支持 Priority 筛选；官方 Fan Insights 另列消费力分层，但不是会话排序。借鉴方向：评估 Supercreator 的行为优先级排序。待确认：Priority 的判定规则和新排序的实际效果。
+
+核实依据：[Infloww · Navigating Infloww’s OF manager](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)；[Infloww · Fan Insights](https://help.infloww.com/en/articles/523936-fan-insights)；[Supercreator · Inbox Copilot](https://help.supercreator.app/en/articles/6317610-inbox-copilot)
 
 
-#### Infloww · Smart Lists · 消费分层
+
+#### Infloww · Messages Pro · 会话筛选与时间排序
 
 当前实现：
 
-- 按累计消费建立粉丝分层名单，可选择是否纳入已过期粉丝。（[Smart Lists · Segment by total spend](https://help.infloww.com/en/articles/262064-smart-lists)）
+- 收件箱展示粉丝标签与消费总额；近期购买 PPV 的粉丝也有对应标签，便于员工辨认。（[Messages Pro · About Fan tags](https://help.infloww.com/en/articles/262067-getting-started-with-onlyfans-messages-pro)）
+
+- 会话列表提供“最新优先／最早优先”排序，并可按 Priority、Unread、Unread with tips 等条件筛选。（[OF manager · Viewing and creating messages](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)）
 
 适用边界：
 
-- 名单通常每 6 小时刷新，首次生成约需 30 分钟。（[Smart Lists · Segment by total spend](https://help.infloww.com/en/articles/262064-smart-lists)）
+- 官方资料列出的是筛选和时间排序，未说明收件箱会按消费与行为信号自动排列会话。（[OF manager · Viewing and creating messages](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)）
+
+- Smart Lists 是另一项粉丝分层能力：可按消费建立定向触达名单，名单约每 6 小时更新。（[Smart Lists · What are Smart Lists?](https://help.infloww.com/en/articles/262064-smart-lists)）
 
 
 
@@ -66,25 +77,25 @@
 
 
 
-#### OnlyMonster · Dynamic Fan Lists · 条件名单
+#### OnlyMonster · Buying Power · 会话购买潜力
 
 当前实现：
 
-- 可按账号消费、机构消费、最近购买和聊天活跃条件建立名单；活跃条件区分“员工已发信”和“粉丝也有回复”。（[Dynamic Fan Lists · Available Filters](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)）
+- 打开会话可查看粉丝 0–5 分的 Buying Power，以及消费额、平均 PPV 和近期购买。（[Advanced Fan Information · Buying Power section](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
 
-- 名单明细展示消费及最近购买信息，并提供对应会话的 Chat 链接。（[Dynamic Fan Lists · List of Fans](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)）
+- 官方更新记录说明 Buying Power 分数也展示在聊天列表中，便于先辨认潜在高价值会话。（[Changelog 2025 · 14 November - Version 3.35.0](https://docs.onlymonster.ai/changelog/changelog-2025)）
 
 
 
-#### CreatorHero · Recent Spend List · 近期消费者
+#### CreatorHero · Fan Spend Colors · 收件箱消费提示
 
 当前实现：
 
-- 选择 1 分钟至 30 天的时间范围，生成近期有消费的粉丝名单。（[Recent spend list · Creating a Recent Spend List](https://help.creatorhero.com/en/articles/10522981-recent-spend-list)）
+- 可按粉丝消费门槛设置颜色，在消息收件箱突出高、低消费粉丝。（[Display Settings · Fan Spend Colors](https://help.creatorhero.com/en/articles/10434184-display-settings)）
 
 适用边界：
 
-- 订阅费不计入这一名单的消费条件。（[Recent spend list · What qualifies as a “Recent Spend”?](https://help.creatorhero.com/en/articles/10522981-recent-spend-list)）
+- 文档说明的是消费颜色提示，未说明会自动改变会话排序。（[Display Settings · Fan Spend Colors](https://help.creatorhero.com/en/articles/10434184-display-settings)）
 
 
 
@@ -97,6 +108,10 @@
 示例情境：粉丝询问一套新内容：先检查是否买过、通常买什么价格，再决定推荐哪个组合。
 
 主要使用者：内容运营 + 聊天员工
+
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：聊天侧可看粉丝 PPV 均价等消费数据，素材建议价由员工设置。借鉴方向：参考 Supercreator，按粉丝购买历史提示报价区间与价格偏差。待确认：当前版本有无同类提示，需求判断仍需结合对话。
+
+核实依据：[Infloww · Fan Insights](https://help.infloww.com/en/articles/523936-fan-insights)；[Infloww · Vault Pro](https://help.infloww.com/en/articles/262062-getting-started-with-vault-pro)；[Supercreator · Pricing Copilot](https://help.supercreator.app/en/articles/6317627-pricing-copilot)
 
 
 
@@ -150,6 +165,10 @@
 
 主要使用者：聊天员工 + 自动化配置人
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：可从未购直聊 PPV 报表返回会话；购买后自动触达不等于未购跟进。借鉴方向：评估 CreatorHero 的单条 PPV 延时提醒。待确认：Infloww 当前是否已有未购触发。
+
+核实依据：[Infloww · Message Dashboard](https://help.infloww.com/en/articles/262061-message-dashboard)；[Infloww · Smart Messages](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)；[CreatorHero · PPV Follow-Ups](https://help.creatorhero.com/en/articles/10499966-ppv-follow-ups)
+
 
 
 #### Infloww · Message Dashboard · 人工回到会话
@@ -162,7 +181,7 @@
 
 适用边界：
 
-- 报表约每 10 分钟更新，只记录通过 Infloww 发送的消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
+- 报表约每 10 分钟更新；Direct messages 不含自动消息和群发消息，仅记录通过 Infloww 发送的员工直聊消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
 
 
@@ -200,7 +219,9 @@
 
 主要使用者：每位经办员工
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：Infloww 以人工资料和备注承接关系；Supercreator 可从对话提取信息，CreatorHero 可生成聊天摘要。借鉴方向：评估自动整理能否缩短交接。待确认：Infloww 当前 AI 摘要是否可用；2026 年 5 月对比页不能证明现状。
 
+核实依据：[Infloww · Fan Insights](https://help.infloww.com/en/articles/523936-fan-insights)；[Infloww · Infloww vs. CreatorHero（对比截至 2026 年 5 月）](https://infloww.com/infloww-vs-creatorhero)；[CreatorHero · Chat summary](https://help.creatorhero.com/en/articles/10523101-chat-summary-feature)；[Supercreator · Fans Copilot / CRM](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)
 
 #### Infloww · Fan Insights · 资料与备注模板
 
@@ -210,7 +231,9 @@
 
 - 备注区支持自由文本和自定义模板。（[Fan Insights · Notes](https://help.infloww.com/en/articles/523936-fan-insights)）
 
+适用边界：
 
+- 官方对比页将 AI fan summary 标为开发中，但该表注明截至 2026 年 5 月，仅作为历史状态依据，不代表当前版本状态。（[Infloww vs. CreatorHero（对比截至 2026 年 5 月） · Platform comparison / OnlyFans](https://infloww.com/infloww-vs-creatorhero)）
 
 #### Supercreator · Fans CRM · AI 整理与团队备注
 
@@ -220,8 +243,6 @@
 
 - Notes Template 可设置机构默认备注结构，供团队在粉丝资料中使用。（[Fans Copilot / CRM · Notes Template](https://help.supercreator.app/en/articles/6316422-fans-copilot-crm)）
 
-
-
 #### OnlyMonster · Advanced Fan Information · 偏好与备注
 
 当前实现：
@@ -229,8 +250,6 @@
 - 粉丝资料可记录生日、时区、订阅和续订状态，并查看最近回复、最近阅读等信息。（[Advanced Fan Information · General](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
 
 - Preferences 可手工记录和编辑粉丝偏好。（[Advanced Fan Information · Preferences](https://docs.onlymonster.ai/members-features/advanced-fan-information)）
-
-
 
 #### CreatorHero · Fan Notes + Chat Summary
 
@@ -252,6 +271,10 @@
 
 主要使用者：生命周期运营
 
+Infloww 能力评估与优化方向（Infloww 已覆盖核心能力）：现状：Smart Messages 已有生命周期触发与排除规则，过期触达可设多步序列并在粉丝回复后停止；Supercreator 另有跨阶段可视化分支。优化方向：先评估续订与回流效果，再判断是否需要跨场景流程。
+
+核实依据：[Infloww · Smart Messages](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)；[Infloww · Message fans after their subscription expires](https://help.infloww.com/en/articles/262048-message-fans-after-their-subscription-expires)；[Supercreator · Message Flow](https://help.supercreator.app/en/articles/12278471-message-flow)
+
 
 
 #### Infloww · Smart Messages · 生命周期触发
@@ -260,19 +283,21 @@
 
 - 提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。（[Smart Messages · Smart Messages Types](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
 
+- 已过期粉丝触达可配置后续消息序列，并根据粉丝是否回复决定下一条消息。（[Message fans after their subscription expires · Build the message or sequence](https://help.infloww.com/en/articles/262048-message-fans-after-their-subscription-expires)）
+
 适用边界：
 
 - 一个粉丝同时符合多个类型时，只发送优先级最高的一类；官方文档给出了类型优先顺序。（[Smart Messages · FAQs](https://help.infloww.com/en/articles/262059-getting-started-with-smart-messages)）
 
 
 
-#### Supercreator · Expired Fans Automation · 重新建立触达
+#### Supercreator · Message Flow · 分阶段自动触达
 
 当前实现：
 
-- 自动关注已过期粉丝，每天约处理 100–200 人，优先关注高消费粉丝，并排除创作者账号。（[Expired Fans Automation · How does it work?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
+- 可按回复与否设置条件分支和时间延迟，自动发送后续消息或 PPV。（[Message Flow · How it works, step by step](https://help.supercreator.app/en/articles/12278471-message-flow)）
 
-- 可在 Automation 页面启用或暂停该自动化。（[Expired Fans Automation · How do you start using the Expired Fans automation?](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)）
+- 新粉丝与订阅三个月的粉丝可进入不同阶段，按所处阶段接收内容。（[Message Flow · How it works, step by step](https://help.supercreator.app/en/articles/12278471-message-flow)）
 
 
 
@@ -280,9 +305,15 @@
 
 当前实现：
 
-- 提供欢迎、上线、已过期、即将过期及关闭自动续订等触发条件。（[Auto Messages · Available Triggers](https://docs.onlymonster.ai/members-features/auto-messages)）
+- 提供欢迎、上线、已过期和即将过期四类触发；即将过期触达适用于关闭自动续订的粉丝。（[Auto Messages · Available Triggers / Send Message In](https://docs.onlymonster.ai/members-features/auto-messages)）
 
 - 触发后的动作可选择发送消息，或启动 Mimic AI 会话。（[Auto Messages · Action Type](https://docs.onlymonster.ai/members-features/auto-messages)）
+
+#### CreatorHero · Expiring Fans · 到期前自动消息
+
+当前实现：
+
+- 可针对即将到期的粉丝自动发送消息，并配置发送时机与内容。（[Expiring Fans · Settings Overview](https://help.creatorhero.com/en/articles/11102180-expiring-fans)）
 
 
 
@@ -296,6 +327,10 @@
 
 主要使用者：经营负责人
 
+Infloww 能力评估与优化方向（关键差异待验证）：现状：Fan Reports 有增长和消费数据；官方介绍留存表，本地前端却未启用该组件。待验证方向：确认实际入口和留存指标，再判断能否开展订阅批次分析。
+
+核实依据：[Infloww · Fan reports](https://help.infloww.com/en/articles/276167-fan-reports)；[Supercreator · Creator Analytics](https://help.supercreator.app/en/articles/8118590-creator-analytics)
+
 
 
 #### Infloww · Fan Reports · 新增、流失与保留
@@ -304,7 +339,7 @@
 
 - 报告呈现新增、流失、保留和活跃粉丝，以及自动续订开启／关闭情况；导出时可选日期范围与指标。（[Fan reports · 文章开篇](https://help.infloww.com/en/articles/276167-fan-reports)）
 
-- 留存表查看粉丝在一段时间内维持订阅的情况。（[Fan reports · Understanding Fan Retention](https://help.infloww.com/en/articles/276167-fan-reports)）
+- 官方资料介绍留存表，用于查看粉丝在一段时间内维持订阅的情况；本地前端页面当前未启用该表。（[Fan reports · Understanding Fan Retention](https://help.infloww.com/en/articles/276167-fan-reports)）
 
 
 
@@ -335,6 +370,10 @@
 示例情境：粉丝想看旅行主题内容：员工按主题找素材，再核对免费发送和购买历史。
 
 主要使用者：素材管理员 + 聊天员工
+
+Infloww 能力评估与优化方向（Infloww 已覆盖核心能力）：现状：Vault Pro 可搜索素材，并过滤当前粉丝已看或已解锁的内容；Supercreator 也提供逐粉丝素材状态。优化方向：验证过滤能否减少重复推荐，不把可选过滤写成强制拦截。
+
+核实依据：[Infloww · Vault Pro](https://help.infloww.com/en/articles/262062-getting-started-with-vault-pro)；[Supercreator · Vault Copilot](https://help.supercreator.app/en/articles/6317586-vault-copilot)
 
 
 
@@ -382,6 +421,10 @@
 
 - 可按最近、点赞或打赏等方式排序。（[Vault · Sort Options](https://help.creatorhero.com/en/articles/10461326-vault)）
 
+适用边界：
+
+- 该文档只证实素材查找与分类，未说明会在当前粉丝选材时提示其已购内容。（[Vault · Search and Filter](https://help.creatorhero.com/en/articles/10461326-vault)）
+
 
 
 ### 3.2 把散落素材变成可复用的销售组合
@@ -394,7 +437,9 @@
 
 主要使用者：内容运营 + 资深销售
 
+Infloww 能力评估与优化方向（Infloww 已覆盖核心能力）：现状：Scripts 可复用图文序列、提示下一条，并查看发送与购买表现；发送由员工决定，竞品模板也用于复用。优化方向：评估序列使用效果，不把 Scripts 当作自动销售流程。
 
+核实依据：[Infloww · Scripts](https://help.infloww.com/en/articles/262042-getting-started-with-scripts)；[Supercreator · Message Copilot / Library](https://help.supercreator.app/en/articles/6317851-message-copilot)；[OnlyMonster · Message Templates](https://docs.onlymonster.ai/members-features/message-templates)；[CreatorHero · Scripts](https://help.creatorhero.com/en/articles/10514438-scripts)
 
 #### Infloww · Scripts · 消息序列
 
@@ -404,17 +449,13 @@
 
 - 聊天输入“/”后按名称、序列、标签或正文关键词查找话术；发送序列中的话术后，会提示下一条。（[Scripts · Using Scripts in Messages Pro](https://help.infloww.com/en/articles/262042-getting-started-with-scripts)）
 
+- 脚本可查看发送、购买及收入统计，供团队复盘其使用表现。（[Scripts · Optimize your messaging strategies with key statistics](https://help.infloww.com/en/articles/262042-getting-started-with-scripts)）
 
-
-#### Supercreator · Message Library + Izzy Product Catalog
+#### Supercreator · Message Library · 消息与媒体模板
 
 当前实现：
 
 - 消息库可预先保存文案、媒体、价格、标题和文件夹，也可设置个性化定价后重复调用。（[Message Copilot / Library · How to use your Message Library](https://help.supercreator.app/en/articles/6317851-message-copilot)）
-
-- Izzy 产品目录保存媒体、预览、价格、描述、标签和文案，作为 AI 销售的内容目录。（[Izzy AI · Product Catalog](https://help.supercreator.app/en/articles/11385335-izzy-ai)）
-
-
 
 #### OnlyMonster · Message Templates · 内容与价格模板
 
@@ -423,8 +464,6 @@
 - 模板支持保存消息内容，并配置付费文字或付费媒体的价格。（[Message Templates · Message Pricing](https://docs.onlymonster.ai/members-features/message-templates)）
 
 - Insert 将模板放入编辑区继续修改；Send 按模板当前配置直接发送。（[Message Templates · Inserting and Sending Templates](https://docs.onlymonster.ai/members-features/message-templates)）
-
-
 
 #### CreatorHero · Scripts · 文本与媒体组合
 
@@ -446,7 +485,9 @@
 
 主要使用者：内容负责人 + 经营分析
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：Vault Pro 已有素材和文件夹统计；CreatorHero 可沿文件夹、PPV、发送记录下钻。借鉴方向：核实 Infloww 能否贯通同一查看路径。待确认：实际分析需求；打包收入不可按素材求和。
 
+核实依据：[Infloww · Media statistics](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)；[Infloww · Message Dashboard](https://help.infloww.com/en/articles/262061-message-dashboard)；[CreatorHero · PPV tracking](https://help.creatorhero.com/en/articles/10492637-ppv-tracking)
 
 #### Infloww · Vault Pro · 素材统计
 
@@ -454,21 +495,15 @@
 
 - 素材层展示发送次数、解锁次数／比例与毛收入。（[Media statistics · Viewing statistics in Grid and Table views](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
 
-- 文件夹和分类汇总发送数、解锁数、收入，并按整体发送数计算解锁率。（[Media statistics · Understanding folder and category summaries](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
+- 非默认文件夹和分类汇总发送数、收入，并以合计解锁数除以合计发送数计算整体解锁率。（[Media statistics · Understanding folder and category summaries](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
 
 适用边界：
 
+- 素材统计从 2026 年 8 月 27 日开始提供，不包含此前数据；直接从 OnlyFans 或其他流程发送的内容可能造成统计差异。（[Media statistics · Important information about statistics](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
+
+- OnlyFans Mass Messages（OFMM）的发送、解锁及收入不计入；解锁次数与毛收入不扣除拒付（chargeback）。（[Media statistics · 文章开篇 / Vault Pro provides the following statistics](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
+
 - 多素材打包销售时，每个素材都会记入整笔消息价格；不能把这些素材的收入直接相加当作独立交易收入。（[Media statistics · Important information about statistics](https://help.infloww.com/en/articles/766217-understanding-media-statistics-in-vault-pro)）
-
-
-
-#### Supercreator · Message Library · 复用畅销 PPV
-
-当前实现：
-
-- Import PPVs 提供 Recent 与 Best Selling 入口，可把近期或畅销 PPV 导入消息库，作为模板再次使用。（[Message Copilot / Library · How to use your Message Library](https://help.supercreator.app/en/articles/6317851-message-copilot)）
-
-
 
 #### CreatorHero · PPV Tracking · 文件夹到消息
 
@@ -500,6 +535,10 @@
 
 主要使用者：班次主管
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：Infloww 可分组过滤，但不能把员工绑定到组，员工仍可看完整收件箱；Supercreator 按聊天员建立颜色组。借鉴方向：评估组与负责人的明确映射。待确认：颜色组不等于强制隔离或交接闭环。
+
+核实依据：[Infloww · Split Inbox](https://help.infloww.com/en/articles/262029-split-inbox)；[Supercreator · Split Inbox](https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters)
+
 
 
 #### Infloww · Split Inbox · 分组与范围过滤
@@ -520,7 +559,7 @@
 
 当前实现：
 
-- 随机把粉丝分入颜色组，原有粉丝保持在同组。（[Split Inbox · How does it work?](https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters)）
+- 按聊天员工设置颜色组，随机把粉丝分入各组；粉丝通常保持在原组。（[Split Inbox · How does it work?](https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters)）
 
 - 最多设置 3 个颜色组；改变组数会重新生成分组，部分粉丝会换组。（[Split Inbox · How to use it?](https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters)）
 
@@ -536,17 +575,19 @@
 
 ### 4.2 把优秀员工的经验交给整个团队
 
-问题（分析）：新人从零摸索，优秀员工一离开，沟通节奏、内容选择和异常处理也跟着消失。
+问题（分析）：新人从零摸索，优秀员工离开后，常用话术和内容推荐经验也难以延续。
 
-作用（分析）：沉淀适用条件和下一步，把重复操作工具化，让人工集中处理判断与例外。
+作用（分析）：把成熟员工的消息与内容组合沉淀为共享模板，减少重复准备和新人摸索。
 
-示例情境：把成熟员工的欢迎、需求确认、内容推荐过程拆成模板，并明确哪些情况必须转人工。
+示例情境：把欢迎、需求确认和内容推荐整理成话术序列，供不同员工按场景调用。
 
 主要使用者：培训负责人 + 资深员工
 
+Infloww 能力评估与优化方向（Infloww 已覆盖核心能力）：现状：Scripts 已支持跨创作者共享、从聊天保存话术；竞品也有跨账号复制和模板复用。优化方向：明确适用场景与维护人，验证新人能否稳定调用，而非重复建设共享功能。
 
+核实依据：[Infloww · Scripts](https://help.infloww.com/en/articles/262042-getting-started-with-scripts)；[CreatorHero · Scripts](https://help.creatorhero.com/en/articles/10514438-scripts)；[Supercreator · Message Copilot / Library](https://help.supercreator.app/en/articles/6317851-message-copilot)
 
-#### Infloww · Scripts · 共享话术与序列
+#### Infloww · Scripts · 跨创作者共享话术
 
 当前实现：
 
@@ -554,39 +595,23 @@
 
 - 聊天中的消息可直接另存为新话术，再用于后续会话。（[Scripts · Quick adding a new script](https://help.infloww.com/en/articles/262042-getting-started-with-scripts)）
 
-
-
-#### Supercreator · Message Library + Izzy Bio
+#### Supercreator · Message Library · 模板匹配
 
 当前实现：
 
 - 输入文字时会匹配消息库并提供自动补全；已向当前粉丝发过的模板会以划线方式提示。（[Message Copilot / Library · How to use your Message Library](https://help.supercreator.app/en/articles/6317851-message-copilot)）
 
-- Izzy 的 Bio 可配置创作者性格、交流风格及事实信息，作为 AI 聊天的人设资料。（[Izzy AI · Bio](https://help.supercreator.app/en/articles/11385335-izzy-ai)）
-
-
-
-#### OnlyMonster · Message Templates + Mimic 人工接管
+#### OnlyMonster · Message Templates · 下一步提示
 
 当前实现：
 
 - 模板发送后会提供下一条模板的导航提示。（[Message Templates · Navigation Assistance](https://docs.onlymonster.ai/members-features/message-templates)）
 
-- Mimic 把需要员工处理的会话放入 Escalated Chats 并展示原因；员工发出第一条人工消息后，会话移出该列表。（[Mimic AI in Chats · Escalated Chats](https://docs.onlymonster.ai/mimic-ai/mimic-ai-in-chats)）
-
-
-
-#### CreatorHero · Scripts + Hero Copilot Skills
+#### CreatorHero · Scripts · 跨账号复制
 
 当前实现：
 
 - 通过文件夹旁的复选框，可将脚本复制到其他创作者账号。（[Scripts · FAQ](https://help.creatorhero.com/en/articles/10514438-scripts)）
-
-- Hero Copilot 的 Skills 可保存名称、触发条件与操作说明，并选择在机构内共享。（[Hero Copilot · Customizing Hero Copilot](https://help.creatorhero.com/en/articles/17059054-hero-copilot)）
-
-适用边界：
-
-- Hero Copilot 可起草内容或保存脚本，但不会向粉丝直接发送消息、PPV 或群发消息。（[Hero Copilot · FAQs](https://help.creatorhero.com/en/articles/17059054-hero-copilot)）
 
 
 
@@ -600,15 +625,15 @@
 
 主要使用者：主管 + 培训负责人
 
+Infloww 能力评估与优化方向（Infloww 提供管理数据）：现状：Infloww 有销售、直聊、排班及打卡工时；Supercreator 工时按发信活动估算，CreatorHero 也统计活跃时间。优化方向：主管结合数据和会话样本安排排班、培训，不称为系统自动诊断。
 
+核实依据：[Infloww · Employee Reports](https://help.infloww.com/en/articles/262078-employee-reports)；[Infloww · Message Dashboard](https://help.infloww.com/en/articles/262061-message-dashboard)；[Supercreator · Chatter Analytics](https://help.supercreator.app/en/articles/8118589-chatter-analytics)；[CreatorHero · Chatter Tracking](https://help.creatorhero.com/en/articles/10426384-chatter-tracking)
 
 #### Infloww · Employee Reports · 人员投入与工作量
 
 当前实现：
 
 - 员工报表包含销售、消息、解锁率、排班／打卡工时和响应时间等指标。（[Employee Reports · Key metrics explained](https://help.infloww.com/en/articles/262078-employee-reports)）
-
-
 
 #### Supercreator · Chatter Analytics · 员工与会话明细
 
@@ -621,8 +646,6 @@
 适用边界：
 
 - Activity 的工时按有发信活动的 30 分钟区间估算，不等同于精确打卡时长。（[Chatter Analytics · Activity](https://help.supercreator.app/en/articles/8118589-chatter-analytics)）
-
-
 
 #### CreatorHero · Chatter Tracking · 员工工作明细
 
@@ -652,7 +675,17 @@
 
 主要使用者：账号负责人 + 管理员
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：Infloww 可按员工分配创作者并停用员工账号，证实的是平台数据访问；OnlyMonster 可限制非班次账号访问。借鉴方向：评估时段控制。待确认：Infloww 是否已有同类限制，以及 OnlyFans 会话的访问边界。
 
+核实依据：[Infloww · Team management](https://help.infloww.com/en/articles/262104-team-management-a-guide-to-managing-employees-in-infloww)；[OnlyMonster · Shift-Based Access Control](https://docs.onlymonster.ai/management-system/shift-based-access-control)；[Supercreator · SharedLogin](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)
+
+#### Infloww · Team Management · 员工账号与创作者授权
+
+当前实现：
+
+- 员工通过一次性邀请链接验证账号并设置密码；管理员随后可为员工分配创作者，员工只能查看获分配创作者的数据与表现。（[Team management · How to manage employees on Infloww](https://help.infloww.com/en/articles/262104-team-management-a-guide-to-managing-employees-in-infloww)）
+
+- 停用员工会撤销其对 Infloww 及相关数据的访问，同时保留非活跃的员工账号记录。（[Team management · How to delete or deactivate employees on Infloww](https://help.infloww.com/en/articles/262104-team-management-a-guide-to-managing-employees-in-infloww)）
 
 #### Supercreator · SharedLogin · 共享会话与访问控制
 
@@ -664,8 +697,6 @@
 
 - 新成员默认没有任何 OnlyFans 账号权限，需要在 Team Members 页面配置。（[SharedLogin · Permissions](https://help.supercreator.app/en/articles/8557225-supercreator-s-sharedlogin)）
 
-
-
 #### OnlyMonster · Shift-Based Access · 班次访问限制
 
 当前实现：
@@ -675,6 +706,12 @@
 适用边界：
 
 - 具备 View Shifts 权限的成员可在班次临近结束时延长 15 分钟。（[Shift-Based Access Control · Shift Extension](https://docs.onlymonster.ai/management-system/shift-based-access-control)）
+
+#### CreatorHero · Creators · 员工账号范围
+
+当前实现：
+
+- 管理员可为每位创作者设置团队成员访问范围。（[Creators · Access](https://help.creatorhero.com/en/articles/10408614-creators)）
 
 
 
@@ -688,7 +725,9 @@
 
 主要使用者：经营负责人 + 管理员
 
+Infloww 能力评估与优化方向（关键差异待验证）：现状：Infloww 官方证实页面与数据权限，本地前端另有媒体删除和移除创作者记录权限；CreatorHero 列出 OnlyFans 细粒度操作权限。待验证方向：核对 Infloww 权限的实际生效范围，勿把创作者记录移除等同于删除 OnlyFans 账号。
 
+核实依据：[Infloww · Role permissions](https://help.infloww.com/en/articles/262098-role-permissions)；[Infloww · Navigating Infloww’s OF manager](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)；[CreatorHero · Roles](https://help.creatorhero.com/en/articles/10398444-roles)
 
 #### Infloww · Role Permissions · 功能与数据范围
 
@@ -696,7 +735,7 @@
 
 - 可按角色授予或限制功能页面，并设置本人、本人和下属、全部数据三类数据范围。（[Role permissions · Adjust permissions](https://help.infloww.com/en/articles/262098-role-permissions)）
 
-
+- Owner 和 Admin 可直接访问银行菜单，其他角色需要获得对应权限后才能访问。（[Navigating Infloww’s OF manager · 文章开篇](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)）
 
 #### Supercreator · Roles and Permissions · 岗位权限
 
@@ -706,7 +745,11 @@
 
 - 可限制员工查看银行信息和账号敏感设置；启用限制后，相应功能对员工隐藏。（[Setting Roles and Permissions · Sensitive Information on OnlyFans](https://help.supercreator.app/en/articles/9064920-setting-roles-and-permissions)）
 
+#### OnlyMonster · Roles & Permissions · 敏感操作权限
 
+当前实现：
+
+- 可按角色配置功能和敏感操作的访问权限。（[Roles & Permissions · General Permissions](https://docs.onlymonster.ai/team-and-security-management/roles-and-permissions)）
 
 #### CreatorHero · Roles · 操作权限配置
 
@@ -714,23 +757,25 @@
 
 - 可创建自定义角色，分别选择 OnlyFans 和 CreatorHero 后台权限，再分配给团队成员。（[Roles · Create Custom Roles / Assign and Update Roles](https://help.creatorhero.com/en/articles/10398444-roles)）
 
-- OnlyFans 权限包括消息处理、媒体删除、银行信息访问和账号删除等操作。（[Roles · OnlyFans Permissions](https://help.creatorhero.com/en/articles/10398444-roles)）
+- OnlyFans 权限包括消息处理、媒体删除、银行信息访问和删除 OnlyFans 账号等操作。（[Roles · OnlyFans Permissions](https://help.creatorhero.com/en/articles/10398444-roles)）
 
 
 
-### 5.3 追溯消息执行，核对销售归属
+### 5.3 追溯消息执行，核对发信责任
 
-问题（分析）：业务由多人接续，管理者需要了解谁发了什么，以及交易当前归属于谁。
+问题（分析）：业务由多人接续，管理者需要了解谁发了什么，以及消息如何产生。
 
-作用（分析）：通过可查询的消息和销售记录核对执行过程，减少只凭口头说明处理问题。
+作用（分析）：通过可查询的消息记录核对发送者、内容与来源，减少只凭口头说明处理问题。
 
-示例情境：出现报价或销售归属争议时，先核对消息发送者与交易记录，再按权限处理。
+示例情境：出现回复争议时，先按发送者和时间查消息，再回到原会话核对上下文。
 
 主要使用者：主管 + 经营负责人
 
+Infloww 能力评估与优化方向（竞品有可借鉴增量）：现状：Infloww 可追溯员工直聊消息，报表约 10 分钟更新；Supercreator 覆盖多类消息，OnlyMonster 的记录数秒内可见。借鉴方向：优先评估跨消息类型与近实时质检。待确认：输入方式细分是否另有管理价值。
 
+核实依据：[Infloww · Message Dashboard](https://help.infloww.com/en/articles/262061-message-dashboard)；[Supercreator · Chatter Analytics](https://help.supercreator.app/en/articles/8118589-chatter-analytics)；[OnlyMonster · Message Tracker](https://docs.onlymonster.ai/management-system/message-tracker)
 
-#### Infloww · Message Dashboard · 员工消息记录
+#### Infloww · Message Dashboard · 消息记录
 
 当前实现：
 
@@ -738,9 +783,15 @@
 
 适用边界：
 
-- 消息报表约每 10 分钟更新，仅包含通过 Infloww 发送的消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
+- 消息报表约每 10 分钟更新；Direct messages 不含自动和群发消息，仅包含通过 Infloww 发送的员工直聊消息。（[Message Dashboard · How to monitor employee messages](https://help.infloww.com/en/articles/262061-message-dashboard)）
 
+#### Supercreator · Chatter Analytics · 多类消息记录
 
+当前实现：
+
+- Chatter Messages 可查询工作区收发消息，并按消息类别、方向、类型、购买状态和时间筛选。（[Chatter Analytics · Chatter Messages](https://help.supercreator.app/en/articles/8118589-chatter-analytics)）
+
+- 类别包括聊天员工直聊、群发、自动生成及系列消息等。（[Chatter Analytics · Chatter Messages](https://help.supercreator.app/en/articles/8118589-chatter-analytics)）
 
 #### OnlyMonster · Message Tracker · 发信过程追溯
 
@@ -754,33 +805,39 @@
 
 - Message Tracker 中的消息自发送日起保存 3 个月。（[Message Tracker · How It Works](https://docs.onlymonster.ai/management-system/message-tracker)）
 
-
-
-#### CreatorHero · Sales Assignment · 销售归属核对
+#### CreatorHero · Message History · 消息历史
 
 当前实现：
 
-- 粉丝购买 PPV 后，销售自动归属于发送该消息的员工；可在 Notifications 中选择交易并重新指定员工。（[Sales Assignment · How PPV Sales Are Assigned / Reassigning a Sale](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
-
-适用边界：
-
-- 当前不记录重新分配的历史，只能在通知中查看当前归属。（[Sales Assignment · FAQ](https://help.creatorhero.com/en/articles/10518553-sales-assignment)）
-
-
-
-## 跨价值的共同基础（分析）
-
-在动作发生处提供相关信息；用反馈修正下一轮运营。AI、分组、报表和自动化是承载这些价值的能力，可同时服务多个经营目标。
-
-
-
-## 资料说明
-
-既有资料于 2026 年 10 月 21 日核查；经营可控性相关资料于 2026 年 10 月 22 日补充核查。每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。
+- 可按消息类型和发送者筛选历史记录，查看发送者、粉丝、日期，并跳转到原消息。（[Message History · Page Features](https://help.creatorhero.com/en/articles/10498134-message-history)）
 
 
 
 ## 官方资料索引
+
+- Infloww · [Navigating Infloww’s OF manager](https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager)
+
+- Infloww · [Infloww vs. CreatorHero（对比截至 2026 年 5 月）](https://infloww.com/infloww-vs-creatorhero)
+
+- Infloww · [Getting started with OnlyFans Messages Pro](https://help.infloww.com/en/articles/262067-getting-started-with-onlyfans-messages-pro)
+
+- Infloww · [Message fans after their subscription expires](https://help.infloww.com/en/articles/262048-message-fans-after-their-subscription-expires)
+
+- Infloww · [Team management](https://help.infloww.com/en/articles/262104-team-management-a-guide-to-managing-employees-in-infloww)
+
+- Supercreator · [Message Flow](https://help.supercreator.app/en/articles/12278471-message-flow)
+
+- OnlyMonster · [Changelog 2025](https://docs.onlymonster.ai/changelog/changelog-2025)
+
+- OnlyMonster · [Roles & Permissions](https://docs.onlymonster.ai/team-and-security-management/roles-and-permissions)
+
+- CreatorHero · [Display Settings](https://help.creatorhero.com/en/articles/10434184-display-settings)
+
+- CreatorHero · [Expiring Fans](https://help.creatorhero.com/en/articles/11102180-expiring-fans)
+
+- CreatorHero · [Creators](https://help.creatorhero.com/en/articles/10408614-creators)
+
+- CreatorHero · [Message History](https://help.creatorhero.com/en/articles/10498134-message-history)
 
 - Infloww · [Role permissions](https://help.infloww.com/en/articles/262098-role-permissions)
 
@@ -804,15 +861,9 @@
 
 - Supercreator · [Pricing Copilot](https://help.supercreator.app/en/articles/6317627-pricing-copilot)
 
-- Supercreator · [Izzy AI](https://help.supercreator.app/en/articles/11385335-izzy-ai)
-
 - Supercreator · [Chatter Analytics](https://help.supercreator.app/en/articles/8118589-chatter-analytics)
 
 - Supercreator · [Split Inbox](https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters)
-
-- OnlyMonster · [Dynamic Fan Lists](https://docs.onlymonster.ai/members-features/dynamic-fan-lists)
-
-- OnlyMonster · [Mimic AI in Chats](https://docs.onlymonster.ai/mimic-ai/mimic-ai-in-chats)
 
 - OnlyMonster · [Shift-Based Access Control](https://docs.onlymonster.ai/management-system/shift-based-access-control)
 
@@ -826,11 +877,7 @@
 
 - CreatorHero · [PPV Follow-Ups](https://help.creatorhero.com/en/articles/10499966-ppv-follow-ups)
 
-- CreatorHero · [Sales Assignment](https://help.creatorhero.com/en/articles/10518553-sales-assignment)
-
 - CreatorHero · [Chatter Tracking](https://help.creatorhero.com/en/articles/10426384-chatter-tracking)
-
-- CreatorHero · [Hero Copilot](https://help.creatorhero.com/en/articles/17059054-hero-copilot)
 
 - Infloww · [Fan Insights](https://help.infloww.com/en/articles/523936-fan-insights)
 
@@ -856,8 +903,6 @@
 
 - OnlyMonster · [Vault management](https://docs.onlymonster.ai/members-features/vault-management)
 
-- CreatorHero · [Recent spend list](https://help.creatorhero.com/en/articles/10522981-recent-spend-list)
-
 - CreatorHero · [Vault](https://help.creatorhero.com/en/articles/10461326-vault)
 
 - CreatorHero · [PPV tracking](https://help.creatorhero.com/en/articles/10492637-ppv-tracking)
@@ -867,5 +912,3 @@
 - Infloww · [Fan reports](https://help.infloww.com/en/articles/276167-fan-reports)
 
 - Supercreator · [Creator Analytics](https://help.supercreator.app/en/articles/8118590-creator-analytics)
-
-- Supercreator · [Expired Fans Automation](https://help.supercreator.app/en/articles/6316382-expired-fans-automation)

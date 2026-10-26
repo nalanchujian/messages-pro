@@ -4,7 +4,7 @@
 
 | 页面 | 入口 | 说明 |
 | --- | --- | --- |
-| 产品价值分析报告（首页） | `/` | 基于 Infloww、Supercreator、OnlyMonster、CreatorHero 四家平台官方资料，梳理五类核心产品价值、15 个落地点与 48 项已核查实现，并给出 Infloww 建设建议 |
+| 产品价值分析报告（首页） | `/` | 基于 Infloww、Supercreator、OnlyMonster、CreatorHero 四家平台官方资料，梳理五类核心产品价值、15 个落地点与 52 项同维度平台实现，并给出 Infloww 能力评估与优化方向 |
 | Messages Pro Demo | `/app/` | React 版 CRM 交互原型，用本地模拟的关系、履约与交接任务验证 CRM 交互设计（租户分级、工作区编排、工作流等） |
 | Infloww Demo | `/infloww/` | 复刻 Infloww 消息工作台的交互演示，全部状态为本地 mock，用于对照验证消息、媒体、脚本库等交互 |
 
@@ -48,7 +48,7 @@ pnpm dev
 ├── app/index.html          # Messages Pro Demo（入口）
 ├── infloww/index.html      # Infloww Demo（入口）
 ├── public/
-│   ├── analysis.md         # 报告完整分析文档（可下载）
+│   ├── analysis.md         # 报告完整分析文档（noscript 备用）
 │   └── infloww-media/      # 演示用媒体资源
 ├── src/
 │   ├── value-playbook.ts   # 报告页渲染逻辑
@@ -64,7 +64,6 @@ pnpm dev
 ## 内容与数据
 
 - 报告的正文由数据驱动：修改 `src/value-playbook-data.ts` 中的价值框架与落地点、`src/value-playbook-sources.ts` 中的官方来源后，页面（含目录、总览表与来源编号）会自动更新。
-- 页面上的「下载完整分析」由数据中的 `buildMarkdown` 生成，与 `public/analysis.md` 内容对应。
 - 报告口径：每条「当前实现」都附官方文章与章节；问题、作用与场景属于本仓库的分析判断，与事实来源分开标注。
 
 ## 原型实现约定

@@ -20,6 +20,18 @@ export const platforms: { id: ProductId; name: string }[] = [
 ]
 
 export const sources = [
+  { id: 'I22', platform: 'Infloww', title: 'Navigating Infloww’s OF manager', url: 'https://help.infloww.com/en/articles/262112-navigating-infloww-s-of-manager' },
+  { id: 'I23', platform: 'Infloww', title: 'Infloww vs. CreatorHero（对比截至 2026 年 5 月）', url: 'https://infloww.com/infloww-vs-creatorhero' },
+  { id: 'I15', platform: 'Infloww', title: 'Getting started with OnlyFans Messages Pro', url: 'https://help.infloww.com/en/articles/262067-getting-started-with-onlyfans-messages-pro' },
+  { id: 'I16', platform: 'Infloww', title: 'Message fans after their subscription expires', url: 'https://help.infloww.com/en/articles/262048-message-fans-after-their-subscription-expires' },
+  { id: 'I18', platform: 'Infloww', title: 'Team management', url: 'https://help.infloww.com/en/articles/262104-team-management-a-guide-to-managing-employees-in-infloww' },
+  { id: 'S14', platform: 'Supercreator', title: 'Message Flow', url: 'https://help.supercreator.app/en/articles/12278471-message-flow' },
+  { id: 'O11', platform: 'OnlyMonster', title: 'Changelog 2025', url: 'https://docs.onlymonster.ai/changelog/changelog-2025' },
+  { id: 'O13', platform: 'OnlyMonster', title: 'Roles & Permissions', url: 'https://docs.onlymonster.ai/team-and-security-management/roles-and-permissions' },
+  { id: 'C16', platform: 'CreatorHero', title: 'Display Settings', url: 'https://help.creatorhero.com/en/articles/10434184-display-settings' },
+  { id: 'C17', platform: 'CreatorHero', title: 'Expiring Fans', url: 'https://help.creatorhero.com/en/articles/11102180-expiring-fans' },
+  { id: 'C18', platform: 'CreatorHero', title: 'Creators', url: 'https://help.creatorhero.com/en/articles/10408614-creators' },
+  { id: 'C19', platform: 'CreatorHero', title: 'Message History', url: 'https://help.creatorhero.com/en/articles/10498134-message-history' },
   {
     "id": "I13",
     "platform": "Infloww",
@@ -87,12 +99,6 @@ export const sources = [
     "url": "https://help.supercreator.app/en/articles/6317627-pricing-copilot"
   },
   {
-    "id": "S4",
-    "platform": "Supercreator",
-    "title": "Izzy AI",
-    "url": "https://help.supercreator.app/en/articles/11385335-izzy-ai"
-  },
-  {
     "id": "S5",
     "platform": "Supercreator",
     "title": "Chatter Analytics",
@@ -103,18 +109,6 @@ export const sources = [
     "platform": "Supercreator",
     "title": "Split Inbox",
     "url": "https://help.supercreator.app/en/articles/7953655-split-inbox-assign-fans-to-chatters"
-  },
-  {
-    "id": "O2",
-    "platform": "OnlyMonster",
-    "title": "Dynamic Fan Lists",
-    "url": "https://docs.onlymonster.ai/members-features/dynamic-fan-lists"
-  },
-  {
-    "id": "O3",
-    "platform": "OnlyMonster",
-    "title": "Mimic AI in Chats",
-    "url": "https://docs.onlymonster.ai/mimic-ai/mimic-ai-in-chats"
   },
   {
     "id": "O4",
@@ -153,22 +147,10 @@ export const sources = [
     "url": "https://help.creatorhero.com/en/articles/10499966-ppv-follow-ups"
   },
   {
-    "id": "C3",
-    "platform": "CreatorHero",
-    "title": "Sales Assignment",
-    "url": "https://help.creatorhero.com/en/articles/10518553-sales-assignment"
-  },
-  {
     "id": "C4",
     "platform": "CreatorHero",
     "title": "Chatter Tracking",
     "url": "https://help.creatorhero.com/en/articles/10426384-chatter-tracking"
-  },
-  {
-    "id": "C5",
-    "platform": "CreatorHero",
-    "title": "Hero Copilot",
-    "url": "https://help.creatorhero.com/en/articles/17059054-hero-copilot"
   },
   {
     "id": "I8",
@@ -243,12 +225,6 @@ export const sources = [
     "url": "https://docs.onlymonster.ai/members-features/vault-management"
   },
   {
-    "id": "C11",
-    "platform": "CreatorHero",
-    "title": "Recent spend list",
-    "url": "https://help.creatorhero.com/en/articles/10522981-recent-spend-list"
-  },
-  {
     "id": "C12",
     "platform": "CreatorHero",
     "title": "Vault",
@@ -277,11 +253,5 @@ export const sources = [
     "platform": "Supercreator",
     "title": "Creator Analytics",
     "url": "https://help.supercreator.app/en/articles/8118590-creator-analytics"
-  },
-  {
-    "id": "V-S2",
-    "platform": "Supercreator",
-    "title": "Expired Fans Automation",
-    "url": "https://help.supercreator.app/en/articles/6316382-expired-fans-automation"
   },
 ]

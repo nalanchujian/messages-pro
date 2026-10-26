@@ -2,9 +2,7 @@ import { platforms, sources as catalogSources } from './value-playbook-sources'
 import type { ProductId } from './value-playbook-sources'
 
 export { platforms }
-export const auditedAt = '2026-10-22'
-export const frameworkScope = '以聊天销售内容为主、由多名员工运营多个创作者账号的 CRM。五类是本报告的核心价值框架，编号不代表统一优先级。'
-export const auditNote = '既有资料于 2026 年 10 月 21 日核查；经营可控性相关资料于 2026 年 10 月 22 日补充核查。'
+export const frameworkScope = '聚焦团队运营多个 OnlyFans 创作者账号的场景，围绕聊天销售、粉丝关系、内容复用、团队协作与权限管理，对比四家平台的公开官方资料。'
 export const executiveSummary = {
   conclusion: 'Onlyfans CRM 的核心价值，是持续经营客户与内容、复制有效销售能力，并让多人、多账号的业务始终可控。',
   perspectives: [
@@ -20,11 +18,10 @@ export const executiveSummary = {
     },
     {
       title: '保持规模化经营可控',
-      text: '业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录掌握过程、核对归属。',
+      text: '业务交给团队后，仍能限定账号访问和操作权限，并通过执行记录核对发信责任。',
       links: [{ id: 'control', label: '经营可控性' }],
     },
   ],
-  implication: '围绕销售、客户与内容打通日常经营流程，同时建设能力复用与权限控制。建设次序取决于业务瓶颈与团队规模。',
 }
 export type ValueId = 'conversion' | 'content' | 'retention' | 'team' | 'control'
 
@@ -49,7 +46,11 @@ export interface LandingPoint {
   mechanism: string
   example: string
   owner: string
-  inflowwProposal: string
+  inflowwAssessment: {
+    status: 'Infloww 已覆盖核心能力' | 'Infloww 提供管理数据' | '竞品有可借鉴增量' | '关键差异待验证'
+    text: string
+    refs: string[]
+  }
   solutions: Solution[]
 }
 export interface BusinessValue {
@@ -79,25 +80,27 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把消费与行为信号转为可操作的队列，缩短高意向粉丝的等待时间。",
         example: "同一班次同时进来 30 条消息：优先处理刚购买后追问、近期活跃且有消费记录的会话。",
         owner: "班次主管 + 聊天员工",
-        inflowwProposal: "补齐实时机会优先级队列：综合近期消费、入站消息、订阅状态与等待时长排序，并让员工可直接从队列进入会话。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：收件箱按最新／最早排序，支持 Priority 筛选；官方 Fan Insights 另列消费力分层，但不是会话排序。借鉴方向：评估 Supercreator 的行为优先级排序。待确认：Priority 的判定规则和新排序的实际效果。', refs: ['I22', 'I8', 'S1'] },
         solutions: [
-          s("infloww", "Smart Lists · 消费分层", [
-            c("按累计消费建立粉丝分层名单，可选择是否纳入已过期粉丝。", "I6", "Segment by total spend"),
+          s("infloww", "Messages Pro · 会话筛选与时间排序", [
+            c("收件箱展示粉丝标签与消费总额；近期购买 PPV 的粉丝也有对应标签，便于员工辨认。", "I15", "About Fan tags"),
+            c("会话列表提供“最新优先／最早优先”排序，并可按 Priority、Unread、Unread with tips 等条件筛选。", "I22", "Viewing and creating messages"),
           ], [
-            c("名单通常每 6 小时刷新，首次生成约需 30 分钟。", "I6", "Segment by total spend"),
+            c("官方资料列出的是筛选和时间排序，未说明收件箱会按消费与行为信号自动排列会话。", "I22", "Viewing and creating messages"),
+            c("Smart Lists 是另一项粉丝分层能力：可按消费建立定向触达名单，名单约每 6 小时更新。", "I6", "What are Smart Lists?"),
           ]),
           s("supercreator", "Inbox Copilot · 优先级与标签", [
             c("根据近期消费、消息和订阅等信息展示粉丝优先级；Hot Buyer 标记过去 48 小时购买过的粉丝，New 标记过去 7 天加入的粉丝。", "S1", "How it works"),
             c("收件箱可按优先级、消费和订阅时长筛选，并隐藏已过期粉丝或创作者账号。", "S1", "Filter your inbox"),
           ]),
-          s("onlymonster", "Dynamic Fan Lists · 条件名单", [
-            c("可按账号消费、机构消费、最近购买和聊天活跃条件建立名单；活跃条件区分“员工已发信”和“粉丝也有回复”。", "O2", "Available Filters"),
-            c("名单明细展示消费及最近购买信息，并提供对应会话的 Chat 链接。", "O2", "List of Fans"),
+          s("onlymonster", "Buying Power · 会话购买潜力", [
+            c("打开会话可查看粉丝 0–5 分的 Buying Power，以及消费额、平均 PPV 和近期购买。", "O7", "Buying Power section"),
+            c("官方更新记录说明 Buying Power 分数也展示在聊天列表中，便于先辨认潜在高价值会话。", "O11", "14 November - Version 3.35.0"),
           ]),
-          s("creatorhero", "Recent Spend List · 近期消费者", [
-            c("选择 1 分钟至 30 天的时间范围，生成近期有消费的粉丝名单。", "C11", "Creating a Recent Spend List"),
+          s("creatorhero", "Fan Spend Colors · 收件箱消费提示", [
+            c("可按粉丝消费门槛设置颜色，在消息收件箱突出高、低消费粉丝。", "C16", "Fan Spend Colors"),
           ], [
-            c("订阅费不计入这一名单的消费条件。", "C11", "What qualifies as a “Recent Spend”?"),
+            c("文档说明的是消费颜色提示，未说明会自动改变会话排序。", "C16", "Fan Spend Colors"),
           ]),
         ],
       },
@@ -108,7 +111,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "在报价时提供购买历史与内容信息，减少盲猜，让推荐更贴近粉丝的需求与预算。",
         example: "粉丝询问一套新内容：先检查是否买过、通常买什么价格，再决定推荐哪个组合。",
         owner: "内容运营 + 聊天员工",
-        inflowwProposal: "在报价动作中补齐价格建议与异常提醒：结合该粉丝的购买区间、最高成交价和内容历史给出建议，并提示明显偏高或偏低的价格。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：聊天侧可看粉丝 PPV 均价等消费数据，素材建议价由员工设置。借鉴方向：参考 Supercreator，按粉丝购买历史提示报价区间与价格偏差。待确认：当前版本有无同类提示，需求判断仍需结合对话。', refs: ['I8', 'I11', 'S2'] },
         solutions: [
           s("infloww", "Fan Insights + Vault Pro", [
             c("聊天侧展示 PPV 消费总额、平均值和打赏信息，供员工查看粉丝历史消费。", "I8", "Spending behavior"),
@@ -135,13 +138,13 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把交易状态变成下一步行动，减少遗漏，并避免继续催促已购买者。",
         example: "一条付费消息已发出一段时间仍未购买：先区分没看见与不感兴趣，再决定是否提醒。",
         owner: "聊天员工 + 自动化配置人",
-        inflowwProposal: "补齐可配置的 PPV 自动跟进：按未看、已看未购等状态设置等待时间、文案与排除规则，已购后自动停止触达。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：可从未购直聊 PPV 报表返回会话；购买后自动触达不等于未购跟进。借鉴方向：评估 CreatorHero 的单条 PPV 延时提醒。待确认：Infloww 当前是否已有未购触发。', refs: ['I3', 'I9', 'C2'] },
         solutions: [
           s("infloww", "Message Dashboard · 人工回到会话", [
             c("消息报表可按购买状态、价格、发送者等条件筛选。", "I3", "Sorting and filtering through messages"),
             c("Direct messages 记录的 Actions 可打开对应聊天，供员工继续处理。", "I3", "How to open a conversation"),
           ], [
-            c("报表约每 10 分钟更新，只记录通过 Infloww 发送的消息。", "I3", "How to monitor employee messages"),
+            c("报表约每 10 分钟更新；Direct messages 不含自动消息和群发消息，仅记录通过 Infloww 发送的员工直聊消息。", "I3", "How to monitor employee messages"),
           ]),
           s("creatorhero", "PPV Overview + PPV Follow-Ups", [
             c("PPV Overview 区分未看、已看、未回复、已回复和已购状态，记录可直接打开聊天。", "C1", "Key Features"),
@@ -167,7 +170,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把可查找性和单个粉丝的购买记忆放在选材环节，降低操作损耗与重复销售。",
         example: "粉丝想看旅行主题内容：员工按主题找素材，再核对免费发送和购买历史。",
         owner: "素材管理员 + 聊天员工",
-        inflowwProposal: "在选材界面直接呈现当前粉丝的已发送、免费发送、已购与未购状态，并可回看对应 PPV 记录，减少进入多处页面核对。",
+        inflowwAssessment: { status: 'Infloww 已覆盖核心能力', text: '现状：Vault Pro 可搜索素材，并过滤当前粉丝已看或已解锁的内容；Supercreator 也提供逐粉丝素材状态。优化方向：验证过滤能否减少重复推荐，不把可选过滤写成强制拦截。', refs: ['I11', 'S11'] },
         solutions: [
           s("infloww", "Vault Pro · 搜索与已看过滤", [
             c("可按备注、标签或历史 PPV 文案搜索素材。", "I11", "Filtering the vault by media details"),
@@ -187,6 +190,8 @@ const valueCatalog: BusinessValue[] = [
           s("creatorhero", "Vault · 搜索与分类", [
             c("通过搜索、分类及照片／视频／GIF 类型筛选查找素材；分类可创建、重命名和删除。", "C12", "Search and Filter"),
             c("可按最近、点赞或打赏等方式排序。", "C12", "Sort Options"),
+          ], [
+            c("该文档只证实素材查找与分类，未说明会在当前粉丝选材时提示其已购内容。", "C12", "Search and Filter"),
           ]),
         ],
       },
@@ -197,15 +202,15 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "一次整理文本、素材和使用条件，多次在合适场景复用，减少内容上架与销售准备成本。",
         example: "把一个旅行系列整理为“介绍 → 预览 → 付费组合”，员工按对话阶段调用。",
         owner: "内容运营 + 资深销售",
-        inflowwProposal: "把话术序列升级为可售卖的内容组合：将文案、预览、媒体、建议价和适用标签打包，并允许员工按需微调后发送。",
+        inflowwAssessment: { status: 'Infloww 已覆盖核心能力', text: '现状：Scripts 可复用图文序列、提示下一条，并查看发送与购买表现；发送由员工决定，竞品模板也用于复用。优化方向：评估序列使用效果，不把 Scripts 当作自动销售流程。', refs: ['I2', 'S9', 'O8', 'C7'] },
         solutions: [
           s("infloww", "Scripts · 消息序列", [
             c("可创建话术序列，并在条件步骤内配置最多 3 个选项，发送时由员工选择。", "I2", "Creating a script sequence"),
             c("聊天输入“/”后按名称、序列、标签或正文关键词查找话术；发送序列中的话术后，会提示下一条。", "I2", "Using Scripts in Messages Pro"),
+            c("脚本可查看发送、购买及收入统计，供团队复盘其使用表现。", "I2", "Optimize your messaging strategies with key statistics"),
           ]),
-          s("supercreator", "Message Library + Izzy Product Catalog", [
+          s("supercreator", "Message Library · 消息与媒体模板", [
             c("消息库可预先保存文案、媒体、价格、标题和文件夹，也可设置个性化定价后重复调用。", "S9", "How to use your Message Library"),
-            c("Izzy 产品目录保存媒体、预览、价格、描述、标签和文案，作为 AI 销售的内容目录。", "S4", "Product Catalog"),
           ]),
           s("onlymonster", "Message Templates · 内容与价格模板", [
             c("模板支持保存消息内容，并配置付费文字或付费媒体的价格。", "O8", "Message Pricing"),
@@ -224,16 +229,15 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把内容、发送与购买结果关联，区分“卖得多”和“单位机会贡献高”。",
         example: "内容负责人打开旅行系列文件夹，查看哪些素材被发送、被购买，以及对应的销售消息。",
         owner: "内容负责人 + 经营分析",
-        inflowwProposal: "补齐“内容—PPV—会话”的下钻链路，并在组合售卖时提供避免重复归因的收入口径，帮助判断真实的内容贡献。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：Vault Pro 已有素材和文件夹统计；CreatorHero 可沿文件夹、PPV、发送记录下钻。借鉴方向：核实 Infloww 能否贯通同一查看路径。待确认：实际分析需求；打包收入不可按素材求和。', refs: ['I12', 'I3', 'C13'] },
         solutions: [
           s("infloww", "Vault Pro · 素材统计", [
             c("素材层展示发送次数、解锁次数／比例与毛收入。", "I12", "Viewing statistics in Grid and Table views"),
-            c("文件夹和分类汇总发送数、解锁数、收入，并按整体发送数计算解锁率。", "I12", "Understanding folder and category summaries"),
+            c("非默认文件夹和分类汇总发送数、收入，并以合计解锁数除以合计发送数计算整体解锁率。", "I12", "Understanding folder and category summaries"),
           ], [
+            c("素材统计从 2026 年 8 月 27 日开始提供，不包含此前数据；直接从 OnlyFans 或其他流程发送的内容可能造成统计差异。", "I12", "Important information about statistics"),
+            c("OnlyFans Mass Messages（OFMM）的发送、解锁及收入不计入；解锁次数与毛收入不扣除拒付（chargeback）。", "I12", "文章开篇 / Vault Pro provides the following statistics"),
             c("多素材打包销售时，每个素材都会记入整笔消息价格；不能把这些素材的收入直接相加当作独立交易收入。", "I12", "Important information about statistics"),
-          ]),
-          s("supercreator", "Message Library · 复用畅销 PPV", [
-            c("Import PPVs 提供 Recent 与 Best Selling 入口，可把近期或畅销 PPV 导入消息库，作为模板再次使用。", "S9", "How to use your Message Library"),
           ]),
           s("creatorhero", "PPV Tracking · 文件夹到消息", [
             c("在文件夹层查看收入、购买率和购买数，进入后查看具体 PPV 的发送数、购买数、净收入及平均净价。", "C13", "Detailed PPV Tracking"),
@@ -257,11 +261,13 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "在回复前恢复必要上下文，降低重复询问和不相关推荐。",
         example: "晚班接手一位老粉丝：先看偏好、最近购买与上次沟通，而不是重新从头认识。",
         owner: "每位经办员工",
-        inflowwProposal: "补齐对话摘要与结构化偏好提取：从近期聊天中生成可编辑摘要，并建议更新偏好、承诺和风险提示，降低交接成本。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：Infloww 以人工资料和备注承接关系；Supercreator 可从对话提取信息，CreatorHero 可生成聊天摘要。借鉴方向：评估自动整理能否缩短交接。待确认：Infloww 当前 AI 摘要是否可用；2026 年 5 月对比页不能证明现状。', refs: ['I8', 'I23', 'C14', 'S8'] },
         solutions: [
           s("infloww", "Fan Insights · 资料与备注模板", [
             c("聊天侧可维护昵称、生日、所在地等资料。", "I8", "Profile"),
             c("备注区支持自由文本和自定义模板。", "I8", "Notes"),
+          ], [
+            c("官方对比页将 AI fan summary 标为开发中，但该表注明截至 2026 年 5 月，仅作为历史状态依据，不代表当前版本状态。", "I23", "Platform comparison / OnlyFans"),
           ]),
           s("supercreator", "Fans CRM · AI 整理与团队备注", [
             c("Fill with AI 从对话中提取粉丝偏好和资料，填入或更新 CRM 字段。", "S8", "Fill with AI"),
@@ -284,20 +290,24 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "让时间或状态触发合适动作，把重复检查交给系统，把语境判断留给人员。",
         example: "对新粉先介绍，对临期付费粉解释后续内容，对已到期老买家开展一次有理由的唤回。",
         owner: "生命周期运营",
-        inflowwProposal: "补齐已过期粉丝的自动化经营：按历史消费和到期时长分层，配置唤回节奏、暂停条件与效果回看，而非只依赖单次触发消息。",
+        inflowwAssessment: { status: 'Infloww 已覆盖核心能力', text: '现状：Smart Messages 已有生命周期触发与排除规则，过期触达可设多步序列并在粉丝回复后停止；Supercreator 另有跨阶段可视化分支。优化方向：先评估续订与回流效果，再判断是否需要跨场景流程。', refs: ['I9', 'I16', 'S14'] },
         solutions: [
           s("infloww", "Smart Messages · 生命周期触发", [
             c("提供延迟欢迎、即将到期、已过期、生日、购买及重新订阅等消息类型；生日触发使用粉丝资料中的生日。", "I9", "Smart Messages Types"),
+            c("已过期粉丝触达可配置后续消息序列，并根据粉丝是否回复决定下一条消息。", "I16", "Build the message or sequence"),
           ], [
             c("一个粉丝同时符合多个类型时，只发送优先级最高的一类；官方文档给出了类型优先顺序。", "I9", "FAQs"),
           ]),
-          s("supercreator", "Expired Fans Automation · 重新建立触达", [
-            c("自动关注已过期粉丝，每天约处理 100–200 人，优先关注高消费粉丝，并排除创作者账号。", "V-S2", "How does it work?"),
-            c("可在 Automation 页面启用或暂停该自动化。", "V-S2", "How do you start using the Expired Fans automation?"),
+          s("supercreator", "Message Flow · 分阶段自动触达", [
+            c("可按回复与否设置条件分支和时间延迟，自动发送后续消息或 PPV。", "S14", "How it works, step by step"),
+            c("新粉丝与订阅三个月的粉丝可进入不同阶段，按所处阶段接收内容。", "S14", "How it works, step by step"),
           ]),
           s("onlymonster", "Auto Messages · 状态触发", [
-            c("提供欢迎、上线、已过期、即将过期及关闭自动续订等触发条件。", "O9", "Available Triggers"),
+            c("提供欢迎、上线、已过期和即将过期四类触发；即将过期触达适用于关闭自动续订的粉丝。", "O9", "Available Triggers / Send Message In"),
             c("触发后的动作可选择发送消息，或启动 Mimic AI 会话。", "O9", "Action Type"),
+          ]),
+          s("creatorhero", "Expiring Fans · 到期前自动消息", [
+            c("可针对即将到期的粉丝自动发送消息，并配置发送时机与内容。", "C17", "Settings Overview"),
           ]),
         ],
       },
@@ -308,11 +318,11 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "持续呈现新增、活跃、保留和流失情况，为关系经营提供背景。",
         example: "经营负责人查看老粉的订阅状态与购买历史，区分仍在互动、持续购买和已经沉默的人。",
         owner: "经营负责人",
-        inflowwProposal: "补齐订阅留存与消费的联动看板：按 cohort 对比新增、流失、留存及消费贡献，并支持下钻到具体粉丝名单以便发起行动。",
+        inflowwAssessment: { status: '关键差异待验证', text: '现状：Fan Reports 有增长和消费数据；官方介绍留存表，本地前端却未启用该组件。待验证方向：确认实际入口和留存指标，再判断能否开展订阅批次分析。', refs: ['V-I2'] },
         solutions: [
           s("infloww", "Fan Reports · 新增、流失与保留", [
             c("报告呈现新增、流失、保留和活跃粉丝，以及自动续订开启／关闭情况；导出时可选日期范围与指标。", "V-I2", "文章开篇"),
-            c("留存表查看粉丝在一段时间内维持订阅的情况。", "V-I2", "Understanding Fan Retention"),
+            c("官方资料介绍留存表，用于查看粉丝在一段时间内维持订阅的情况；本地前端页面当前未启用该表。", "V-I2", "Understanding Fan Retention"),
           ]),
           s("supercreator", "Creator Analytics · 订阅增长", [
             c("订阅分析展示新增、流失和活跃订阅者及其消费，并提供与上一周期的比较。", "V-S1", "Subscribers and growth"),
@@ -335,7 +345,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "通过分组与范围过滤减少交叉处理；人员责任和班次权限需要分别明确。",
         example: "早晚班交替：明确每组由谁处理、未完事项交给谁，并检查超时会话。",
         owner: "班次主管",
-        inflowwProposal: "补齐“分组—员工—班次”的直接绑定：明确当前负责人、交接对象和超时会话，避免只靠线下告知分工。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：Infloww 可分组过滤，但不能把员工绑定到组，员工仍可看完整收件箱；Supercreator 按聊天员建立颜色组。借鉴方向：评估组与负责人的明确映射。待确认：颜色组不等于强制隔离或交接闭环。', refs: ['I1', 'S6'] },
         solutions: [
           s("infloww", "Split Inbox · 分组与范围过滤", [
             c("收件箱最多拆成 9 组；员工按负责的组过滤，新订阅者的自动分配以长期工作量平衡为目标。", "I1", "How to use Split Inbox"),
@@ -344,7 +354,7 @@ const valueCatalog: BusinessValue[] = [
             c("当前版本不能把员工直接绑定到分组，官方建议另行告知员工负责哪些组。", "I1", "FAQs"),
           ]),
           s("supercreator", "Split Inbox · 固定颜色分组", [
-            c("随机把粉丝分入颜色组，原有粉丝保持在同组。", "S6", "How does it work?"),
+            c("按聊天员工设置颜色组，随机把粉丝分入各组；粉丝通常保持在原组。", "S6", "How does it work?"),
             c("最多设置 3 个颜色组；改变组数会重新生成分组，部分粉丝会换组。", "S6", "How to use it?"),
           ]),
           s("onlymonster", "Inboxes · 分组与显示范围", [
@@ -355,29 +365,24 @@ const valueCatalog: BusinessValue[] = [
       {
         id: "repeatability",
         title: "把优秀员工的经验交给整个团队",
-        problem: "新人从零摸索，优秀员工一离开，沟通节奏、内容选择和异常处理也跟着消失。",
-        mechanism: "沉淀适用条件和下一步，把重复操作工具化，让人工集中处理判断与例外。",
-        example: "把成熟员工的欢迎、需求确认、内容推荐过程拆成模板，并明确哪些情况必须转人工。",
+        problem: "新人从零摸索，优秀员工离开后，常用话术和内容推荐经验也难以延续。",
+        mechanism: "把成熟员工的消息与内容组合沉淀为共享模板，减少重复准备和新人摸索。",
+        example: "把欢迎、需求确认和内容推荐整理成话术序列，供不同员工按场景调用。",
         owner: "培训负责人 + 资深员工",
-        inflowwProposal: "补齐可复用的销售 playbook：除话术外，保存触发条件、步骤、例外处理和转人工规则；可为不同创作者配置语气与事实资料。",
+        inflowwAssessment: { status: 'Infloww 已覆盖核心能力', text: '现状：Scripts 已支持跨创作者共享、从聊天保存话术；竞品也有跨账号复制和模板复用。优化方向：明确适用场景与维护人，验证新人能否稳定调用，而非重复建设共享功能。', refs: ['I2', 'C7', 'S9'] },
         solutions: [
-          s("infloww", "Scripts · 共享话术与序列", [
+          s("infloww", "Scripts · 跨创作者共享话术", [
             c("话术和序列可在不同创作者之间共享，团队可复用同一套已整理内容。", "I2", "Sharing among creators"),
             c("聊天中的消息可直接另存为新话术，再用于后续会话。", "I2", "Quick adding a new script"),
           ]),
-          s("supercreator", "Message Library + Izzy Bio", [
+          s("supercreator", "Message Library · 模板匹配", [
             c("输入文字时会匹配消息库并提供自动补全；已向当前粉丝发过的模板会以划线方式提示。", "S9", "How to use your Message Library"),
-            c("Izzy 的 Bio 可配置创作者性格、交流风格及事实信息，作为 AI 聊天的人设资料。", "S4", "Bio"),
           ]),
-          s("onlymonster", "Message Templates + Mimic 人工接管", [
+          s("onlymonster", "Message Templates · 下一步提示", [
             c("模板发送后会提供下一条模板的导航提示。", "O8", "Navigation Assistance"),
-            c("Mimic 把需要员工处理的会话放入 Escalated Chats 并展示原因；员工发出第一条人工消息后，会话移出该列表。", "O3", "Escalated Chats"),
           ]),
-          s("creatorhero", "Scripts + Hero Copilot Skills", [
+          s("creatorhero", "Scripts · 跨账号复制", [
             c("通过文件夹旁的复选框，可将脚本复制到其他创作者账号。", "C7", "FAQ"),
-            c("Hero Copilot 的 Skills 可保存名称、触发条件与操作说明，并选择在机构内共享。", "C5", "Customizing Hero Copilot"),
-          ], [
-            c("Hero Copilot 可起草内容或保存脚本，但不会向粉丝直接发送消息、PPV 或群发消息。", "C5", "FAQs"),
           ]),
         ],
       },
@@ -388,7 +393,7 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "结合工时、消息与响应情况了解工作分布，为排班和培训提供依据。",
         example: "员工销售下降：先看是否少了机会，再看回复和报价过程，最后讨论培训或排班。",
         owner: "主管 + 培训负责人",
-        inflowwProposal: "在人员指标异常处补齐会话下钻与辅导样本：从响应、发送、解锁等指标直接查看代表性对话，形成可执行的排班或培训动作。",
+        inflowwAssessment: { status: 'Infloww 提供管理数据', text: '现状：Infloww 有销售、直聊、排班及打卡工时；Supercreator 工时按发信活动估算，CreatorHero 也统计活跃时间。优化方向：主管结合数据和会话样本安排排班、培训，不称为系统自动诊断。', refs: ['I4', 'I3', 'S5', 'C4'] },
         solutions: [
           s("infloww", "Employee Reports · 人员投入与工作量", [
             c("员工报表包含销售、消息、解锁率、排班／打卡工时和响应时间等指标。", "I4", "Key metrics explained"),
@@ -420,8 +425,12 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "将账号访问配置为可授予、可限制的工作权限，减少凭据共享和非工作时段访问。",
         example: "新员工只获得所负责账号的访问；启用班次限制后，下班时段无法再打开账号。",
         owner: "账号负责人 + 管理员",
-        inflowwProposal: "优先补齐受管登录会话与账号级授权：无需共享密码即可按人授予、随时撤销访问，并支持按班次限制打开账号。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：Infloww 可按员工分配创作者并停用员工账号，证实的是平台数据访问；OnlyMonster 可限制非班次账号访问。借鉴方向：评估时段控制。待确认：Infloww 是否已有同类限制，以及 OnlyFans 会话的访问边界。', refs: ['I18', 'O4', 'S12'] },
         solutions: [
+          s("infloww", "Team Management · 员工账号与创作者授权", [
+            c("员工通过一次性邀请链接验证账号并设置密码；管理员随后可为员工分配创作者，员工只能查看获分配创作者的数据与表现。", "I18", "How to manage employees on Infloww"),
+            c("停用员工会撤销其对 Infloww 及相关数据的访问，同时保留非活跃的员工账号记录。", "I18", "How to delete or deactivate employees on Infloww"),
+          ]),
           s("supercreator", "SharedLogin · 共享会话与访问控制", [
             c("通过共享已登录会话，让员工访问获授权的账号，无需共享账号密码；管理员可随时允许或阻止账号访问。", "S12", "Why use SharedLogin™?"),
           ], [
@@ -432,6 +441,9 @@ const valueCatalog: BusinessValue[] = [
           ], [
             c("具备 View Shifts 权限的成员可在班次临近结束时延长 15 分钟。", "O4", "Shift Extension"),
           ]),
+          s("creatorhero", "Creators · 员工账号范围", [
+            c("管理员可为每位创作者设置团队成员访问范围。", "C18", "Access"),
+          ]),
         ],
       },
       {
@@ -441,34 +453,42 @@ const valueCatalog: BusinessValue[] = [
         mechanism: "把工作所需功能、敏感操作和数据范围分别授权，让权限与岗位责任相符。",
         example: "聊天员工使用消息与素材；主管查看下属业务数据，管理员保留敏感设置权限。",
         owner: "经营负责人 + 管理员",
-        inflowwProposal: "在现有数据范围控制上补齐细粒度的敏感操作权限：按角色配置银行信息、账号设置、媒体删除和账号删除等高风险操作。",
+        inflowwAssessment: { status: '关键差异待验证', text: '现状：Infloww 官方证实页面与数据权限，本地前端另有媒体删除和移除创作者记录权限；CreatorHero 列出 OnlyFans 细粒度操作权限。待验证方向：核对 Infloww 权限的实际生效范围，勿把创作者记录移除等同于删除 OnlyFans 账号。', refs: ['I13', 'I22', 'C15'] },
         solutions: [
           s("infloww", "Role Permissions · 功能与数据范围", [
             c("可按角色授予或限制功能页面，并设置本人、本人和下属、全部数据三类数据范围。", "I13", "Adjust permissions"),
+            c("Owner 和 Admin 可直接访问银行菜单，其他角色需要获得对应权限后才能访问。", "I22", "文章开篇"),
           ]),
           s("supercreator", "Roles and Permissions · 岗位权限", [
             c("提供 Chatter、Account Manager、Supervisor、Owner 和 Analyst 五类角色，分配后可进一步调整成员权限。", "S13", "Setting Roles and Permissions"),
             c("可限制员工查看银行信息和账号敏感设置；启用限制后，相应功能对员工隐藏。", "S13", "Sensitive Information on OnlyFans"),
           ]),
+          s("onlymonster", "Roles & Permissions · 敏感操作权限", [
+            c("可按角色配置功能和敏感操作的访问权限。", "O13", "General Permissions"),
+          ]),
           s("creatorhero", "Roles · 操作权限配置", [
             c("可创建自定义角色，分别选择 OnlyFans 和 CreatorHero 后台权限，再分配给团队成员。", "C15", "Create Custom Roles / Assign and Update Roles"),
-            c("OnlyFans 权限包括消息处理、媒体删除、银行信息访问和账号删除等操作。", "C15", "OnlyFans Permissions"),
+            c("OnlyFans 权限包括消息处理、媒体删除、银行信息访问和删除 OnlyFans 账号等操作。", "C15", "OnlyFans Permissions"),
           ]),
         ],
       },
       {
         id: "execution-traceability",
-        title: "追溯消息执行，核对销售归属",
-        problem: "业务由多人接续，管理者需要了解谁发了什么，以及交易当前归属于谁。",
-        mechanism: "通过可查询的消息和销售记录核对执行过程，减少只凭口头说明处理问题。",
-        example: "出现报价或销售归属争议时，先核对消息发送者与交易记录，再按权限处理。",
+        title: "追溯消息执行，核对发信责任",
+        problem: "业务由多人接续，管理者需要了解谁发了什么，以及消息如何产生。",
+        mechanism: "通过可查询的消息记录核对发送者、内容与来源，减少只凭口头说明处理问题。",
+        example: "出现回复争议时，先按发送者和时间查消息，再回到原会话核对上下文。",
         owner: "主管 + 经营负责人",
-        inflowwProposal: "补齐消息来源与归属变更审计：标明手输、模板或 AI 等发送来源，记录销售重新分配历史，并支持按条件导出核对。",
+        inflowwAssessment: { status: '竞品有可借鉴增量', text: '现状：Infloww 可追溯员工直聊消息，报表约 10 分钟更新；Supercreator 覆盖多类消息，OnlyMonster 的记录数秒内可见。借鉴方向：优先评估跨消息类型与近实时质检。待确认：输入方式细分是否另有管理价值。', refs: ['I3', 'S5', 'O5'] },
         solutions: [
-          s("infloww", "Message Dashboard · 员工消息记录", [
+          s("infloww", "Message Dashboard · 消息记录", [
             c("可查看员工发送或撤回的消息，以及购买状态、收入和响应时间；可从记录打开会话了解上下文。", "I3", "How to monitor employee messages"),
           ], [
-            c("消息报表约每 10 分钟更新，仅包含通过 Infloww 发送的消息。", "I3", "How to monitor employee messages"),
+            c("消息报表约每 10 分钟更新；Direct messages 不含自动和群发消息，仅包含通过 Infloww 发送的员工直聊消息。", "I3", "How to monitor employee messages"),
+          ]),
+          s("supercreator", "Chatter Analytics · 多类消息记录", [
+            c("Chatter Messages 可查询工作区收发消息，并按消息类别、方向、类型、购买状态和时间筛选。", "S5", "Chatter Messages"),
+            c("类别包括聊天员工直聊、群发、自动生成及系列消息等。", "S5", "Chatter Messages"),
           ]),
           s("onlymonster", "Message Tracker · 发信过程追溯", [
             c("消息记录区分手输、粘贴、AI 助手和模板等输入来源，并显示发送者、价格及购买状态。", "O5", "Table Columns"),
@@ -476,10 +496,8 @@ const valueCatalog: BusinessValue[] = [
           ], [
             c("Message Tracker 中的消息自发送日起保存 3 个月。", "O5", "How It Works"),
           ]),
-          s("creatorhero", "Sales Assignment · 销售归属核对", [
-            c("粉丝购买 PPV 后，销售自动归属于发送该消息的员工；可在 Notifications 中选择交易并重新指定员工。", "C3", "How PPV Sales Are Assigned / Reassigning a Sale"),
-          ], [
-            c("当前不记录重新分配的历史，只能在通知中查看当前归属。", "C3", "FAQ"),
+          s("creatorhero", "Message History · 消息历史", [
+            c("可按消息类型和发送者筛选历史记录，查看发送者、粉丝、日期，并跳转到原消息。", "C19", "Page Features"),
           ]),
         ],
       },
@@ -491,45 +509,6 @@ const valueCatalog: BusinessValue[] = [
 const coreOrder: ValueId[] = ['conversion', 'retention', 'content', 'team', 'control']
 export const values = coreOrder.map(id => valueCatalog.find(value => value.id === id)!)
 
-const usedRefs = new Set(values.flatMap(value => value.points.flatMap(point => point.solutions.flatMap(solution => solution.refs))))
+const usedRefs = new Set(values.flatMap(value => value.points.flatMap(point => [...point.inflowwAssessment.refs, ...point.solutions.flatMap(solution => solution.refs)])))
 export const sources = catalogSources.filter(source => usedRefs.has(source.id))
 export const sourceMap = new Map(sources.map(source => [source.id, source]))
-
-export const pointCount = values.reduce((total, value) => total + value.points.length, 0)
-export const solutionCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.length, 0), 0)
-export const evidenceCount = values.reduce((total, value) => total + value.points.reduce((sum, point) => sum + point.solutions.reduce((count, solution) => count + solution.claims.length + solution.limits.length, 0), 0), 0)
-
-const claimMarkdown = (claim: EvidenceClaim) => {
-  const source = sourceMap.get(claim.ref)!
-  return `${claim.text}（[${source.title} · ${claim.section}](${source.url})）`
-}
-
-export function buildMarkdown() {
-  const lines = [
-    '# Onlyfans CRM 产品价值分析',
-    '不同平台能力对比与产品建设启示',
-    `报告更新于 ${auditedAt}。5 类核心产品价值，共 ${pointCount} 个落地点、${solutionCount} 项平台实现，引用 ${sources.length} 份官方资料。`,
-    `研究范围：${frameworkScope}`,
-    '## 管理摘要（本报告分析）',
-    `核心判断：${executiveSummary.conclusion}`,
-    ...executiveSummary.perspectives.map(item => `**${item.title}**：${item.text}`),
-    `**产品建设启示**：${executiveSummary.implication}`,
-    '每条当前实现及适用边界均附官方文章和章节。仅列有直接依据的条目；未列出的平台不代表不支持。问题、作用与场景是本页分析，不代表官方承诺或实测效果。',
-    '',
-  ]
-  values.forEach((value, index) => {
-    const label = String(index + 1)
-    lines.push(`## ${label}. ${value.title}`, value.thesis, '', `分析范围：${value.scope}`, '')
-    value.points.forEach((point, pointIndex) => {
-      lines.push(`### ${label}.${pointIndex + 1} ${point.title}`, `问题（分析）：${point.problem}`, `作用（分析）：${point.mechanism}`, `示例情境：${point.example}`, `主要使用者：${point.owner}`, `Infloww 建设建议（本页分析）：${point.inflowwProposal}`, '')
-      point.solutions.forEach(solution => {
-        const platform = platforms.find(item => item.id === solution.platform)!
-        lines.push(`#### ${platform.name} · ${solution.feature}`, '当前实现：', ...solution.claims.map(claim => `- ${claimMarkdown(claim)}`))
-        if (solution.limits.length) lines.push('适用边界：', ...solution.limits.map(claim => `- ${claimMarkdown(claim)}`))
-        lines.push('')
-      })
-    })
-  })
-  lines.push('## 跨价值的共同基础（分析）', '在动作发生处提供相关信息；用反馈修正下一轮运营。AI、分组、报表和自动化是承载这些价值的能力，可同时服务多个经营目标。', '', '## 资料说明', `${auditNote}每个引用标明原文章节，区分人工操作与自动执行；不将独立功能推演成官方已实现的联动流程。未登录四家真实账号验收，套餐及开放范围以现行产品为准。`, '', '## 官方资料索引', ...sources.map(source => `- ${source.platform} · [${source.title}](${source.url})`))
-  return lines.join('\n\n')
-}

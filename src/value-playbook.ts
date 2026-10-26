@@ -1,10 +1,16 @@
 import './value-playbook.css'
-import { values, platforms, sources, sourceMap, pointCount, solutionCount, executiveSummary, frameworkScope, auditedAt, auditNote, buildMarkdown, type BusinessValue, type LandingPoint, type Solution, type EvidenceClaim } from './value-playbook-data'
+import { values, platforms, sources, sourceMap, executiveSummary, frameworkScope, type BusinessValue, type LandingPoint, type Solution, type EvidenceClaim } from './value-playbook-data'
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T
 const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
 const sourceNumbers = new Map(sources.map((source, index) => [source.id, index + 1]))
 const numbered = (index: number) => String(index + 1).padStart(2, '0')
+const assessmentIcons: Record<LandingPoint['inflowwAssessment']['status'], string> = {
+  'Infloww 已覆盖核心能力': '✓',
+  'Infloww 提供管理数据': '▣',
+  '竞品有可借鉴增量': '↗',
+  '关键差异待验证': '?',
+}
 
 function references(solution: Solution) {
   return solution.refs.map(ref => {
@@ -33,7 +39,7 @@ function landingPoint(point: LandingPoint, index: number, chapter: string) {
     <p class="example"><strong>场景示例</strong><span>${escape(point.example)}</span></p>
     <div class="comparison-heading"><span>当前实现 · ${point.solutions.length} 家有直接资料依据</span><p class="point-owner">主要使用者 <span>${escape(point.owner)}</span></p></div>
     <div class="table-scroll comparison-scroll" role="region" tabindex="0" aria-label="${escape(point.title)}：有官方资料依据的实现"><table class="comparison-table"><caption class="sr-only">${escape(point.title)}的当前实现及对应官方依据</caption><colgroup><col class="platform-column"/><col class="implementation-column"/></colgroup><thead><tr><th scope="col">平台 / 资料</th><th scope="col">承载功能、实现方式与官方依据</th></tr></thead><tbody>${point.solutions.map(solutionRow).join('')}</tbody></table></div>
-    <aside class="infloww-proposal" aria-label="${escape(point.title)}的 Infloww 建设建议"><p>Infloww 建设建议 <span>本页分析</span></p><div>${escape(point.inflowwProposal)}</div></aside>
+    <aside class="infloww-proposal" data-assessment-status="${escape(point.inflowwAssessment.status)}" aria-label="${escape(point.title)}的 Infloww 能力评估与优化方向"><p class="assessment-heading"><span class="assessment-title">Infloww 能力评估与优化方向</span><span class="assessment-status"><span class="assessment-icon" aria-hidden="true">${assessmentIcons[point.inflowwAssessment.status]}</span>${escape(point.inflowwAssessment.status)}</span></p><div>${escape(point.inflowwAssessment.text)}</div><nav class="assessment-sources" aria-label="${escape(point.title)}的评估依据"><span>核实依据</span>${point.inflowwAssessment.refs.map(ref => { const source = sourceMap.get(ref)!; return `<a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.platform)} · ${escape(source.title)} ↗</a>` }).join('')}</nav></aside>
   </section>`
 }
 
@@ -48,21 +54,15 @@ function chapter(value: BusinessValue, index: number) {
 }
 
 $('framework-scope').textContent = frameworkScope
-$('report-date').textContent = `更新于 ${auditedAt.replaceAll('-', '.')}`
-$('point-count').textContent = `${pointCount} 个落地点`
-$('audit-note').textContent = auditNote
 $('executive-summary').innerHTML = `
   <div class="executive-conclusion"><h2 id="executive-summary-title">核心判断</h2><p>${escape(executiveSummary.conclusion)}</p></div>
   <div class="executive-perspectives">${executiveSummary.perspectives.map((item, index) => `<article><p class="perspective-number">${numbered(index)}</p><h3>${escape(item.title)}</h3><p class="perspective-text">${escape(item.text)}</p><nav aria-label="${escape(item.title)}的详细分析">${item.links.map(link => `<a href="#value-${link.id}">${escape(link.label)} <span aria-hidden="true">↗</span></a>`).join('')}</nav></article>`).join('')}</div>
-  <div class="executive-implication"><h3>产品建设启示</h3><p>${escape(executiveSummary.implication)}</p></div>
 `
 $('overview-rows').innerHTML = values.map((value, index) => `<tr><th scope="row"><a href="#value-${value.id}"><span>${numbered(index)}</span><strong>${escape(value.short)}</strong><i aria-hidden="true">↗</i></a><p class="overview-description">${escape(value.thesis)}</p></th><td><ul>${value.points.map((point, pointIndex) => `<li><a href="#point-${point.id}"><span class="overview-point-index">${index + 1}.${pointIndex + 1}</span><span class="overview-point-title">${escape(point.title)}</span></a></li>`).join('')}</ul></td></tr>`).join('')
 $('chapter-links').innerHTML = `<section class="nav-section" aria-label="核心价值"><p class="nav-section-label">核心价值<span>${values.length} 项</span></p>${values.map((value, index) => `<div class="nav-group" data-value="${value.id}"><a class="chapter-link" href="#value-${value.id}"><span>${numbered(index)}</span>${escape(value.short)}</a><div class="nav-points">${value.points.map(point => `<a href="#point-${point.id}">${escape(point.title)}</a>`).join('')}</div></div>`).join('')}</section>`
-$('report').innerHTML = `<div class="report-part-heading"><span class="value-tier-badge">核心价值</span><p>五类核心产品价值 · 按业务对象展开</p></div>`
-  + values.map((value, index) => chapter(value, index)).join('')
-$('implementation-count').textContent = `${solutionCount} 项已核查实现`
+$('report').innerHTML = values.map((value, index) => chapter(value, index)).join('')
 $('source-count').textContent = `${sources.length} 份`
-$('source-list').innerHTML = platforms.map(platform => `<section><h4>${platform.name}</h4><ol>${sources.filter(source => source.platform === platform.name).map(source => `<li id="source-${source.id}" value="${sourceNumbers.get(source.id)}"><a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.title)} <span aria-hidden="true">↗</span></a></li>`).join('')}</ol></section>`).join('')
+$('source-list').innerHTML = platforms.map(platform => `<section><h3>${platform.name}</h3><ol>${sources.filter(source => source.platform === platform.name).map(source => `<li id="source-${source.id}" value="${sourceNumbers.get(source.id)}"><a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.title)} <span aria-hidden="true">↗</span></a></li>`).join('')}</ol></section>`).join('')
 
 // Keep links from the previous tabbed version useful; all chapters now remain visible.
 const params = new URLSearchParams(location.search)
@@ -90,7 +90,7 @@ window.addEventListener('hashchange', syncAnchor)
 syncAnchor()
 if (location.hash) requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: 'start' }))
 
-const readingSections = [...document.querySelectorAll<HTMLElement>('.value-chapter, .landing-point, #method, .closing-section')]
+const readingSections = [...document.querySelectorAll<HTMLElement>('.value-chapter, .landing-point')]
 let readingFramePending = false
 function updateReadingPosition() {
   readingFramePending = false
@@ -110,15 +110,3 @@ function scheduleReadingUpdate() {
 }
 window.addEventListener('scroll', scheduleReadingUpdate, { passive: true })
 window.addEventListener('resize', scheduleReadingUpdate)
-
-$('download-analysis').addEventListener('click', () => {
-  const url = URL.createObjectURL(new Blob([buildMarkdown()], { type: 'text/markdown;charset=utf-8' }))
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'Onlyfans CRM 产品价值分析.md'
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-  $('download-status').textContent = `已生成完整分析文档，包含 ${pointCount} 个落地点和 ${solutionCount} 项平台实现，每条均附官方依据。`
-})
